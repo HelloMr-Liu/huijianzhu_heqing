@@ -48,6 +48,17 @@ public class UserController {
     }
 
     /**
+     * 获取指定用户id对应的用户信息
+     * @param userId
+     * @return
+     */
+    @PostMapping("/get/user")
+    public SystemResult getUserById(Integer userId){
+        return userService.getUserById(userId);
+    }
+
+
+    /**
      * 添加用户
      * @param definition 接收修改用户属性信息实体
      * @return
@@ -66,6 +77,30 @@ public class UserController {
     public SystemResult deleteUser(Integer userId)throws  Exception{
         return userService.deleteUser(userId);
     }
+
+
+    /**
+     * 获取用户权限信息
+     * @param userId  对应获取该id用户对应的权限信息
+     * @return
+     */
+    @PostMapping("/user/jurisdiction")
+    public SystemResult userJurisdiction(Integer userId){
+        return userService.userJurisdiction(userId);
+    }
+
+
+
+    /**
+     * 修改对应用户的权限信息
+     * @param definition 接收修改用户属性信息实体
+     * @return
+     */
+    @PostMapping("/update/user/jurisdiction")
+    public SystemResult updateJurisdiction(UserAccpetDefinition definition){
+        return userService.updateJurisdiction(definition);
+    }
+
 
 
 }

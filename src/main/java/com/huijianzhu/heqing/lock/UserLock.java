@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 刘梓江	2020/5/5  21:15            创建
  * =================================================================
  **/
-public class UserLock {
+public class  UserLock {
 
     /**
      * 用户修改锁

@@ -29,6 +29,14 @@ public interface UserService {
     public SystemResult addUser(UserAccpetDefinition definition)throws  Exception;
 
     /**
+     * 获取指定用户id对应的用户信息
+     * @param userId
+     * @return
+     */
+    public SystemResult getUserById(Integer userId);
+
+
+    /**
      * 添加用户
      * @param definition 接收修改用户属性信息实体
      * @return
@@ -41,6 +49,7 @@ public interface UserService {
      * @return
      */
     public SystemResult deleteUser(Integer userId)throws  Exception;
+
 
     /**
      * 获取用户权限信息

@@ -9,9 +9,9 @@ public class HqUser {
 
     private String userAccount;
 
-    private String password;
+    private String passWord;
 
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     private String email;
 
@@ -57,20 +57,20 @@ public class HqUser {
         this.userAccount = userAccount == null ? null : userAccount.trim();
     }
 
-    public String getPassword() {
-        return password;
+    public String getPassWord() {
+        return passWord;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setPassWord(String passWord) {
+        this.passWord = passWord == null ? null : passWord.trim();
     }
 
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber == null ? null : phoneNumber.trim();
     }
 
     public String getEmail() {

@@ -1,11 +1,8 @@
 package com.huijianzhu.heqing.vo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 
 import java.io.Serializable;
-import java.util.List;
 
 /*================================================================
 说明：系统全局响应结果
@@ -15,44 +12,38 @@ import java.util.List;
 ==================================================================*/
 public class SystemResult implements Serializable {
 
-	// 定义jackson对象
-	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	// 响应业务状态
 	// 200 为操作成功
 	// 100 为数据校验异常
 	// 500 为程序内部错误
-	private Integer status;
-
-	// 响应消息
-	// 默认为操作成功
-	private String msg;
+	private Integer code;
 
 	// 响应中的数据
-	private Object data;
+	private Object result;
 	
 	/**=================================================================
      * 功能：构建响应结果
      * 
-     * 参数：status			Integer		状态码
+     * 参数：code			Integer		状态码
      *		msg				String		响应消息
-     *		data			Object		响应数据
+     *		result			Object		响应数据
      *
      * 返回：SystemResult		业务操作响应结果
      ===================================================================*/
-	public static SystemResult build(Integer status, String msg, Object data) {
-		return new SystemResult(status, msg, data);
+	public static SystemResult build(Integer code, Object result) {
+		return new SystemResult(code,result);
 	}
 	
 	/**=================================================================
      * 功能：返回成功信息，不带消息，带数据
      * 
-     * 参数：data			Object		响应数据
+     * 参数：result			Object		响应数据
      * 
      * 返回：SystemResult		业务操作响应结果
      ===================================================================*/
-	public static SystemResult ok(Object data) {
-		return new SystemResult(data);
+	public static SystemResult ok(Object result) {
+		return new SystemResult(result);
 	}
 	
 	/**=================================================================
@@ -67,46 +58,27 @@ public class SystemResult implements Serializable {
 	public SystemResult() {
 
 	}
-	
-	/**=================================================================
-     * 功能：构建响应结果，不带数据
-     * 
-     * 参数：status			Integer		状态码
-     *		msg				String		响应消息
-     *
-     * 返回：SystemResult		业务操作响应结果
-     ===================================================================*/
-	public static SystemResult build(Integer status, String msg) {
-		return new SystemResult(status, msg, null);
+
+	public SystemResult(Integer code, Object result) {
+		this.code = code;
+		this.result = result;
 	}
 
-	public SystemResult(Integer status, String msg, Object data) {
-		this.status = status;
-		this.msg = msg;
-		this.data = data;
+	public SystemResult(Object result) {
+		this.code = SYSTEM_RESULT_STATE.SUCCESS.KEY;
+		this.result = result;
 	}
 
-	public SystemResult(Object data) {
-		this.status = SYSTEM_RESULT_STATE.SUCCESS.KEY;
-		this.msg = SYSTEM_RESULT_STATE.SUCCESS.VALUE;
-		this.data = data;
+	public Integer getCode() {return code;}
+	public void setCode(Integer code) {
+		this.code = code;
 	}
 
-	public Integer getStatus() {return status;}
-	public void setStatus(Integer status) {
-		this.status = status;
+	public Object getResult() {
+		return result;
 	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public Object getData() {
-		return data;
-	}
-	public void setData(Object data) {
-		this.data = data;
+	public void setResult(Object result) {
+		this.result = result;
 	}
 
 

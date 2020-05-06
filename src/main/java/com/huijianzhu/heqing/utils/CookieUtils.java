@@ -104,7 +104,7 @@ public final class CookieUtils {
      */
     public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
                                  String cookieValue, boolean isEncode) {
-        setCookie(request, response, cookieName, cookieValue, -1, isEncode);
+        setCookie(request, response, cookieName, cookieValue, Integer.MAX_VALUE, isEncode);
     }
 
     /**
@@ -128,7 +128,7 @@ public final class CookieUtils {
      */
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response,
                                     String cookieName) {
-        doSetCookie(request, response, cookieName, "", -1, false);
+        doSetCookie(request, response, cookieName, "", 0, false);
     }
 
     /**

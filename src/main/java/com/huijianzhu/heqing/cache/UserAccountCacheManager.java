@@ -3,6 +3,7 @@ package com.huijianzhu.heqing.cache;
 import com.huijianzhu.heqing.entity.HqUser;
 import com.huijianzhu.heqing.enums.USER_TABLE_FIELD_STATE;
 import com.huijianzhu.heqing.mapper.extend.HqUserExtendMapper;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  **/
 
 @Component
+@Data
 public class UserAccountCacheManager {
 
     @Autowired
@@ -55,8 +57,12 @@ public class UserAccountCacheManager {
      * @param account   新账号
      * @return true:账号存在  false:账号不存在
      */
-    public boolean checkAccountexist(String account){
-        return cache.contains(account);
+    public boolean checkAccountexist(String account,String userId){
+        String accountUserId = cache.get(account);
+        if(accountUserId!=null){
+            return accountUserId.equals(userId)?false:true;
+        }
+        return false;
     }
 
     /**
@@ -64,10 +70,10 @@ public class UserAccountCacheManager {
      */
     private void getValidUserAccount(){
         //获取有效账号集合
-        List<HqUser> validList = hqUserExtendMapper.getValidAccountAndUserName(USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);
+        List<HqUser> validList = hqUserExtendMapper.getValidAccountAndUserId(USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);
         //遍历账号集合并刷新到容器中
         validList.forEach(
-            e->{cache.put(e.getUserAccount(),e.getUserName());}
+            e->{cache.put(e.getUserAccount(),e.getUserId().toString());}
         );
     }
 

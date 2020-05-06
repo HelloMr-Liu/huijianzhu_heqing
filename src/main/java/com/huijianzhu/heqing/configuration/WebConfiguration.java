@@ -4,10 +4,13 @@ package com.huijianzhu.heqing.configuration;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.huijianzhu.heqing.Interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
@@ -17,6 +20,14 @@ import java.util.List;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //登录拦截的管理器
+//        InterceptorRegistration registration = registry.addInterceptor(new LoginInterceptor());
+//        registration.addPathPatterns("/**");                    //所有路径都被拦截
+//        registration.excludePathPatterns("/","/login","/login/**");       //添加不拦截路径
+    }
 
     //重写转换器
     @Override

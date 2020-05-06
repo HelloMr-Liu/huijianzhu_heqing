@@ -1,5 +1,7 @@
 package com.huijianzhu.heqing.enums;
 
+import lombok.ToString;
+
 /**
  * ================================================================
  * 说明：记录每一个登录标识信息

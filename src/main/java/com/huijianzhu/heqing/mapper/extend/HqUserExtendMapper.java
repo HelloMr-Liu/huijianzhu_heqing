@@ -30,9 +30,18 @@ public interface HqUserExtendMapper extends HqUserMapper {
      * @param delFlag       删除标志
      * @return
      */
-    @Select("select user_account,user_name from hq_user where del_flag=#{delFlag} ")
-    List<HqUser> getValidAccountAndUserName(String delFlag);
+    @Select("select user_account,user_id from hq_user where del_flag=#{delFlag} ")
+    List<HqUser> getValidAccountAndUserId(String delFlag);
 
+
+    /**
+     * 获取对应的用户信息
+     * @param userId    用户id
+     * @param delFlag   删除标志
+     * @return
+     */
+    @Select(" select * from hq_user where user_id=#{userId} and del_flag=#{delFlag} ")
+    HqUser getUserById(Integer userId,String delFlag);
 
     /**
      * 获取指定账号或密码的用户并且是有效用户
@@ -41,7 +50,7 @@ public interface HqUserExtendMapper extends HqUserMapper {
      * @param delFlag       删除标志
      * @return
      */
-    @Select(" select *  from hq_user where user_account=#{account} and password=#{password} and  del_flag=#{delFlag} ")
+    @Select(" select *  from hq_user where user_account=#{account} and pass_word=#{password} and  del_flag=#{delFlag} ")
     HqUser getUserByAccountAndPassword(String account,
                                        String password,
                                        String delFlag);

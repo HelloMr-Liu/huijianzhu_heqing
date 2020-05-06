@@ -2,55 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huijianzhu.heqing.mapper.HqPermissionsMapper">
   <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPermissions">
-    <id column="permissions_id" jdbcType="INTEGER" property="permissionsId" />
-    <result column="model_id" jdbcType="VARCHAR" property="modelId" />
+    <id column="model_id" jdbcType="VARCHAR" property="modelId" />
     <result column="model_name" jdbcType="VARCHAR" property="modelName" />
-    <result column="model_path" jdbcType="VARCHAR" property="modelPath" />
-    <result column="is_parent" jdbcType="VARCHAR" property="isParent" />
+    <result column="is_parent" jdbcType="INTEGER" property="isParent" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
-    <result column="ico_class" jdbcType="VARCHAR" property="icoClass" />
-    <result column="e1" jdbcType="VARCHAR" property="e1" />
-    <result column="e2" jdbcType="VARCHAR" property="e2" />
-    <result column="e3" jdbcType="VARCHAR" property="e3" />
+    <result column="model_path" jdbcType="VARCHAR" property="modelPath" />
+    <result column="icon_class" jdbcType="VARCHAR" property="iconClass" />
+    <result column="expand1" jdbcType="VARCHAR" property="expand1" />
+    <result column="expand2" jdbcType="VARCHAR" property="expand2" />
+    <result column="expand3" jdbcType="VARCHAR" property="expand3" />
   </resultMap>
   <sql id="Base_Column_List">
-    permissions_id, model_id, model_name, model_path, is_parent, parent_id, ico_class, 
-    e1, e2, e3
+    model_id, model_name, is_parent, parent_id, model_path, icon_class, expand1, expand2, 
+    expand3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from hq_permissions
-    where permissions_id = #{permissionsId,jdbcType=INTEGER}
+    where model_id = #{modelId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from hq_permissions
-    where permissions_id = #{permissionsId,jdbcType=INTEGER}
+    where model_id = #{modelId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPermissions">
-    insert into hq_permissions (permissions_id, model_id, model_name, 
-      model_path, is_parent, parent_id, 
-      ico_class, e1, e2, e3
+    insert into hq_permissions (model_id, model_name, is_parent, 
+      parent_id, model_path, icon_class, 
+      expand1, expand2, expand3
       )
-    values (#{permissionsId,jdbcType=INTEGER}, #{modelId,jdbcType=VARCHAR}, #{modelName,jdbcType=VARCHAR}, 
-      #{modelPath,jdbcType=VARCHAR}, #{isParent,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
-      #{icoClass,jdbcType=VARCHAR}, #{e1,jdbcType=VARCHAR}, #{e2,jdbcType=VARCHAR}, #{e3,jdbcType=VARCHAR}
+    values (#{modelId,jdbcType=VARCHAR}, #{modelName,jdbcType=VARCHAR}, #{isParent,jdbcType=INTEGER}, 
+      #{parentId,jdbcType=VARCHAR}, #{modelPath,jdbcType=VARCHAR}, #{iconClass,jdbcType=VARCHAR}, 
+      #{expand1,jdbcType=VARCHAR}, #{expand2,jdbcType=VARCHAR}, #{expand3,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPermissions">
     insert into hq_permissions
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="permissionsId != null">
-        permissions_id,
-      </if>
       <if test="modelId != null">
         model_id,
       </if>
       <if test="modelName != null">
         model_name,
-      </if>
-      <if test="modelPath != null">
-        model_path,
       </if>
       <if test="isParent != null">
         is_parent,
@@ -58,96 +51,92 @@
       <if test="parentId != null">
         parent_id,
       </if>
-      <if test="icoClass != null">
-        ico_class,
+      <if test="modelPath != null">
+        model_path,
       </if>
-      <if test="e1 != null">
-        e1,
+      <if test="iconClass != null">
+        icon_class,
       </if>
-      <if test="e2 != null">
-        e2,
+      <if test="expand1 != null">
+        expand1,
       </if>
-      <if test="e3 != null">
-        e3,
+      <if test="expand2 != null">
+        expand2,
+      </if>
+      <if test="expand3 != null">
+        expand3,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="permissionsId != null">
-        #{permissionsId,jdbcType=INTEGER},
-      </if>
       <if test="modelId != null">
         #{modelId,jdbcType=VARCHAR},
       </if>
       <if test="modelName != null">
         #{modelName,jdbcType=VARCHAR},
       </if>
-      <if test="modelPath != null">
-        #{modelPath,jdbcType=VARCHAR},
-      </if>
       <if test="isParent != null">
-        #{isParent,jdbcType=VARCHAR},
+        #{isParent,jdbcType=INTEGER},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=VARCHAR},
       </if>
-      <if test="icoClass != null">
-        #{icoClass,jdbcType=VARCHAR},
+      <if test="modelPath != null">
+        #{modelPath,jdbcType=VARCHAR},
       </if>
-      <if test="e1 != null">
-        #{e1,jdbcType=VARCHAR},
+      <if test="iconClass != null">
+        #{iconClass,jdbcType=VARCHAR},
       </if>
-      <if test="e2 != null">
-        #{e2,jdbcType=VARCHAR},
+      <if test="expand1 != null">
+        #{expand1,jdbcType=VARCHAR},
       </if>
-      <if test="e3 != null">
-        #{e3,jdbcType=VARCHAR},
+      <if test="expand2 != null">
+        #{expand2,jdbcType=VARCHAR},
+      </if>
+      <if test="expand3 != null">
+        #{expand3,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPermissions">
     update hq_permissions
     <set>
-      <if test="modelId != null">
-        model_id = #{modelId,jdbcType=VARCHAR},
-      </if>
       <if test="modelName != null">
         model_name = #{modelName,jdbcType=VARCHAR},
       </if>
-      <if test="modelPath != null">
-        model_path = #{modelPath,jdbcType=VARCHAR},
-      </if>
       <if test="isParent != null">
-        is_parent = #{isParent,jdbcType=VARCHAR},
+        is_parent = #{isParent,jdbcType=INTEGER},
       </if>
       <if test="parentId != null">
         parent_id = #{parentId,jdbcType=VARCHAR},
       </if>
-      <if test="icoClass != null">
-        ico_class = #{icoClass,jdbcType=VARCHAR},
+      <if test="modelPath != null">
+        model_path = #{modelPath,jdbcType=VARCHAR},
       </if>
-      <if test="e1 != null">
-        e1 = #{e1,jdbcType=VARCHAR},
+      <if test="iconClass != null">
+        icon_class = #{iconClass,jdbcType=VARCHAR},
       </if>
-      <if test="e2 != null">
-        e2 = #{e2,jdbcType=VARCHAR},
+      <if test="expand1 != null">
+        expand1 = #{expand1,jdbcType=VARCHAR},
       </if>
-      <if test="e3 != null">
-        e3 = #{e3,jdbcType=VARCHAR},
+      <if test="expand2 != null">
+        expand2 = #{expand2,jdbcType=VARCHAR},
+      </if>
+      <if test="expand3 != null">
+        expand3 = #{expand3,jdbcType=VARCHAR},
       </if>
     </set>
-    where permissions_id = #{permissionsId,jdbcType=INTEGER}
+    where model_id = #{modelId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPermissions">
     update hq_permissions
-    set model_id = #{modelId,jdbcType=VARCHAR},
-      model_name = #{modelName,jdbcType=VARCHAR},
-      model_path = #{modelPath,jdbcType=VARCHAR},
-      is_parent = #{isParent,jdbcType=VARCHAR},
+    set model_name = #{modelName,jdbcType=VARCHAR},
+      is_parent = #{isParent,jdbcType=INTEGER},
       parent_id = #{parentId,jdbcType=VARCHAR},
-      ico_class = #{icoClass,jdbcType=VARCHAR},
-      e1 = #{e1,jdbcType=VARCHAR},
-      e2 = #{e2,jdbcType=VARCHAR},
-      e3 = #{e3,jdbcType=VARCHAR}
-    where permissions_id = #{permissionsId,jdbcType=INTEGER}
+      model_path = #{modelPath,jdbcType=VARCHAR},
+      icon_class = #{iconClass,jdbcType=VARCHAR},
+      expand1 = #{expand1,jdbcType=VARCHAR},
+      expand2 = #{expand2,jdbcType=VARCHAR},
+      expand3 = #{expand3,jdbcType=VARCHAR}
+    where model_id = #{modelId,jdbcType=VARCHAR}
   </update>
 </mapper>

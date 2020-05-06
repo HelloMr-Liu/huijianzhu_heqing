@@ -19,7 +19,7 @@ public class UserAccpetDefinition {
 
     private Integer userId;         //用户id
     private Integer userType;       //用户类型
-    private Integer phoneNumber;    //用户电话
+    private String  phoneNumber;    //用户电话
 
     private String  email;          //用户邮件
     private String  userName;       //用户名称
