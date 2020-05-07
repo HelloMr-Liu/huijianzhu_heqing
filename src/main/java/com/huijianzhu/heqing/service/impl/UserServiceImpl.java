@@ -24,6 +24,7 @@ import com.huijianzhu.heqing.vo.SystemResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class UserServiceImpl implements UserService {
      * @param definition 接收添加用户属性信息实体
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult addUser(UserAccpetDefinition definition)throws  Exception{
 
         //开启用户修改锁操作,防止用户账号冲突
@@ -142,10 +144,16 @@ public class UserServiceImpl implements UserService {
      * @param definition 接收修改用户属性信息实体
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult updateUser(UserAccpetDefinition definition)throws  Exception{
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
         try{
+            //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了
+            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
+            }
+
             //判断新修改的账号是否存在
             if(accountCacheManager.checkAccountexist(definition.getUserAccount(),definition.getUserId().toString())){
                 //账号存在不能进行修改
@@ -198,6 +206,7 @@ public class UserServiceImpl implements UserService {
      * @param userId  对应要删除的用户信息id
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult deleteUser(Integer userId)throws  Exception{
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
@@ -272,27 +281,46 @@ public class UserServiceImpl implements UserService {
      * @param definition 接收修改用户属性信息实体
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult updateJurisdiction(UserAccpetDefinition definition){
-        //获取出当前用户登录标识获取对应的用户信息
-        String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+        //开启用户修改锁操作,防止用户账号冲突
+        UserLock.USER_UPDATE_LOCK.writeLock().lock();
+        try{
+            //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了
+            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
+            }
 
-        //创建一个封装删除用户对象
-        HqUser hqUser=new HqUser();
-        hqUser.setUserId(definition.getUserId());
-        hqUser.setPermissionsId(definition.getPermissionsId());
-        hqUser.setUpdateTime(new Date());                             //修改操作时间
-        hqUser.setUpdateUserName(currentLoginUser.getUserName());     //记录那个用户修改了该用户信息
-        //并持久化到数据库中
-        hqUserExtendMapper.updateByPrimaryKeySelective(hqUser);
-        //同步账号缓存管理容器
-        accountCacheManager.refresh();
-        //同步修改用户id对应在登录容器对应的用户信息
-        tokenCacheManager.refreshloginUserInfo(definition.getUserId());
-        //日志记录
-        log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条修改用户数据");
-        //修改用户权限成功
-        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+            //获取出当前用户登录标识获取对应的用户信息
+            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+
+            //创建一个封装删除用户对象
+            HqUser hqUser=new HqUser();
+            hqUser.setUserId(definition.getUserId());
+            hqUser.setPermissionsId(definition.getPermissionsId());
+            hqUser.setUpdateTime(new Date());                             //修改操作时间
+            hqUser.setUpdateUserName(currentLoginUser.getUserName());     //记录那个用户修改了该用户信息
+            //并持久化到数据库中
+            hqUserExtendMapper.updateByPrimaryKeySelective(hqUser);
+            //同步账号缓存管理容器
+            accountCacheManager.refresh();
+            //同步修改用户id对应在登录容器对应的用户信息
+            tokenCacheManager.refreshloginUserInfo(definition.getUserId());
+            //日志记录
+            log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条修改用户数据");
+            //修改用户权限成功
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }finally {
+            //解锁操作
+            UserLock.USER_UPDATE_LOCK.writeLock().unlock();
+        }
+
     }
 }
     

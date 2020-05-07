@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huijianzhu.heqing.mapper.HqWriteWayMapper">
+  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqWriteWay">
+    <id column="write_id" jdbcType="VARCHAR" property="writeId" />
+    <result column="write_name" jdbcType="VARCHAR" property="writeName" />
+    <result column="is_unit" jdbcType="VARCHAR" property="isUnit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    write_id, write_name, is_unit
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hq_write_way
+    where write_id = #{writeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from hq_write_way
+    where write_id = #{writeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqWriteWay">
+    insert into hq_write_way (write_id, write_name, is_unit
+      )
+    values (#{writeId,jdbcType=VARCHAR}, #{writeName,jdbcType=VARCHAR}, #{isUnit,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqWriteWay">
+    insert into hq_write_way
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="writeId != null">
+        write_id,
+      </if>
+      <if test="writeName != null">
+        write_name,
+      </if>
+      <if test="isUnit != null">
+        is_unit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="writeId != null">
+        #{writeId,jdbcType=VARCHAR},
+      </if>
+      <if test="writeName != null">
+        #{writeName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUnit != null">
+        #{isUnit,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqWriteWay">
+    update hq_write_way
+    <set>
+      <if test="writeName != null">
+        write_name = #{writeName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUnit != null">
+        is_unit = #{isUnit,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where write_id = #{writeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqWriteWay">
+    update hq_write_way
+    set write_name = #{writeName,jdbcType=VARCHAR},
+      is_unit = #{isUnit,jdbcType=VARCHAR}
+    where write_id = #{writeId,jdbcType=VARCHAR}
+  </update>
+</mapper>

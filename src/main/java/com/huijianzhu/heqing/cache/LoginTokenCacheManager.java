@@ -53,9 +53,9 @@ public class LoginTokenCacheManager {
         );
         //遍历failureTokenList中标识对应loginTokenCahce中删除
         failureTokenList.forEach(
-            e->{loginTokenCahce.remove(e);}
+    e->{loginTokenCahce.remove(e);}
         );
-    }
+}
 
     /**
      * 校验当前登录标识是否已经失效

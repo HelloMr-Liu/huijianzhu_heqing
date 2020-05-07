@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -77,6 +79,20 @@ public class UserAccountCacheManager {
         );
     }
 
+    /**
+     * 校验当前用户id再账号缓存中是否存在
+     * @param userId
+     * @return
+     */
+    public boolean checkAccountByUserId(String userId){
+        Set<Map.Entry<String, String>> entries = cache.entrySet();
+        for(Map.Entry<String, String> entity:entries){
+            if(entity.getValue().equals(userId)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
     
     
