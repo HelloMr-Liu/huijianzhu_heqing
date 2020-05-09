@@ -119,11 +119,15 @@ public class LoginServiceImpl implements LoginService {
         //获取本地对应的登录标识
         String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-        //删除本地登录标识
-        CookieUtils.deleteCookie(request,response,loginToken);
+        System.out.println(loginToken);
 
-        //删除登录缓存标识中对应的信息
-        loginCacheManager.removeCacheContentByUserToken(loginToken);
+        //删除本地登录标识
+        CookieUtils.deleteCookie(request,response,LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+
+        if(loginToken!=null){
+            //删除登录缓存标识中对应的信息
+            loginCacheManager.removeCacheContentByUserToken(loginToken);
+        }
 
         //删除成功
         return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);

@@ -13,9 +13,7 @@ public enum PROPERTY_TABLE_FIELD_STATE {
     DEL_FLAG_YES("1","代表删除"),
     DEL_FLAG_NO("0","代表没有删除"),
     IS_PARENT("1","代表是父属性"),
-    NO_PARENT("0","代表是子属性"),
-    NO_SHOW_WAY("0","不是竖向显示"),
-    NO_SHOW_CONDITION("0","没有显示条件");
+    NO_PARENT("0","代表是子属性");
 
     public String KEY;
     public String VALUE;

@@ -68,7 +68,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                 if(pathArray.length>3){
 
                     //进行请求路径拼接,获取对应缓存中的模块id
-                    String requestPath=servletPath.lastIndexOf("?")==-1?servletPath:servletPath.trim().substring(0,servletPath.lastIndexOf("?"));
+                   // String requestPath=servletPath.lastIndexOf("?")==-1?servletPath:servletPath.trim().substring(0,servletPath.lastIndexOf("?"));
+                    String requestPath="/"+pathArray[1]+"/"+pathArray[2]+"/"+pathArray[3];
 
                     //获取当前请求的模块id
                     String modelId = permissionCacheManager.getPermissionRequestCache().get(requestPath);

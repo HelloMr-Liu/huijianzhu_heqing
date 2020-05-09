@@ -108,9 +108,7 @@ public class PropertyServiceImpl implements PropertyService {
 
                 //对子属性信息排序
                 List<PropertyTree> collect = parentTree.getChildren().stream().sorted(
-                    (e1, e2) -> {
-                        return Integer.parseInt(e1.getProSort()) - Integer.parseInt(e2.getProSort());
-                    }
+                    (e1, e2) -> { return Integer.parseInt(e1.getProSort()) - Integer.parseInt(e2.getProSort());}
                 ).collect(Collectors.toList());
                 //将排序好的子属性信息集重新赋值给父属性下
                 parentTree.setChildren(collect);
@@ -218,6 +216,7 @@ public class PropertyServiceImpl implements PropertyService {
      * @param definition  封装修改属性对应的信息
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult updateProperty(PropertyAccpetDefinition definition)throws  Exception{
         //开启属性操作信息原子锁防止修改重复的名称
         PropertyLock.PROPERTY_UPDATE_LOCK.writeLock().lock();
@@ -271,6 +270,7 @@ public class PropertyServiceImpl implements PropertyService {
      * @param propertyId   属性id
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public SystemResult deleteProperty(Integer propertyId)throws  Exception{
 
         //开启属性操作信息原子锁,这样删除该标志的时候其他任务不能修改被删除的属性信息

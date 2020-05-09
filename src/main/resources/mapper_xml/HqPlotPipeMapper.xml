@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huijianzhu.heqing.mapper.HqPlotPipeMapper">
+  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPlotPipe">
+    <id column="pipe_id" jdbcType="INTEGER" property="pipeId" />
+    <result column="pipe_name" jdbcType="VARCHAR" property="pipeName" />
+    <result column="plot_id" jdbcType="INTEGER" property="plotId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
+    <result column="extend1" jdbcType="VARCHAR" property="extend1" />
+    <result column="extend2" jdbcType="VARCHAR" property="extend2" />
+    <result column="extend3" jdbcType="VARCHAR" property="extend3" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.huijianzhu.heqing.entity.HqPlotPipe">
+    <result column="pipe_plot_mark" jdbcType="LONGVARCHAR" property="pipePlotMark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pipe_id, pipe_name, plot_id, create_time, update_time, update_user_name, del_flag, 
+    extend1, extend2, extend3
+  </sql>
+  <sql id="Blob_Column_List">
+    pipe_plot_mark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from hq_plot_pipe
+    where pipe_id = #{pipeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hq_plot_pipe
+    where pipe_id = #{pipeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPlotPipe">
+    insert into hq_plot_pipe (pipe_id, pipe_name, plot_id, 
+      create_time, update_time, update_user_name, 
+      del_flag, extend1, extend2, 
+      extend3, pipe_plot_mark)
+    values (#{pipeId,jdbcType=INTEGER}, #{pipeName,jdbcType=VARCHAR}, #{plotId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUserName,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=VARCHAR}, #{extend1,jdbcType=VARCHAR}, #{extend2,jdbcType=VARCHAR}, 
+      #{extend3,jdbcType=VARCHAR}, #{pipePlotMark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPlotPipe">
+    insert into hq_plot_pipe
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pipeId != null">
+        pipe_id,
+      </if>
+      <if test="pipeName != null">
+        pipe_name,
+      </if>
+      <if test="plotId != null">
+        plot_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="extend1 != null">
+        extend1,
+      </if>
+      <if test="extend2 != null">
+        extend2,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="pipePlotMark != null">
+        pipe_plot_mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pipeId != null">
+        #{pipeId,jdbcType=INTEGER},
+      </if>
+      <if test="pipeName != null">
+        #{pipeName,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="pipePlotMark != null">
+        #{pipePlotMark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPlotPipe">
+    update hq_plot_pipe
+    <set>
+      <if test="pipeName != null">
+        pipe_name = #{pipeName,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        plot_id = #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        extend1 = #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        extend2 = #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="pipePlotMark != null">
+        pipe_plot_mark = #{pipePlotMark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where pipe_id = #{pipeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.huijianzhu.heqing.entity.HqPlotPipe">
+    update hq_plot_pipe
+    set pipe_name = #{pipeName,jdbcType=VARCHAR},
+      plot_id = #{plotId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR},
+      pipe_plot_mark = #{pipePlotMark,jdbcType=LONGVARCHAR}
+    where pipe_id = #{pipeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPlotPipe">
+    update hq_plot_pipe
+    set pipe_name = #{pipeName,jdbcType=VARCHAR},
+      plot_id = #{plotId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR}
+    where pipe_id = #{pipeId,jdbcType=INTEGER}
+  </update>
+</mapper>

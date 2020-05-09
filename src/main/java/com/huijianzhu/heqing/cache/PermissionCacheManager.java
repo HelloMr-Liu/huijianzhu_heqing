@@ -87,7 +87,7 @@ public class PermissionCacheManager {
                     parentTree.setIcon_class(e.getIconClass());
                     parentTree.setId(e.getModelId());
                     parentTree.setLabel(e.getModelName());
-
+                    parentTree.setRequestPath(e.getModelPath());
                     treeList.put(e.getModelId(),parentTree);
                 }
             }

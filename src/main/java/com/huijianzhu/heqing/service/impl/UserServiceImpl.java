@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public SystemResult updateUser(UserAccpetDefinition definition)throws  Exception{
-        //开启用户修改锁操作,防止用户账号冲突
+        //开启用户修改锁操作,防止修改成同账号信息用户
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
         try{
             //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了

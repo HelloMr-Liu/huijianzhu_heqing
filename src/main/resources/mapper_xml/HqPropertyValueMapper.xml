@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huijianzhu.heqing.mapper.HqPropertyValueMapper">
+  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPropertyValue">
+    <id column="property_value_id" jdbcType="INTEGER" property="propertyValueId" />
+    <result column="plot_type" jdbcType="VARCHAR" property="plotType" />
+    <result column="plot_type_id" jdbcType="INTEGER" property="plotTypeId" />
+    <result column="property_id" jdbcType="INTEGER" property="propertyId" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="extend1" jdbcType="VARCHAR" property="extend1" />
+    <result column="extend2" jdbcType="VARCHAR" property="extend2" />
+    <result column="extend3" jdbcType="VARCHAR" property="extend3" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs">
+    <result column="property_value" jdbcType="LONGVARCHAR" property="propertyValue" />
+    <result column="property_value_desc" jdbcType="LONGVARCHAR" property="propertyValueDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    property_value_id, plot_type, plot_type_id, property_id, del_flag, create_time, update_time, 
+    update_user_name, extend1, extend2, extend3
+  </sql>
+  <sql id="Blob_Column_List">
+    property_value, property_value_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from hq_property_value
+    where property_value_id = #{propertyValueId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hq_property_value
+    where property_value_id = #{propertyValueId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs">
+    insert into hq_property_value (property_value_id, plot_type, plot_type_id, 
+      property_id, del_flag, create_time, 
+      update_time, update_user_name, extend1, 
+      extend2, extend3, property_value, 
+      property_value_desc)
+    values (#{propertyValueId,jdbcType=INTEGER}, #{plotType,jdbcType=VARCHAR}, #{plotTypeId,jdbcType=INTEGER}, 
+      #{propertyId,jdbcType=INTEGER}, #{delFlag,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserName,jdbcType=VARCHAR}, #{extend1,jdbcType=VARCHAR}, 
+      #{extend2,jdbcType=VARCHAR}, #{extend3,jdbcType=VARCHAR}, #{propertyValue,jdbcType=LONGVARCHAR}, 
+      #{propertyValueDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs">
+    insert into hq_property_value
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="propertyValueId != null">
+        property_value_id,
+      </if>
+      <if test="plotType != null">
+        plot_type,
+      </if>
+      <if test="plotTypeId != null">
+        plot_type_id,
+      </if>
+      <if test="propertyId != null">
+        property_id,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="extend1 != null">
+        extend1,
+      </if>
+      <if test="extend2 != null">
+        extend2,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="propertyValue != null">
+        property_value,
+      </if>
+      <if test="propertyValueDesc != null">
+        property_value_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="propertyValueId != null">
+        #{propertyValueId,jdbcType=INTEGER},
+      </if>
+      <if test="plotType != null">
+        #{plotType,jdbcType=VARCHAR},
+      </if>
+      <if test="plotTypeId != null">
+        #{plotTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="propertyId != null">
+        #{propertyId,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyValue != null">
+        #{propertyValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="propertyValueDesc != null">
+        #{propertyValueDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs">
+    update hq_property_value
+    <set>
+      <if test="plotType != null">
+        plot_type = #{plotType,jdbcType=VARCHAR},
+      </if>
+      <if test="plotTypeId != null">
+        plot_type_id = #{plotTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="propertyId != null">
+        property_id = #{propertyId,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        extend1 = #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        extend2 = #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyValue != null">
+        property_value = #{propertyValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="propertyValueDesc != null">
+        property_value_desc = #{propertyValueDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where property_value_id = #{propertyValueId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs">
+    update hq_property_value
+    set plot_type = #{plotType,jdbcType=VARCHAR},
+      plot_type_id = #{plotTypeId,jdbcType=INTEGER},
+      property_id = #{propertyId,jdbcType=INTEGER},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR},
+      property_value = #{propertyValue,jdbcType=LONGVARCHAR},
+      property_value_desc = #{propertyValueDesc,jdbcType=LONGVARCHAR}
+    where property_value_id = #{propertyValueId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPropertyValue">
+    update hq_property_value
+    set plot_type = #{plotType,jdbcType=VARCHAR},
+      plot_type_id = #{plotTypeId,jdbcType=INTEGER},
+      property_id = #{propertyId,jdbcType=INTEGER},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR}
+    where property_value_id = #{propertyValueId,jdbcType=INTEGER}
+  </update>
+</mapper>

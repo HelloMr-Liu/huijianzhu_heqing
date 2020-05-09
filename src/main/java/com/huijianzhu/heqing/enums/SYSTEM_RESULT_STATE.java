@@ -19,8 +19,10 @@ public enum SYSTEM_RESULT_STATE {
     USER_LOGIN_PERMISSION(604,"用户没有权限访问该系统..."),
     PROPERTY_NAME_EXITE(605,"属性名称已经存在..."),
     PROPERTY_NOT_EXITE(606,"属性信息已经不存在..."),
-    CHILDREN_PROPERTY_EXITE(606,"子属性信息存在,当前根节点信息不能删除...");
+    CHILDREN_PROPERTY_EXITE(606,"子属性信息存在,当前根节点信息不能删除..."),
 
+    UPDATE_FAILURE(607,"修改失败..."),
+    DELETE_FAILURE(608,"删除失败...");
 
     public Integer KEY;    //反馈的状态码
     public String VALUE;     //反馈的描述信息
