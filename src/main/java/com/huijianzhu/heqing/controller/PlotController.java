@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
  * 刘梓江    2020/5/9  16:52            创建
  * =================================================================
  **/
-@RestController
 @CrossOrigin //支持跨域
-@RequestMapping("/statistics")
+@RestController
+@RequestMapping("/landSurvey")
 public class PlotController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class PlotController {
      * @param plotName   关于地块的名称
      * @return
      */
-    @PostMapping("/show/statistics")
+    @PostMapping("/show/landSurvey")
     public SystemResult getPlotContentListByName(String plotName){
         return plotService.getPlotContentListByName(plotName);
     }
@@ -42,7 +42,7 @@ public class PlotController {
      * @param plotId  某一个地块信息id
      * @return
      */
-    @PostMapping("/show/statistics/one")
+    @PostMapping("/show/landSurvey/one")
     public SystemResult getPlotDescById(String plotId){
         return plotService.getPlotDescById(plotId);
     }
@@ -52,7 +52,7 @@ public class PlotController {
      * @param definition 封装了地块信息的实体对象
      * @return
      */
-    @PostMapping("/update/statistics/add")
+    @PostMapping("/update/landSurvey/add")
     public SystemResult add(PlotOrHouseOrPipeAccpetDefinition definition) throws  Exception{
         return plotService.add(definition);
     }
@@ -63,7 +63,7 @@ public class PlotController {
      * @param definition 封装了地块修改信息及对应的,地块属性信息
      * @return
      */
-    @PostMapping("/update/statistics/update")
+    @PostMapping("/update/landSurvey/update")
     public SystemResult updateContent(PlotOrHouseOrPipeUpdateAccpetDefinition definition) throws  Exception{
         return plotService.updateContent(definition);
     }
@@ -75,7 +75,7 @@ public class PlotController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/update/statistics/delete")
+    @PostMapping("/update/landSurvey/delete")
     public SystemResult deleteById(Integer plotId)throws  Exception{
         return plotService.deleteById(plotId);
     }
