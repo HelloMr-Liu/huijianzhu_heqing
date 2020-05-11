@@ -25,7 +25,7 @@ public class PlotOrHouseOrPipeAccpetDefinition {
     private Integer plotId;     //用于指定那个地块的信息内容
 
     //内容类型为2的时候接收的值属性
-    private String houseType;   //房屋类型 1:居住   0：非居住
+    private String houseType;   //房屋类型 LIVE居住   NOLIVE非居住
 
 
 }

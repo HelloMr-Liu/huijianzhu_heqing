@@ -28,12 +28,12 @@ public class PipeController {
 
     /**
      * 获取所有与管道名称相关的管道信息默认是查询出所有
-     * @param PipeName   关于管道的名称
+     * @param pipeName   关于管道的名称
      * @return
      */
     @PostMapping("/show/removal")
-    public SystemResult getPipeContentListByName(String PipeName){
-        return PipeService.getPipeContentListByName(PipeName);
+    public SystemResult getPipeContentListByName(String pipeName){
+        return PipeService.getPipeContentListByName(pipeName);
     }
 
     /**
