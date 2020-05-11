@@ -5,7 +5,6 @@ import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
 import com.huijianzhu.heqing.service.PlotService;
 import com.huijianzhu.heqing.vo.SystemResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @CrossOrigin //支持跨域
 @RestController
-@RequestMapping("/landSurvey")
+@RequestMapping("/landsurvey")
 public class PlotController {
 
     @Autowired
@@ -32,7 +31,7 @@ public class PlotController {
      * @param plotName   关于地块的名称
      * @return
      */
-    @PostMapping("/show/landSurvey")
+    @PostMapping("/show/landsurvey")
     public SystemResult getPlotContentListByName(String plotName){
         return plotService.getPlotContentListByName(plotName);
     }
@@ -42,7 +41,7 @@ public class PlotController {
      * @param plotId  某一个地块信息id
      * @return
      */
-    @PostMapping("/show/landSurvey/one")
+    @PostMapping("/show/landsurvey/one")
     public SystemResult getPlotDescById(String plotId){
         return plotService.getPlotDescById(plotId);
     }
@@ -52,7 +51,7 @@ public class PlotController {
      * @param definition 封装了地块信息的实体对象
      * @return
      */
-    @PostMapping("/update/landSurvey/add")
+    @PostMapping("/update/landsurvey/add")
     public SystemResult add(PlotOrHouseOrPipeAccpetDefinition definition) throws  Exception{
         return plotService.add(definition);
     }
@@ -63,7 +62,7 @@ public class PlotController {
      * @param definition 封装了地块修改信息及对应的,地块属性信息
      * @return
      */
-    @PostMapping("/update/landSurvey/update")
+    @PostMapping("/update/landsurvey/update")
     public SystemResult updateContent(PlotOrHouseOrPipeUpdateAccpetDefinition definition) throws  Exception{
         return plotService.updateContent(definition);
     }
@@ -75,7 +74,7 @@ public class PlotController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/update/landSurvey/delete")
+    @PostMapping("/update/landsurvey/delete")
     public SystemResult deleteById(Integer plotId)throws  Exception{
         return plotService.deleteById(plotId);
     }

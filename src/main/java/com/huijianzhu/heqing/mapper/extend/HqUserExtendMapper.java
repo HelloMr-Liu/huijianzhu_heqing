@@ -22,7 +22,7 @@ public interface HqUserExtendMapper extends HqUserMapper {
      * @param delFlag       删除标志
      * @return
      */
-    @Select("SELECT * FROM `hq_user` where del_flag=#{delFlag} ")
+    @Select("SELECT * FROM `hq_user` where del_flag=#{delFlag} order by create_time desc ")
     List<HqUser> getUser(String delFlag);
 
     /**

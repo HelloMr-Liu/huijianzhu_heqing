@@ -25,15 +25,20 @@ public interface HqPlotHouseExtendMapper extends HqPlotHouseMapper {
      * @param delFalg   删除标志
      * @return
      */
-    @Select(" SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hph.* " +
-            " FROM hq_plot_house hph left join hq_plot hp  " +
-            " on hph.plot_id=hp.plot_id  " +
-            " where hph.del_flag=#{delFalg} " +
-            " <if test='houseName!=null'>" +
-            " and  house_name like concat('%',#{houseName},'%') " +
-            " </if>" +
-            " order by hp.create_time,hph.create_time desc  "
-            )
+    @Select({
+            "<script>",
+            " SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hph.* " ,
+            " FROM hq_plot_house hph left join hq_plot hp  " ,
+            " on hph.plot_id=hp.plot_id  " ,
+            " where hph.del_flag=#{delFalg} " ,
+            " <if test='houseName!=null ' >" ,
+            " and  house_name like concat('%',#{houseName},'%') " ,
+            " </if>" ,
+            " order by hp.create_time,hph.create_time desc  " ,
+            "</script>"
+            })
+
+
     List<PlotHouseDTO> getPlotHouseByName(String houseName,String delFalg);
 
 
@@ -48,8 +53,8 @@ public interface HqPlotHouseExtendMapper extends HqPlotHouseMapper {
             "<script>",
             " select * from hq_plot_house where del_flag=#{delFlag} and house_name=#{houseName} ",
             " <if test='houseId!=null'>",
-            " and house_id!=#{houseId} ",
-            "</if>",
+            "  and house_id!=#{houseId} ",
+            " </if>",
             "</script>"})
     HqPlotHouse getHouseByName(String houseName, String delFlag, Integer houseId);
 }

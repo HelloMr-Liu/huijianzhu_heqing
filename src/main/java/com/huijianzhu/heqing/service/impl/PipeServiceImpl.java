@@ -81,10 +81,12 @@ public class PipeServiceImpl implements PipeService {
                 if(plotPipeDTO==null){
                     //由于没有管道信息所以创建一个新的管道信息
                     plotPipeDTO=new PlotPipeDTO();
-                    plotPipeDTO.setPlotTd(e.getPlotTd());              //管道id
+                    plotPipeDTO.setPlotId(e.getPlotId());              //管道id
                     plotPipeDTO.setPlotName(e.getPlotName());          //管道名称
                     plotPipeDTO.setPlotCreateTime(e.getCreateTime());  //管道创建时间
                     plotPipeDTO.setPipeList(new ArrayList<>());        //管道搬迁信息集
+
+                    plotPipeMap.put(e.getPlotName(),plotPipeDTO);
                 }
                 //将动迁管道搬迁信息存储到每个地块对应的信息集中
                 plotPipeDTO.getPipeList().add(e);
@@ -93,7 +95,7 @@ public class PipeServiceImpl implements PipeService {
         //对plotPipeMap进行排序操作最新的管道信息最前面
         List<PlotPipeDTO> plotPipeList = plotPipeMap.entrySet().stream().map(e -> e.getValue()).sorted(
             (e1, e2) -> {
-                return (int) ((e2.getCreateTime().getTime() / 1000) - (e1.getCreateTime().getTime() / 1000));
+                return (int) ((e2.getPlotCreateTime().getTime() / 1000) - (e1.getPlotCreateTime().getTime() / 1000));
             }
         ).collect(Collectors.toList());
         //获取对应的PipeName所有管道搬迁信息
@@ -116,16 +118,17 @@ public class PipeServiceImpl implements PipeService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前管道名称已经存在,请添加其它管道名称");
             }
             //获取当前登录用户信息
-            //String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
 
             //创建一个管道信息
             HqPlotPipe newPipe=new HqPlotPipe();
             newPipe.setPipeName(definition.getContentName());               //管道名称
             newPipe.setPipePlotMark(definition.getPlotMark());              //地标信息
+            newPipe.setPlotId(definition.getPlotId());                     //指定某一个地块
             newPipe.setCreateTime(new Date());                              //创建时间
             newPipe.setUpdateTime(new Date());                              //修改时间
-            //newPlot.setUpdateUserName(loginUserContent.getUserName());    //最近一次谁操作了该记录
+            newPipe.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newPipe.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
             //持久化到数据库中
@@ -178,29 +181,30 @@ public class PipeServiceImpl implements PipeService {
             }
 
             //获取当前用户信息
-            //String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
 
             //修改管道信息
             HqPlotPipe updateHqplotPipe=new HqPlotPipe();
             updateHqplotPipe.setUpdateTime(new Date());                            //最近的一次修改时间
-            //updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
+            updateHqplotPipe.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
             updateHqplotPipe.setPipeId(definition.getContentId());                //修改指定的管道id
             updateHqplotPipe.setPipeName(definition.getContentName());            //修改新的管道名称
             updateHqplotPipe.setPipePlotMark(definition.getPlotMark());           //修改新的地标信息
 
             //将管道信息持久化到数据库中
             hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
-
-            //更新管道对应的属性值信息
-            propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+            if(definition.getPropertyValueList()!=null) {
+                //更新管道对应的属性值信息
+                propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+            }
             return SystemResult.ok("管道信息修改成功");
         }catch (Exception e){
             e.printStackTrace();
             throw e;
         }finally {
            //关闭原子锁
-            PipeLock.PIPE_UPDATE_LOCK.writeLock().lock();
+            PipeLock.PIPE_UPDATE_LOCK.writeLock().unlock();
         }
     }
 
@@ -223,9 +227,10 @@ public class PipeServiceImpl implements PipeService {
             UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
 
             HqPlotPipe deletePipe=new HqPlotPipe();
-            deletePipe.setPlotId(pipeId);
+            deletePipe.setPipeId(pipeId);
             deletePipe.setUpdateUserName(loginUserContent.getUserName());   //记录谁操作了本次记录信息
             deletePipe.setUpdateTime(new Date());                           //记录最近的一次修改时间
+            deletePipe.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);
 
             //持久化到数据库中
             hqPlotPipeExtendMapper.updateByPrimaryKeySelective(deletePipe);

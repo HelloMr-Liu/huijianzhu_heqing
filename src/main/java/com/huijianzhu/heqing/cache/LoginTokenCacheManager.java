@@ -53,7 +53,7 @@ public class LoginTokenCacheManager {
         );
         //遍历failureTokenList中标识对应loginTokenCahce中删除
         failureTokenList.forEach(
-    e->{loginTokenCahce.remove(e);}
+                e->{loginTokenCahce.remove(e);}
         );
 }
 
@@ -64,7 +64,7 @@ public class LoginTokenCacheManager {
      */
     public boolean checkValidLoginToken(String loginToken){
         //判断当前token是否还在缓存中
-        if(StrUtil.hasBlank(loginToken) ||!loginTokenCahce.contains(loginToken)){
+        if(StrUtil.hasBlank(loginToken) ||!loginTokenCahce.containsKey(loginToken)){
             //用户没有登录直接返回true
             return true;
         }

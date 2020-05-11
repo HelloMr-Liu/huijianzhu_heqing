@@ -51,6 +51,7 @@ public class PropertyValueServiceImpl implements PropertyValueService {
     @Transactional(rollbackFor = Exception.class)
     public SystemResult updatePropertyValue(List<AccpetPlotTypePropertyValue> propertyValues)throws  Exception{
 
+
         //创建map集合一个封装修改属性值一个封装新添加属性值
         HashMap<String,List<AccpetPlotTypePropertyValue>> updateMap=new HashMap<>();
         updateMap.put("ADD",new ArrayList<>());

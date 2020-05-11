@@ -8,6 +8,7 @@ import com.huijianzhu.heqing.cache.PermissionCacheManager;
 import com.huijianzhu.heqing.cache.UserAccountCacheManager;
 import com.huijianzhu.heqing.definition.UserAccpetDefinition;
 import com.huijianzhu.heqing.entity.HqUser;
+import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
 import com.huijianzhu.heqing.enums.LOGIN_STATE;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 import com.huijianzhu.heqing.enums.USER_TABLE_FIELD_STATE;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
         //开启分页
         PageHelper.startPage(startPage, row);
         //查询所有用户信息
-        List<HqUser> userList = hqUserExtendMapper.getUser(USER_TABLE_FIELD_STATE.DEL_FLAG_NO.VALUE);
+        List<HqUser> userList = hqUserExtendMapper.getUser(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         //将查询到用户信息封装到，分页对象中
         PageInfo<HqUser> userPage=new PageInfo<HqUser>(userList);
         return SystemResult.ok(userPage);
@@ -111,7 +112,7 @@ public class UserServiceImpl implements UserService {
             hqUser.setUpdateTime(new Date());   //修改时间
             hqUser.setUpdateUserName(currentLoginUser.getUserName()); //记录那个用户操作了该用户信息
             hqUser.setCreateTime(new Date());
-            hqUser.setDelFlag(USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);//默认是有有效用户
+            hqUser.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);//默认是有有效用户
 
             //将当前用户信息持久化到数据库中
             hqUserExtendMapper.insertSelective(hqUser);
@@ -215,11 +216,10 @@ public class UserServiceImpl implements UserService {
             String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
             UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
 
-
             //创建一个封装删除用户对象
             HqUser hqUser=new HqUser();
             hqUser.setUserId(userId);
-            hqUser.setDelFlag(USER_TABLE_FIELD_STATE.DEL_FLAG_OK.KEY);//标志当前用户已经失效
+            hqUser.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);//标志当前用户已经失效
             hqUser.setUpdateTime(new Date()); //修改时间
             hqUser.setUpdateUserName(currentLoginUser.getUserName());//谁操作了该账号
             hqUser.setUserType(Integer.parseInt(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY));//将用户类型降级为普通用户
@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
      */
     public SystemResult userJurisdiction(Integer userId){
         //获取当前用户信息
-        HqUser userBy = hqUserExtendMapper.getUserById(userId, USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);
+        HqUser userBy = hqUserExtendMapper.getUserById(userId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         if(userBy==null){
             //不是一个有效用户信息,所以获取不了对应的用户权限信息
             return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);

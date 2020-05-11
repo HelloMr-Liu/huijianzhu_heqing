@@ -1,6 +1,7 @@
 package com.huijianzhu.heqing.cache;
 
 import com.huijianzhu.heqing.entity.HqUser;
+import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
 import com.huijianzhu.heqing.enums.USER_TABLE_FIELD_STATE;
 import com.huijianzhu.heqing.mapper.extend.HqUserExtendMapper;
 import lombok.Data;
@@ -72,7 +73,7 @@ public class UserAccountCacheManager {
      */
     private void getValidUserAccount(){
         //获取有效账号集合
-        List<HqUser> validList = hqUserExtendMapper.getValidAccountAndUserId(USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);
+        List<HqUser> validList = hqUserExtendMapper.getValidAccountAndUserId(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         //遍历账号集合并刷新到容器中
         validList.forEach(
             e->{cache.put(e.getUserAccount(),e.getUserId().toString());}

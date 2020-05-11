@@ -39,7 +39,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         //获取当前登录本地登录标识
         String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-        if(!StrUtil.hasBlank(loginToken)&&request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")){
+        if(!StrUtil.hasBlank(loginToken)/*&&request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")*/){
             //判断当前登录标识在缓存中是否已经过期
             boolean isValid = loginTokenCacheManager.checkValidLoginToken(loginToken);
             if(isValid){
@@ -50,7 +50,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
 
             //判断当前用户是否是管理员
-            if(userContent.getUserType().equals(USER_TABLE_FIELD_STATE.USER_TYPE_MANAGER.KEY)){
+            if(userContent.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_MANAGER.KEY)){
                 //由于当前登录的用户是管理员所以当前系统请求都可以访问
                 return true;  //放行
             }else{

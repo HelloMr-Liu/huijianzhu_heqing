@@ -25,14 +25,17 @@ public interface HqPlotPipeExtendMapper extends HqPlotPipeMapper {
      * @param delFalg   删除标志
      * @return
      */
-    @Select("SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hpp.* " +
-            "FROM hq_plot_pipe hpp left join hq_plot hp " +
-            "on hpp.plot_id=hp.plot_id " +
-            "where hpp.del_flag=#{delFalg} " +
-            " <if test='pipeName!=null'>" +
-            " and  pipe_name like concat('%',#{pipeName},'%') " +
-            " </if>" +
-            "order by hp.create_time,hpp.pipe_name desc")
+    @Select({
+            "<script>",
+            "SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hpp.* " ,
+            "FROM hq_plot_pipe hpp left join hq_plot hp " ,
+            "on hpp.plot_id=hp.plot_id " ,
+            "where hpp.del_flag=#{delFalg} " ,
+            " <if test='pipeName!=null'>" ,
+            " and  pipe_name like concat('%',#{pipeName},'%') " ,
+            " </if>" ,
+            "order by hp.create_time,hpp.pipe_name desc" ,
+            "</script>"})
     List<PlotPipeDTO> getPlotPipeByName(String pipeName, String delFalg);
 
 

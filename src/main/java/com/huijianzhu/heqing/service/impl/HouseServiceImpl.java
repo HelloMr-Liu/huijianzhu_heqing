@@ -17,15 +17,13 @@ import com.huijianzhu.heqing.service.PropertyService;
 import com.huijianzhu.heqing.service.PropertyValueService;
 import com.huijianzhu.heqing.utils.CookieUtils;
 import com.huijianzhu.heqing.vo.SystemResult;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,7 +66,7 @@ public class HouseServiceImpl implements HouseService {
         houseName= StrUtil.hasBlank(houseName)?null:houseName;
 
         //创建一个map存储房屋对应的房屋搬迁信息
-        HashMap<String,PlotHouseDTO> plotHouseMap=new HashMap<>();
+        TreeMap<String,PlotHouseDTO> plotHouseMap=new TreeMap<>();
 
         //获取将房屋动迁信息集以房屋的方式分组
         List<PlotHouseDTO> plotHouseByName = hqPlotHouseExtendMapper.getPlotHouseByName(houseName, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
@@ -77,13 +75,15 @@ public class HouseServiceImpl implements HouseService {
                 //获取当前对应的房屋信息
                 PlotHouseDTO plotHouseDTO = plotHouseMap.get(e.getPlotName());
                 if(plotHouseDTO==null){
-                    //由于没有房屋信息所以创建一个新的房屋信息
+                    //由于没有房屋信息所以创建一个新的地块房屋信息
                     plotHouseDTO=new PlotHouseDTO();
-                    plotHouseDTO.setPlotTd(e.getPlotTd());              //房屋id
-                    plotHouseDTO.setPlotName(e.getPlotName());          //房屋名称
-                    plotHouseDTO.setPlotCreateTime(e.getCreateTime());  //房屋创建时间
-                    plotHouseDTO.setLiveList(new ArrayList<>());        //居住
-                    plotHouseDTO.setNotLiveList(new ArrayList<>());     //非居住
+                    plotHouseDTO.setPlotId(e.getPlotId());                  //房屋id
+                    plotHouseDTO.setPlotName(e.getPlotName());              //房屋名称
+                    plotHouseDTO.setPlotCreateTime(e.getPlotCreateTime());  //地块创建时间
+                    plotHouseDTO.setLiveList(new ArrayList<>());            //居住
+                    plotHouseDTO.setNotLiveList(new ArrayList<>());         //非居住
+
+                    plotHouseMap.put(e.getPlotName(),plotHouseDTO);     //将当前地块房屋搬迁信息存储到plotHouseMap中
                 }
                 //判断当前房屋时什么类型的
                 if(e.getHouseType().equals(HOUSE_TABLE_FILED_STATE.STATE.LIVE)){
@@ -95,12 +95,15 @@ public class HouseServiceImpl implements HouseService {
                 }
             }
         );
+
+
         //对plotHouseMap进行排序操作最新的房屋信息最前面
         List<PlotHouseDTO> plotHouseList = plotHouseMap.entrySet().stream().map(e -> e.getValue()).sorted(
             (e1, e2) -> {
-                return (int) ((e2.getCreateTime().getTime() / 1000) - (e1.getCreateTime().getTime() / 1000));
+                return (int) ((e2.getPlotCreateTime().getTime() / 1000) - (e1.getPlotCreateTime().getTime() / 1000));
             }
-        ).collect(Collectors.toList());
+        )
+        .collect(Collectors.toList());
         //获取对应的houseName所有房屋搬迁信息
         return SystemResult.ok(plotHouseList);
     }
@@ -121,17 +124,19 @@ public class HouseServiceImpl implements HouseService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前房屋名称已经存在,请添加其它房屋名称");
             }
             //获取当前登录用户信息
-            //String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
 
             //创建一个房屋信息
             HqPlotHouse newHosue=new HqPlotHouse();
-            newHosue.setHouseName(definition.getContentName());          //房屋名称
-            newHosue.setHousePlotMark(definition.getPlotMark());         //地标信息
-            newHosue.setCreateTime(new Date());                          //创建时间
-            newHosue.setUpdateTime(new Date());                          //修改时间
-            //newPlot.setUpdateUserName(loginUserContent.getUserName());  //最近一次谁操作了该记录
-            newHosue.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);//默认是有效信息
+            newHosue.setHouseName(definition.getContentName());             //房屋名称
+            newHosue.setHousePlotMark(definition.getPlotMark());            //地标信息
+            newHosue.setPlotId(definition.getPlotId());                     //指定某一个地块
+            newHosue.setHouseType(definition.getHouseType());               //指定房屋类型 LIVE(居住) NOLIVE(非居住)
+            newHosue.setCreateTime(new Date());                             //创建时间
+            newHosue.setUpdateTime(new Date());                             //修改时间
+            newHosue.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
+            newHosue.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);  //默认是有效信息
 
             //持久化到数据库中
             hqPlotHouseExtendMapper.insertSelective(newHosue);
@@ -183,13 +188,13 @@ public class HouseServiceImpl implements HouseService {
             }
 
             //获取当前用户信息
-            //String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
 
             //修改房屋信息
             HqPlotHouse updateHqplotHouse=new HqPlotHouse();
             updateHqplotHouse.setUpdateTime(new Date());                            //最近的一次修改时间
-            //updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
+            updateHqplotHouse.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
             updateHqplotHouse.setHouseId(definition.getContentId());                //修改指定的房屋id
             updateHqplotHouse.setHouseName(definition.getContentName());            //修改新的房屋名称
             updateHqplotHouse.setHousePlotMark(definition.getPlotMark());           //修改新的地标信息
@@ -197,15 +202,18 @@ public class HouseServiceImpl implements HouseService {
             //将房屋信息持久化到数据库中
             hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
 
-            //更新房屋对应的属性值信息
-            propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+            if(definition.getPropertyValueList()!=null) {
+                //更新房屋对应的属性值信息
+                propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+            }
+
             return SystemResult.ok("房屋信息修改成功");
         }catch (Exception e){
             e.printStackTrace();
             throw e;
         }finally {
            //关闭原子锁
-            HouseLock.HOUSE_UPDATE_LOCK.writeLock().lock();
+            HouseLock.HOUSE_UPDATE_LOCK.writeLock().unlock();
         }
     }
 
@@ -228,9 +236,10 @@ public class HouseServiceImpl implements HouseService {
             UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
 
             HqPlotHouse deleteHosue=new HqPlotHouse();
-            deleteHosue.setPlotId(houseId);
+            deleteHosue.setHouseId(houseId);
             deleteHosue.setUpdateUserName(loginUserContent.getUserName());   //记录谁操作了本次记录信息
             deleteHosue.setUpdateTime(new Date());                           //记录最近的一次修改时间
+            deleteHosue.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);
 
             //持久化到数据库中
             hqPlotHouseExtendMapper.updateByPrimaryKeySelective(deleteHosue);

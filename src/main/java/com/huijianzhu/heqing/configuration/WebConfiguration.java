@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.huijianzhu.heqing.Interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,12 +22,21 @@ import java.util.List;
 public class WebConfiguration implements WebMvcConfigurer {
 
 
+    /**
+     * 手动创建spring bean实例,将这个拦截器给spring管理,不然拦截器中自动注入失效
+     * @return
+     */
+    @Bean
+    public LoginInterceptor loginInterceptor(){
+        return new LoginInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //登录拦截的管理器
-//        InterceptorRegistration registration = registry.addInterceptor(new LoginInterceptor());
-//        registration.addPathPatterns("/**");                    //所有路径都被拦截
-//        registration.excludePathPatterns("/","/login","/login/**");       //添加不拦截路径
+        InterceptorRegistration registration = registry.addInterceptor(loginInterceptor());
+        registration.addPathPatterns("/**");                    //所有路径都被拦截
+        registration.excludePathPatterns("/","/login","/login/**","/druid/**");       //添加不拦截路径
     }
 
     //重写转换器

@@ -38,12 +38,12 @@ public class PipeController {
 
     /**
      * 获取指定id对应的管道信息
-     * @param PipeId  某一个管道信息id
+     * @param pipeId  某一个管道信息id
      * @return
      */
     @PostMapping("/show/removal/one")
-    public SystemResult getPipeDescById(String PipeId){
-        return PipeService.getPipeDescById(PipeId);
+    public SystemResult getPipeDescById(String pipeId){
+        return PipeService.getPipeDescById(pipeId);
     }
 
     /**
@@ -55,7 +55,6 @@ public class PipeController {
     public SystemResult add(PlotOrHouseOrPipeAccpetDefinition definition) throws  Exception{
         return PipeService.add(definition);
     }
-
 
     /**
      * 修改管道,地管道属性信息
@@ -69,12 +68,12 @@ public class PipeController {
 
     /**
      * 删除管道信息
-     * @param PipeId
+     * @param pipeId
      * @return
      * @throws Exception
      */
     @PostMapping("/update/removal/delete")
-    public SystemResult deleteById(Integer PipeId)throws  Exception{
-        return PipeService.deleteById(PipeId);
+    public SystemResult deleteById(Integer pipeId)throws  Exception{
+        return PipeService.deleteById(pipeId);
     }
 }

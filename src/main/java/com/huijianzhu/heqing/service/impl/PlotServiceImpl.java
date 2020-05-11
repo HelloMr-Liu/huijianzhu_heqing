@@ -5,14 +5,12 @@ import com.huijianzhu.heqing.cache.LoginTokenCacheManager;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
 import com.huijianzhu.heqing.entity.HqPlot;
-import com.huijianzhu.heqing.entity.HqPropertyValue;
 import com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs;
 import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
 import com.huijianzhu.heqing.enums.LOGIN_STATE;
 import com.huijianzhu.heqing.enums.PLOT_HOUSE_PIPE_TYPE;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 import com.huijianzhu.heqing.lock.PlotLock;
-import com.huijianzhu.heqing.lock.PropertyLock;
 import com.huijianzhu.heqing.mapper.extend.HqPlotExtendMapper;
 import com.huijianzhu.heqing.mapper.extend.HqPropertyValueExtendMapper;
 import com.huijianzhu.heqing.pojo.*;
@@ -24,15 +22,10 @@ import com.huijianzhu.heqing.vo.SystemResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * ================================================================
@@ -93,17 +86,17 @@ public class PlotServiceImpl implements PlotService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前地块名称已经存在,请添加其他地块名称");
             }
             //获取当前登录用户信息
-            //String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
 
             //创建一个地块信息
             HqPlot newPlot=new HqPlot();
-            newPlot.setPlotName(definition.getContentName());           //地块名称
-            newPlot.setPlotMark(definition.getPlotMark());              //地标信息
-            newPlot.setCreateTime(new Date());                          //创建时间
-            newPlot.setUpdateTime(new Date());                          //修改时间
-            //newPlot.setUpdateUserName(loginUserContent.getUserName());  //最近一次谁操作了该记录
-            newPlot.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);//默认是有效信息
+            newPlot.setPlotName(definition.getContentName());               //地块名称
+            newPlot.setPlotMark(definition.getPlotMark());                  //地标信息
+            newPlot.setCreateTime(new Date());                              //创建时间
+            newPlot.setUpdateTime(new Date());                              //修改时间
+            newPlot.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
+            newPlot.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
             //持久化到数据库中
             hqPlotExtendMapper.insertSelective(newPlot);
@@ -156,13 +149,13 @@ public class PlotServiceImpl implements PlotService {
             }
 
             //获取当前用户信息
-            //String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            //UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
 
             //修改地块信息
             HqPlot updateHqplot=new HqPlot();
             updateHqplot.setUpdateTime(new Date());                     //最近的一次修改时间
-            //updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
+            updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
             updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
             updateHqplot.setPlotName(definition.getContentName());      //修改新的地块名称
             updateHqplot.setPlotMark(definition.getPlotMark());         //修改新的地标信息
@@ -170,15 +163,18 @@ public class PlotServiceImpl implements PlotService {
             //将地块信息持久化到数据库中
             hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
 
-            //更新地块对应的属性值信息
-            propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+            if(definition.getPropertyValueList()!=null){
+                //更新地块对应的属性值信息
+                propertyValueService.updatePropertyValue(definition.getPropertyValueList());
+
+            }
             return SystemResult.ok("地块信息修改成功");
         }catch (Exception e){
             e.printStackTrace();
             throw e;
         }finally {
            //关闭原子锁
-            PlotLock.PLOT_UPDATE_LOCK.writeLock().lock();
+            PlotLock.PLOT_UPDATE_LOCK.writeLock().unlock();
         }
     }
 
@@ -211,6 +207,7 @@ public class PlotServiceImpl implements PlotService {
             deletePlot.setPlotId(plotId);
             deletePlot.setUpdateUserName(loginUserContent.getUserName());   //记录谁操作了本次记录信息
             deletePlot.setUpdateTime(new Date());                           //记录最近的一次修改时间
+            deletePlot.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);
 
             //持久化到数据库中
             hqPlotExtendMapper.updateByPrimaryKeySelective(deletePlot);

@@ -5,6 +5,7 @@ import com.huijianzhu.heqing.cache.LoginTokenCacheManager;
 import com.huijianzhu.heqing.cache.PermissionCacheManager;
 import com.huijianzhu.heqing.cache.UserAccountCacheManager;
 import com.huijianzhu.heqing.entity.HqUser;
+import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
 import com.huijianzhu.heqing.enums.LOGIN_STATE;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 import com.huijianzhu.heqing.enums.USER_TABLE_FIELD_STATE;
@@ -67,14 +68,14 @@ public class LoginServiceImpl implements LoginService {
         //对用输入的密码加密与数据库中的内容比较
         String encryption= MD5Utils.md5(password+"heqing");
         //判断用户名或密码是否在数据库中存在
-        HqUser currentUser = hqUserExtendMapper.getUserByAccountAndPassword(userAccount, encryption, USER_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY);
+        HqUser currentUser = hqUserExtendMapper.getUserByAccountAndPassword(userAccount, encryption, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         if(currentUser==null){
             //当前用户信息在数据库中不存在所以无法登录
             return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.VALUE);
         }
 
         //判断当前用户权限信息
-        if(currentUser.getUserType().equals(USER_TABLE_FIELD_STATE.USER_TYPE_USER)){
+        if(currentUser.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY)){
             //判断普通用户是否有对应的模块权限id信息
             if(StrUtil.hasBlank(currentUser.getPermissionsId())){
                 //标识当前用户密码都正确但是没有任何权限所以不能访问该该系统
@@ -97,7 +98,7 @@ public class LoginServiceImpl implements LoginService {
 
         //创建一个模块id集合存储当前登录用户对应的模块id信息
         List<String> modelIst=new ArrayList<>();
-        if(StrUtil.hasBlank(currentUser.getPermissionsId())){
+        if(!StrUtil.hasBlank(currentUser.getPermissionsId())){
             //将用户模块id信息分割成一个数组存储到modelIst中
             modelIst= new ArrayList<>(Arrays.asList(currentUser.getPermissionsId().split(",")));
         }
