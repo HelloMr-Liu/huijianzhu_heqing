@@ -2,7 +2,10 @@ package com.huijianzhu.heqing.service;
 
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
+import com.huijianzhu.heqing.entity.HqPlot;
 import com.huijianzhu.heqing.vo.SystemResult;
+
+import java.util.List;
 
 /**
  * ================================================================
@@ -51,6 +54,14 @@ public interface PlotService {
      * @throws Exception
      */
     public SystemResult deleteById(Integer plotId)throws  Exception;
+
+
+    /**
+     * 批量插入地块信息
+     * @param plots 地块信息集
+     * @return
+     */
+    public SystemResult batchInsertPlots(List<HqPlot> plots);
 
 
 

@@ -3,6 +3,8 @@ package com.huijianzhu.heqing.mapper.extend;
 import com.huijianzhu.heqing.entity.HqPlot;
 import com.huijianzhu.heqing.mapper.HqPlotMapper;
 import com.huijianzhu.heqing.pojo.HouseOrPipeContent;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -60,6 +62,23 @@ public interface HqPlotExtendMapper extends HqPlotMapper {
             "select plot_id plotId, pipe_id typeId ,if( pipe_id >0,-1, -1) currentType from  hq_plot_pipe where del_flag=#{delFlag} and plot_id=#{plotId} ")
     List<HouseOrPipeContent> getHouseOrPipeContentByPlotId(Integer plotId,String delFlag);
 
-
+    /**
+     * 批量插入地块信息
+     * @param plots
+     */
+    @Insert
+            ({
+                "<script>",
+                    "insert into hq_plot ( plot_name, create_time, " ,
+                    "update_time,update_user_name,del_flag)" ,
+                    " values ",
+                    "<foreach collection='plots' item='item' index='index' separator=','>",
+                    "(" ,
+                    " #{item.plotName}, #{item.createTime},#{item.updateTime},#{item.updateUserName},#{item.delFlag}" ,
+                    ")",
+                    "</foreach>",
+                "</script>"
+            })
+    void batchInsertPlots(@Param("plots") List<HqPlot> plots);
 
 }

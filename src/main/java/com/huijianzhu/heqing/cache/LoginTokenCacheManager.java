@@ -5,6 +5,7 @@ import com.huijianzhu.heqing.entity.HqUser;
 import com.huijianzhu.heqing.mapper.extend.HqUserExtendMapper;
 import com.huijianzhu.heqing.pojo.UserLoginContent;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 @Component
 @Data
+@Slf4j
 public class LoginTokenCacheManager {
 
 
@@ -38,6 +40,8 @@ public class LoginTokenCacheManager {
      */
     @Scheduled(cron = "59 59 23 ? * *")
     public void timingManagerCache(){
+
+
         //创建一个集合用户存储本次失效的登录标识Token
         List<String> failureTokenList=new ArrayList<>();
 
@@ -51,6 +55,7 @@ public class LoginTokenCacheManager {
                 }
             }
         );
+        log.info("===========对一些失效的登录标识给清除=====失效的有"+failureTokenList.size());
         //遍历failureTokenList中标识对应loginTokenCahce中删除
         failureTokenList.forEach(
                 e->{loginTokenCahce.remove(e);}

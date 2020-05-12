@@ -1,0 +1,158 @@
+package com.huijianzhu.heqing.service.impl;
+
+import cn.hutool.core.util.StrUtil;
+import com.huijianzhu.heqing.cache.LoginTokenCacheManager;
+import com.huijianzhu.heqing.entity.HqNoLiveAccount;
+import com.huijianzhu.heqing.entity.HqPlot;
+import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
+import com.huijianzhu.heqing.enums.LOGIN_STATE;
+import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
+import com.huijianzhu.heqing.mapper.extend.HqNoLiveAccountExtendMapper;
+import com.huijianzhu.heqing.pojo.UserLoginContent;
+import com.huijianzhu.heqing.service.NoLiveService;
+import com.huijianzhu.heqing.service.PlotService;
+import com.huijianzhu.heqing.utils.CookieUtils;
+import com.huijianzhu.heqing.vo.SystemResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * ================================================================
+ * 说明：非居住付款台账业务接口实现
+ * <p>
+ * 作者          时间                    注释
+ * 刘梓江    2020/5/12  16:46            创建
+ * =================================================================
+ **/
+@Service
+public class NoLiveServiceImpl implements NoLiveService {
+
+
+    @Autowired
+    private HttpServletRequest request;
+
+    /**
+     * 注入：地块信息业务接口
+     */
+    @Autowired
+    private PlotService plotService;
+
+
+    /**
+     * 注入：登录标识信息缓存管理
+     */
+    @Autowired
+    private LoginTokenCacheManager tokenCacheManager;
+
+    /**
+     * 注入：操作非居住台账信息数据mapper数据扩展接口
+     */
+    @Autowired
+    private HqNoLiveAccountExtendMapper hqNoLiveAccountExtendMapper;
+
+
+    /**
+     * 批量导入非居住付款台账信息
+     * @param noLiveList
+     * @return
+     */
+    public SystemResult batchAdd(List<HqNoLiveAccount> noLiveList){
+
+        //获取当前客户端信息
+        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        UserLoginContent user = tokenCacheManager.getCacheUserByLoginToken(cookieValue);
+
+
+        //获取最新的地块信息集
+        SystemResult plotContentListByName = plotService.getPlotContentListByName(null);
+        List<HqPlot> plots=(List<HqPlot>)plotContentListByName.getResult();
+        //转换成map
+        Map<String, Integer> collect = plots.stream().collect(Collectors.toMap(HqPlot::getPlotName, HqPlot::getPlotId, (test1, test2) -> test1));
+        if(collect==null||collect.size()<1){
+            return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"当前对应的地块信息没有,所有仔细查看你选择的地块信息");
+        }
+
+        //获取所有的非居住付款台账信息集
+        List<HqNoLiveAccount> currNoLiveList=(List<HqNoLiveAccount>)findAll().getResult();
+        Map<String, HqNoLiveAccount> map = currNoLiveList.stream().collect(Collectors.toMap(HqNoLiveAccount::getPlotName, Function.identity(),(test1, test2) -> test1 ));
+
+
+        //创建2个集合一个存储批量插入的一个存储批量修改的
+        List<HqNoLiveAccount> batchAddList=new ArrayList<>();
+        List<HqNoLiveAccount> batchUdpateList=new ArrayList<>();
+
+        for(int index=0;index<noLiveList.size();index++){
+            HqNoLiveAccount account = noLiveList.get(index);
+            //判断当前的房屋动迁对有的地块信息是否存在
+            if(!collect.containsKey(account.getPlotName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的地块信息:"+account.getPlotName()+"不存在");
+            }
+
+
+            //判断当前新添加的地块对应的付款台账内容原来是否存在
+            if(map!=null&&map.size()>0&&map.containsKey(account.getPlotName())){
+                HqNoLiveAccount hqNoLiveAccount = map.get(account.getPlotName());
+                //代表本次是修改操作
+                account.setNoLiveId(hqNoLiveAccount.getNoLiveId());
+                account.setPlotId(hqNoLiveAccount.getPlotId());
+                account.setUpdateUserName(user.getUserName());
+                account.setUpdateTime(new Date());
+
+                //批量修改中
+                batchUdpateList.add(account);
+
+            }else{
+                //本次是添加操作
+                account.setUpdateTime(new Date());
+                account.setUpdateUserName(user.getUserName());
+                account.setPlotId(collect.get(account.getPlotName()));
+
+                //批量增加中
+                batchAddList.add(account);
+            }
+        }
+        if(batchAddList!=null&&batchAddList.size()>0){
+            //进行批量添加操作
+            hqNoLiveAccountExtendMapper.batchAdd(batchAddList);
+        }
+
+        if(batchUdpateList!=null&&batchUdpateList.size()>0){
+            //进行批量修改操作
+            hqNoLiveAccountExtendMapper.batchUpdate(batchUdpateList);
+        }
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,"本次非居住付款台账导入成功");
+    }
+
+    /**
+     * 获取所有非居住付款台账信息集合
+     * @return
+     */
+    public SystemResult findAll(){
+
+        //获取所有的台账信息
+        List<HqNoLiveAccount> allList = hqNoLiveAccountExtendMapper.findAll(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqNoLiveAccount> collect = allList.stream().filter(
+            e -> {
+                if (StrUtil.hasBlank(e.getTotalDealMoney())) {
+                    //过滤掉
+                    return false;
+                }
+                return true;
+            }
+        )
+        .sorted(
+                (e1,e2)->{return (int)((e2.getUpdateTime().getTime())/1000-(e1.getUpdateTime().getTime()/1000));}
+        )
+        .collect(Collectors.toList());
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,collect);
+    }
+
+}

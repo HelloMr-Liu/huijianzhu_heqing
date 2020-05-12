@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -220,4 +221,48 @@ public class PlotServiceImpl implements PlotService {
             PlotLock.PLOT_UPDATE_LOCK.writeLock().unlock();
         }
     }
+
+    /**
+     * 批量插入地块信息
+     * @param plots 地块信息集
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public SystemResult batchInsertPlots(List<HqPlot> plots){
+        //获取当前用户信息
+        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+
+        //创建一个map用于判断本次存储地块编号名称是否有相同的
+        HashMap<String,String> plotNameMap=new HashMap<>();
+
+        //补充当前地块其余信息
+        for(int index=0;index<plots.size();index++){
+            HqPlot e=plots.get(index);
+
+            //判断当前地块编号是否在plotNameMap存在
+            if(plotNameMap.containsKey(e.getPlotName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"当前地块编号"+e.getPlotName()+"有重复请仔细查看...");
+            }
+            plotNameMap.put(e.getPlotName(),e.getPlotName());
+
+            //判断当前地块名称是否存在
+            HqPlot plot = hqPlotExtendMapper.getPlotByName(e.getPlotName(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY, null);
+            if(plot!=null){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"当前地块编号"+e.getPlotName()+"已存在系统中请仔细查看...");
+            }
+            e.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);     //默认未删除
+            e.setCreateTime(new Date());                                //创建时间
+            e.setUpdateUserName(user.getUserName());                    //谁操作了该信息
+            e.setUpdateTime(new Date());                                //最近的一次操作时间
+        }
+
+        //判断当前是否有新的地块信息存在
+        if(plots!=null&&plots.size()>0){
+            //进行地块信息集批量导入
+            hqPlotExtendMapper.batchInsertPlots(plots);
+        }
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,"地块信息导入成功...");
+    }
+
 }

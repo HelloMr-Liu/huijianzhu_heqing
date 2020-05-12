@@ -22,7 +22,9 @@ public enum SYSTEM_RESULT_STATE {
     CHILDREN_PROPERTY_EXITE(606,"子属性信息存在,当前根节点信息不能删除..."),
 
     UPDATE_FAILURE(607,"修改失败..."),
-    DELETE_FAILURE(608,"删除失败...");
+    DELETE_FAILURE(608,"删除失败..."),
+    ADD_FAILURE(609,"添加失败..."),
+    PRINT_FAILURE(611,"打印失败...");
 
     public Integer KEY;         //反馈的状态码
     public String VALUE;        //反馈的描述信息

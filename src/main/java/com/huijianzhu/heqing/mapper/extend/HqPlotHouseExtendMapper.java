@@ -1,9 +1,12 @@
 package com.huijianzhu.heqing.mapper.extend;
 
+import com.huijianzhu.heqing.definition.HqPlotHouseDefinition;
 import com.huijianzhu.heqing.entity.HqPlot;
 import com.huijianzhu.heqing.entity.HqPlotHouse;
 import com.huijianzhu.heqing.mapper.HqPlotHouseMapper;
 import com.huijianzhu.heqing.pojo.PlotHouseDTO;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -57,4 +60,24 @@ public interface HqPlotHouseExtendMapper extends HqPlotHouseMapper {
             " </if>",
             "</script>"})
     HqPlotHouse getHouseByName(String houseName, String delFlag, Integer houseId);
+
+
+
+    /**
+     * 批量插入房屋动迁信息
+     * @param houses
+     */
+    @Insert
+            ({
+                "<script>",
+                    "insert into hq_plot_house (house_name, house_type,plot_id,create_time,update_time,update_user_name,del_flag)" ,
+                    " values ",
+                    "<foreach collection='houses' item='item' index='index' separator=','>",
+                    "(" ,
+                    " #{item.houseName}, #{item.houseType},#{item.plotId},#{item.createTime},#{item.updateTime},#{item.updateUserName},#{item.delFlag}" ,
+                    ")",
+                    "</foreach>",
+                "</script>"
+            })
+    void batchInsertHouses(@Param("houses") List<HqPlotHouseDefinition> houses);
 }

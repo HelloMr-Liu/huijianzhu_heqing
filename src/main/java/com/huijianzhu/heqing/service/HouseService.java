@@ -1,8 +1,13 @@
 package com.huijianzhu.heqing.service;
 
+import com.huijianzhu.heqing.definition.HqPlotHouseDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
+import com.huijianzhu.heqing.entity.HqPlot;
+import com.huijianzhu.heqing.entity.HqPlotHouse;
 import com.huijianzhu.heqing.vo.SystemResult;
+
+import java.util.List;
 
 /**
  * ================================================================
@@ -53,6 +58,12 @@ public interface HouseService {
     public SystemResult deleteById(Integer houseId)throws  Exception;
 
 
+    /**
+     * 批量插入房屋动迁信息
+     * @param houses 房屋动迁信息集
+     * @return
+     */
+    public SystemResult batchInsertHouses(List<HqPlotHouseDefinition> houses);
 
 
 }

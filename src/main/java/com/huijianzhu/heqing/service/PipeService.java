@@ -1,8 +1,13 @@
 package com.huijianzhu.heqing.service;
 
+import com.huijianzhu.heqing.definition.HqPlotPipeDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
+import com.huijianzhu.heqing.entity.HqPlotHouse;
+import com.huijianzhu.heqing.entity.HqPlotPipe;
 import com.huijianzhu.heqing.vo.SystemResult;
+
+import java.util.List;
 
 /**
  * ================================================================
@@ -52,5 +57,12 @@ public interface PipeService {
      */
     public SystemResult deleteById(Integer pipeId)throws  Exception;
 
+
+    /**
+     * 批量插入管道搬迁信息
+     * @param pipes  管道搬迁信息集
+     * @return
+     */
+    public SystemResult batchInsertPipes(List<HqPlotPipeDefinition> pipes);
 
 }

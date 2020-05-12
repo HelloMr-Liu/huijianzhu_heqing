@@ -1,10 +1,14 @@
 package com.huijianzhu.heqing.mapper.extend;
 
+import com.huijianzhu.heqing.definition.HqPlotPipeDefinition;
 import com.huijianzhu.heqing.entity.HqPlot;
+import com.huijianzhu.heqing.entity.HqPlotHouse;
 import com.huijianzhu.heqing.entity.HqPlotPipe;
 import com.huijianzhu.heqing.mapper.HqPlotPipeMapper;
 import com.huijianzhu.heqing.pojo.PlotHouseDTO;
 import com.huijianzhu.heqing.pojo.PlotPipeDTO;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -54,6 +58,26 @@ public interface HqPlotPipeExtendMapper extends HqPlotPipeMapper {
             "</if>",
             "</script>"})
     HqPlotPipe getPipeByName(String pipeName, String delFlag, Integer pipeId);
+
+
+    /**
+     * 批量插入管道搬迁信息
+     * @param pipes
+     */
+    @Insert
+            ({
+                "<script>",
+                "insert into hq_plot_pipe ( pipe_name,plot_id,create_time," ,
+                "update_time,update_user_name,del_flag)" ,
+                " values ",
+                "<foreach collection='pipes' item='item' index='index' separator=','>",
+                "(" ,
+                " #{item.pipeName},#{item.plotId},#{item.createTime},#{item.updateTime},#{item.updateUserName},#{item.delFlag}" ,
+                ")",
+                "</foreach>",
+                "</script>"
+            })
+    void batchInsertPipes(@Param("pipes") List<HqPlotPipeDefinition> pipes);
 
 
 }

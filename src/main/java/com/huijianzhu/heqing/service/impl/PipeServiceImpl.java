@@ -2,8 +2,12 @@ package com.huijianzhu.heqing.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.huijianzhu.heqing.cache.LoginTokenCacheManager;
+import com.huijianzhu.heqing.definition.HqPlotHouseDefinition;
+import com.huijianzhu.heqing.definition.HqPlotPipeDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
+import com.huijianzhu.heqing.entity.HqPlot;
+import com.huijianzhu.heqing.entity.HqPlotHouse;
 import com.huijianzhu.heqing.entity.HqPlotPipe;
 import com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs;
 import com.huijianzhu.heqing.enums.*;
@@ -15,6 +19,7 @@ import com.huijianzhu.heqing.pojo.PlotPipeDTO;
 import com.huijianzhu.heqing.pojo.PropertyTree;
 import com.huijianzhu.heqing.pojo.UserLoginContent;
 import com.huijianzhu.heqing.service.PipeService;
+import com.huijianzhu.heqing.service.PlotService;
 import com.huijianzhu.heqing.service.PropertyService;
 import com.huijianzhu.heqing.service.PropertyValueService;
 import com.huijianzhu.heqing.utils.CookieUtils;
@@ -24,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +42,10 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class PipeServiceImpl implements PipeService {
+
+
+    @Autowired
+    private PlotService plotService;                                    //注入地块信息业务接口
 
 
     @Autowired
@@ -242,5 +248,65 @@ public class PipeServiceImpl implements PipeService {
             //解锁操作
             PipeLock.PIPE_UPDATE_LOCK.writeLock().unlock();
         }
+    }
+
+
+    /**
+     * 批量插入管道搬迁信息
+     * @param pipes  管道搬迁信息集
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public SystemResult batchInsertPipes(List<HqPlotPipeDefinition> pipes){
+
+        //获取最新的地块信息集
+        SystemResult plotContentListByName = plotService.getPlotContentListByName(null);
+        List<HqPlot> plots=(List<HqPlot>)plotContentListByName.getResult();
+        //转换成map
+        Map<String, Integer> collect = plots.stream().collect(Collectors.toMap(HqPlot::getPlotName, HqPlot::getPlotId, (test1, test2) -> test1));
+        if(collect==null||collect.size()<1){
+            return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"当前对应的地块信息没有,所有仔细查看你选择的地块信息");
+        }
+
+        //创建一个map用于判断本次存储管道名称是否有相同的
+        HashMap<String,String> pipeNameMap=new HashMap<>();
+
+
+        //获取当前用户信息
+        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+
+
+        //对pipes进行属性内容扩展添加
+        for(int index=0;index<pipes.size();index++) {
+            HqPlotPipeDefinition pipe = pipes.get(index);
+
+            //判断当前的房屋动迁对有的地块信息是否存在
+            if(!collect.containsKey(pipe.getPlotName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的地块信息:"+pipe.getPlotName()+"不存在");
+            }
+
+            HqPlotPipe currentPipe  = hqPlotPipeExtendMapper.getPipeByName(pipe.getPipeName(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY, null);
+            //判断动迁名称是否在pipeNameMap中存在
+            if(pipeNameMap.containsKey(pipe.getPipeName())||currentPipe!=null||StrUtil.hasBlank(pipe.getPipeName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的管道搬迁名称:"+pipe.getPipeName()+"重复/异常");
+            }
+
+            pipeNameMap.put(pipe.getPipeName(),pipe.getPipeName());
+
+            pipe.setPlotId(collect.get(pipe.getPlotName()));
+            pipe.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+            pipe.setCreateTime(new Date());
+            pipe.setUpdateTime(new Date());
+            pipe.setUpdateUserName(user.getUserName());
+        }
+
+        //判断当前是否有新的信息存在
+        if(pipes!=null&&plots.size()>0){
+            //并批量插入持久化到数据库中
+            hqPlotPipeExtendMapper.batchInsertPipes(pipes);
+        }
+
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,"管道信息导入成功");
     }
 }

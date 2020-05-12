@@ -2,6 +2,7 @@ package com.huijianzhu.heqing.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.huijianzhu.heqing.cache.LoginTokenCacheManager;
+import com.huijianzhu.heqing.definition.HqPlotHouseDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
 import com.huijianzhu.heqing.entity.HqPlot;
@@ -13,6 +14,7 @@ import com.huijianzhu.heqing.mapper.extend.HqPlotHouseExtendMapper;
 import com.huijianzhu.heqing.mapper.extend.HqPropertyValueExtendMapper;
 import com.huijianzhu.heqing.pojo.*;
 import com.huijianzhu.heqing.service.HouseService;
+import com.huijianzhu.heqing.service.PlotService;
 import com.huijianzhu.heqing.service.PropertyService;
 import com.huijianzhu.heqing.service.PropertyValueService;
 import com.huijianzhu.heqing.utils.CookieUtils;
@@ -21,9 +23,11 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +53,9 @@ public class HouseServiceImpl implements HouseService {
 
     @Autowired
     private HqPropertyValueExtendMapper hqPropertyValueExtendMapper;    //操作属性值信息表mapper接口
+
+    @Autowired
+    private PlotService plotService;                                    //注入地块信息业务接口
 
     @Autowired
     private PropertyService propertyService;                            //注入属性业务接口
@@ -252,4 +259,73 @@ public class HouseServiceImpl implements HouseService {
             HouseLock.HOUSE_UPDATE_LOCK.writeLock().unlock();
         }
     }
+
+
+    /**
+     * 批量插入房屋动迁信息
+     * @param houses 房屋动迁信息集
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public SystemResult batchInsertHouses(List<HqPlotHouseDefinition> houses){
+
+        //获取最新的地块信息集
+        SystemResult plotContentListByName = plotService.getPlotContentListByName(null);
+        List<HqPlot> plots=(List<HqPlot>)plotContentListByName.getResult();
+        //转换成map
+        Map<String, Integer> collect = plots.stream().collect(Collectors.toMap(HqPlot::getPlotName, HqPlot::getPlotId, (test1, test2) -> test1));
+        if(collect==null||collect.size()<1){
+            return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"当前对应的地块信息没有,所有仔细查看你选择的地块信息");
+        }
+
+        //创建一个map用于判断本次存储房屋动名称是否有相同的
+        HashMap<String,String> houseNameMap=new HashMap<>();
+
+        //获取当前用户信息
+        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+
+        //对houses进行属性内容扩展添加
+        for(int index=0;index<houses.size();index++){
+            HqPlotHouseDefinition house=houses.get(index);
+
+            //判断当前的房屋动迁对有的地块信息是否存在
+            if(!collect.containsKey(house.getPlotName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的地块信息:"+house.getPlotName()+"不存在");
+            }
+
+            HqPlotHouse currentHouse = hqPlotHouseExtendMapper.getHouseByName(house.getHouseName(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY, null);
+            //判断动迁名称是否在houseNameMap中存在
+            if(houseNameMap.containsKey(house.getHouseName())||currentHouse!=null||StrUtil.hasBlank(house.getHouseName())){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的房屋动迁名称:"+house.getHouseName()+"重复/异常");
+            }
+
+            //房屋房屋居住类型是否合法
+            if( !house.getHouseType().equals(HOUSE_TABLE_FILED_STATE.STATE.LIVE)&&
+                !house.getHouseType().equals(HOUSE_TABLE_FILED_STATE.STATE.NOLIVE)
+            ){
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的房屋动迁类型"+house.getHouseType()+"名称异常");
+            }
+
+
+            //将动迁新添加的房屋名称存储到houseNameMap
+            houseNameMap.put(house.getHouseName(),house.getHouseName());
+
+            house.setPlotId(collect.get(house.getPlotName()));
+            house.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+            house.setCreateTime(new Date());
+            house.setUpdateTime(new Date());
+            house.setUpdateUserName(user.getUserName());
+        }
+
+        //判断当前是否有新的信息存在
+        if(houses!=null&&plots.size()>0){
+            //并批量插入持久化到数据库中
+            hqPlotHouseExtendMapper.batchInsertHouses(houses);
+
+        }
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,"房屋动迁信息导入成功");
+    }
+
+
 }
