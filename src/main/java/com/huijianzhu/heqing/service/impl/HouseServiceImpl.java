@@ -93,10 +93,10 @@ public class HouseServiceImpl implements HouseService {
                     plotHouseMap.put(e.getPlotName(),plotHouseDTO);     //将当前地块房屋搬迁信息存储到plotHouseMap中
                 }
                 //判断当前房屋时什么类型的
-                if(e.getHouseType().equals(HOUSE_TABLE_FILED_STATE.STATE.LIVE)){
+                if(HOUSE_TABLE_FILED_STATE.STATE.LIVE.equals(e.getHouseType())){
                     //将当前房屋动迁存储到居住集中
                     plotHouseDTO.getLiveList().add(e);
-                }else{
+                }else if(HOUSE_TABLE_FILED_STATE.STATE.NOLIVE.equals(e.getHouseType())){
                     //将当前房屋动迁存储到非居住集中
                     plotHouseDTO.getNotLiveList().add(e);
                 }

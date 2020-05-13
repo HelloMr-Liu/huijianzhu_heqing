@@ -88,17 +88,6 @@ public class PlotController {
 
 
 
-    /**
-     * 添加地块信息
-     * @param definition 封装了地块信息的实体对象
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/update/landsurvey/add")
-    public SystemResult add(PlotOrHouseOrPipeAccpetDefinition definition) throws  Exception{
-        return plotService.add(definition);
-    }
-
 
     /**
      * 导入地块模板信息
@@ -159,6 +148,19 @@ public class PlotController {
             }
         }
         return plotService.batchInsertPlots(plots);
+    }
+
+
+
+    /**
+     * 添加地块信息
+     * @param definition 封装了地块信息的实体对象
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/update/landsurvey/add")
+    public SystemResult add(PlotOrHouseOrPipeAccpetDefinition definition) throws  Exception{
+        return plotService.add(definition);
     }
 
 

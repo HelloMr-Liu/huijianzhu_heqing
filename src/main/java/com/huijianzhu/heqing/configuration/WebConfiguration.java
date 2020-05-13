@@ -36,7 +36,7 @@ public class WebConfiguration implements WebMvcConfigurer {
         //登录拦截的管理器
         InterceptorRegistration registration = registry.addInterceptor(loginInterceptor());
         registration.addPathPatterns("/**");                    //所有路径都被拦截
-        registration.excludePathPatterns("/","/login/**","/druid/**");       //添加不拦截路径
+        registration.excludePathPatterns("/","/login/**","/druid/**","/file/**");       //添加不拦截路径
     }
 
     //重写转换器

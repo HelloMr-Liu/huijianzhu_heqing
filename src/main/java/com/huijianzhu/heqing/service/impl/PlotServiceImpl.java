@@ -96,6 +96,8 @@ public class PlotServiceImpl implements PlotService {
             newPlot.setPlotMark(definition.getPlotMark());                  //地标信息
             newPlot.setCreateTime(new Date());                              //创建时间
             newPlot.setUpdateTime(new Date());                              //修改时间
+            newPlot.setExtend1(definition.getColor());                      //颜色信息
+            newPlot.setExtend2(definition.getLucency());                    //透明度
             newPlot.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newPlot.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
@@ -160,6 +162,8 @@ public class PlotServiceImpl implements PlotService {
             updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
             updateHqplot.setPlotName(definition.getContentName());      //修改新的地块名称
             updateHqplot.setPlotMark(definition.getPlotMark());         //修改新的地标信息
+            updateHqplot.setExtend1(definition.getColor());                      //颜色信息
+            updateHqplot.setExtend2(definition.getLucency());                    //透明度
 
             //将地块信息持久化到数据库中
             hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
@@ -178,7 +182,6 @@ public class PlotServiceImpl implements PlotService {
             PlotLock.PLOT_UPDATE_LOCK.writeLock().unlock();
         }
     }
-
 
 
     /**

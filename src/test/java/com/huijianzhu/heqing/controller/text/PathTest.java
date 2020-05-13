@@ -17,9 +17,8 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * ================================================================
@@ -107,4 +106,15 @@ public class PathTest {
         }
 
     }
+
+}
+
+
+class testStude{
+    public Integer age;
+
+    public testStude(Integer value){
+        age=value;
+    }
+
 }

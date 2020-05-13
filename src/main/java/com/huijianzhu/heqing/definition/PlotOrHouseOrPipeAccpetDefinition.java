@@ -20,6 +20,12 @@ public class PlotOrHouseOrPipeAccpetDefinition {
     //private String contentType; //接收内容类型 (1:代表当前是地块类型信息 2:代表当前是地块房屋类型信息 3:代表当前是地块管道类型信息)
     private String plotMark;    //接收一个地标信息
 
+    //内容类型为1
+    private String color;       //颜色
+    private String lucency;     //透明度
+
+
+
 
     //内容类型为2,3的时候接收的值属性
     private Integer plotId;     //用于指定那个地块的信息内容

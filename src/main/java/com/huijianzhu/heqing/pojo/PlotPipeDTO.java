@@ -18,8 +18,8 @@ import java.util.List;
 public class PlotPipeDTO extends HqPlotPipe  {
     private Integer plotId;         //地块id
     private String  plotName;       //地块名称
-    private Date PlotCreateTime;    //地块创建时间(用作与排序用)
-    List<HqPlotPipe> PipeList;      //存储管道搬迁信息集
+    private Date plotCreateTime;    //地块创建时间(用作与排序用)
+    List<HqPlotPipe> pipeList;      //存储管道搬迁信息集
 }
     
     

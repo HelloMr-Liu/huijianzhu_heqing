@@ -31,17 +31,15 @@ public interface HqPlotHouseExtendMapper extends HqPlotHouseMapper {
     @Select({
             "<script>",
             " SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hph.* " ,
-            " FROM hq_plot_house hph left join hq_plot hp  " ,
+            " FROM hq_plot hp left join  hq_plot_house hph  " ,
             " on hph.plot_id=hp.plot_id  " ,
-            " where hph.del_flag=#{delFalg} " ,
+            " where hp.del_flag=#{delFalg} " ,
             " <if test='houseName!=null ' >" ,
             " and  house_name like concat('%',#{houseName},'%') " ,
             " </if>" ,
             " order by hp.create_time,hph.create_time desc  " ,
             "</script>"
             })
-
-
     List<PlotHouseDTO> getPlotHouseByName(String houseName,String delFalg);
 
 

@@ -87,10 +87,10 @@ public class PipeServiceImpl implements PipeService {
                 if(plotPipeDTO==null){
                     //由于没有管道信息所以创建一个新的管道信息
                     plotPipeDTO=new PlotPipeDTO();
-                    plotPipeDTO.setPlotId(e.getPlotId());              //管道id
-                    plotPipeDTO.setPlotName(e.getPlotName());          //管道名称
-                    plotPipeDTO.setPlotCreateTime(e.getCreateTime());  //管道创建时间
-                    plotPipeDTO.setPipeList(new ArrayList<>());        //管道搬迁信息集
+                    plotPipeDTO.setPlotId(e.getPlotId());                   //管道id
+                    plotPipeDTO.setPlotName(e.getPlotName());               //管道名称
+                    plotPipeDTO.setPlotCreateTime(e.getPlotCreateTime());   //地块创建时间
+                    plotPipeDTO.setPipeList(new ArrayList<>());             //管道搬迁信息集
 
                     plotPipeMap.put(e.getPlotName(),plotPipeDTO);
                 }
