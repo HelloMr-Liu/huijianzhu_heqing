@@ -92,6 +92,7 @@ public class PipeServiceImpl implements PipeService {
                     plotPipeDTO.setPlotCreateTime(e.getPlotCreateTime());   //地块创建时间
                     plotPipeDTO.setPipeList(new ArrayList<>());             //管道搬迁信息集
 
+
                     plotPipeMap.put(e.getPlotName(),plotPipeDTO);
                 }
                 //将动迁管道搬迁信息存储到每个地块对应的信息集中
