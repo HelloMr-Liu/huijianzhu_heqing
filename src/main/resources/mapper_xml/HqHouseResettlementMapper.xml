@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huijianzhu.heqing.mapper.HqHouseResettlementMapper">
+  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqHouseResettlement">
+    <id column="resettlement_id" jdbcType="INTEGER" property="resettlementId" />
+    <result column="no_live_number" jdbcType="VARCHAR" property="noLiveNumber" />
+    <result column="live_number" jdbcType="VARCHAR" property="liveNumber" />
+    <result column="surplus_number" jdbcType="VARCHAR" property="surplusNumber" />
+    <result column="plot_id" jdbcType="INTEGER" property="plotId" />
+    <result column="plot_name" jdbcType="VARCHAR" property="plotName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    resettlement_id, no_live_number, live_number, surplus_number, plot_id, plot_name, 
+    update_time, update_user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hq_house_resettlement
+    where resettlement_id = #{resettlementId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hq_house_resettlement
+    where resettlement_id = #{resettlementId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqHouseResettlement">
+    insert into hq_house_resettlement (resettlement_id, no_live_number, live_number, 
+      surplus_number, plot_id, plot_name, 
+      update_time, update_user_name)
+    values (#{resettlementId,jdbcType=INTEGER}, #{noLiveNumber,jdbcType=VARCHAR}, #{liveNumber,jdbcType=VARCHAR}, 
+      #{surplusNumber,jdbcType=VARCHAR}, #{plotId,jdbcType=INTEGER}, #{plotName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqHouseResettlement">
+    insert into hq_house_resettlement
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resettlementId != null">
+        resettlement_id,
+      </if>
+      <if test="noLiveNumber != null">
+        no_live_number,
+      </if>
+      <if test="liveNumber != null">
+        live_number,
+      </if>
+      <if test="surplusNumber != null">
+        surplus_number,
+      </if>
+      <if test="plotId != null">
+        plot_id,
+      </if>
+      <if test="plotName != null">
+        plot_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resettlementId != null">
+        #{resettlementId,jdbcType=INTEGER},
+      </if>
+      <if test="noLiveNumber != null">
+        #{noLiveNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="liveNumber != null">
+        #{liveNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="surplusNumber != null">
+        #{surplusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="plotName != null">
+        #{plotName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqHouseResettlement">
+    update hq_house_resettlement
+    <set>
+      <if test="noLiveNumber != null">
+        no_live_number = #{noLiveNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="liveNumber != null">
+        live_number = #{liveNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="surplusNumber != null">
+        surplus_number = #{surplusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        plot_id = #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="plotName != null">
+        plot_name = #{plotName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where resettlement_id = #{resettlementId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqHouseResettlement">
+    update hq_house_resettlement
+    set no_live_number = #{noLiveNumber,jdbcType=VARCHAR},
+      live_number = #{liveNumber,jdbcType=VARCHAR},
+      surplus_number = #{surplusNumber,jdbcType=VARCHAR},
+      plot_id = #{plotId,jdbcType=INTEGER},
+      plot_name = #{plotName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR}
+    where resettlement_id = #{resettlementId,jdbcType=INTEGER}
+  </update>
+</mapper>

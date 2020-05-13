@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huijianzhu.heqing.mapper.HqPipeAccountMapper">
+  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPipeAccount">
+    <id column="pipe_account_id" jdbcType="INTEGER" property="pipeAccountId" />
+    <result column="telecom_budget_amount" jdbcType="VARCHAR" property="telecomBudgetAmount" />
+    <result column="electricity_budget_amount" jdbcType="VARCHAR" property="electricityBudgetAmount" />
+    <result column="gas_budget_amount" jdbcType="VARCHAR" property="gasBudgetAmount" />
+    <result column="water_budget_amount" jdbcType="VARCHAR" property="waterBudgetAmount" />
+    <result column="telecom_audit_amount" jdbcType="VARCHAR" property="telecomAuditAmount" />
+    <result column="electricity_audit_amount" jdbcType="VARCHAR" property="electricityAuditAmount" />
+    <result column="gas_audit_amount" jdbcType="VARCHAR" property="gasAuditAmount" />
+    <result column="water_audit_amount" jdbcType="VARCHAR" property="waterAuditAmount" />
+    <result column="plot_id" jdbcType="INTEGER" property="plotId" />
+    <result column="plot_name" jdbcType="VARCHAR" property="plotName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pipe_account_id, telecom_budget_amount, electricity_budget_amount, gas_budget_amount, 
+    water_budget_amount, telecom_audit_amount, electricity_audit_amount, gas_audit_amount, 
+    water_audit_amount, plot_id, plot_name, update_time, update_user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hq_pipe_account
+    where pipe_account_id = #{pipeAccountId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hq_pipe_account
+    where pipe_account_id = #{pipeAccountId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPipeAccount">
+    insert into hq_pipe_account (pipe_account_id, telecom_budget_amount, 
+      electricity_budget_amount, gas_budget_amount, 
+      water_budget_amount, telecom_audit_amount, 
+      electricity_audit_amount, gas_audit_amount, 
+      water_audit_amount, plot_id, plot_name, 
+      update_time, update_user_name)
+    values (#{pipeAccountId,jdbcType=INTEGER}, #{telecomBudgetAmount,jdbcType=VARCHAR}, 
+      #{electricityBudgetAmount,jdbcType=VARCHAR}, #{gasBudgetAmount,jdbcType=VARCHAR}, 
+      #{waterBudgetAmount,jdbcType=VARCHAR}, #{telecomAuditAmount,jdbcType=VARCHAR}, 
+      #{electricityAuditAmount,jdbcType=VARCHAR}, #{gasAuditAmount,jdbcType=VARCHAR}, 
+      #{waterAuditAmount,jdbcType=VARCHAR}, #{plotId,jdbcType=INTEGER}, #{plotName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPipeAccount">
+    insert into hq_pipe_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pipeAccountId != null">
+        pipe_account_id,
+      </if>
+      <if test="telecomBudgetAmount != null">
+        telecom_budget_amount,
+      </if>
+      <if test="electricityBudgetAmount != null">
+        electricity_budget_amount,
+      </if>
+      <if test="gasBudgetAmount != null">
+        gas_budget_amount,
+      </if>
+      <if test="waterBudgetAmount != null">
+        water_budget_amount,
+      </if>
+      <if test="telecomAuditAmount != null">
+        telecom_audit_amount,
+      </if>
+      <if test="electricityAuditAmount != null">
+        electricity_audit_amount,
+      </if>
+      <if test="gasAuditAmount != null">
+        gas_audit_amount,
+      </if>
+      <if test="waterAuditAmount != null">
+        water_audit_amount,
+      </if>
+      <if test="plotId != null">
+        plot_id,
+      </if>
+      <if test="plotName != null">
+        plot_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pipeAccountId != null">
+        #{pipeAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="telecomBudgetAmount != null">
+        #{telecomBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="electricityBudgetAmount != null">
+        #{electricityBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="gasBudgetAmount != null">
+        #{gasBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="waterBudgetAmount != null">
+        #{waterBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="telecomAuditAmount != null">
+        #{telecomAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="electricityAuditAmount != null">
+        #{electricityAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="gasAuditAmount != null">
+        #{gasAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAuditAmount != null">
+        #{waterAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="plotName != null">
+        #{plotName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPipeAccount">
+    update hq_pipe_account
+    <set>
+      <if test="telecomBudgetAmount != null">
+        telecom_budget_amount = #{telecomBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="electricityBudgetAmount != null">
+        electricity_budget_amount = #{electricityBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="gasBudgetAmount != null">
+        gas_budget_amount = #{gasBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="waterBudgetAmount != null">
+        water_budget_amount = #{waterBudgetAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="telecomAuditAmount != null">
+        telecom_audit_amount = #{telecomAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="electricityAuditAmount != null">
+        electricity_audit_amount = #{electricityAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="gasAuditAmount != null">
+        gas_audit_amount = #{gasAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAuditAmount != null">
+        water_audit_amount = #{waterAuditAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="plotId != null">
+        plot_id = #{plotId,jdbcType=INTEGER},
+      </if>
+      <if test="plotName != null">
+        plot_name = #{plotName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pipe_account_id = #{pipeAccountId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPipeAccount">
+    update hq_pipe_account
+    set telecom_budget_amount = #{telecomBudgetAmount,jdbcType=VARCHAR},
+      electricity_budget_amount = #{electricityBudgetAmount,jdbcType=VARCHAR},
+      gas_budget_amount = #{gasBudgetAmount,jdbcType=VARCHAR},
+      water_budget_amount = #{waterBudgetAmount,jdbcType=VARCHAR},
+      telecom_audit_amount = #{telecomAuditAmount,jdbcType=VARCHAR},
+      electricity_audit_amount = #{electricityAuditAmount,jdbcType=VARCHAR},
+      gas_audit_amount = #{gasAuditAmount,jdbcType=VARCHAR},
+      water_audit_amount = #{waterAuditAmount,jdbcType=VARCHAR},
+      plot_id = #{plotId,jdbcType=INTEGER},
+      plot_name = #{plotName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR}
+    where pipe_account_id = #{pipeAccountId,jdbcType=INTEGER}
+  </update>
+</mapper>

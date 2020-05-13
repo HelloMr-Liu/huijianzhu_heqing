@@ -24,7 +24,8 @@ public enum SYSTEM_RESULT_STATE {
     UPDATE_FAILURE(607,"修改失败..."),
     DELETE_FAILURE(608,"删除失败..."),
     ADD_FAILURE(609,"添加失败..."),
-    PRINT_FAILURE(611,"打印失败...");
+    PRINT_FAILURE(611,"打印失败..."),
+    FILE_NOT_EXITE(612,"文件不存在...");
 
     public Integer KEY;         //反馈的状态码
     public String VALUE;        //反馈的描述信息

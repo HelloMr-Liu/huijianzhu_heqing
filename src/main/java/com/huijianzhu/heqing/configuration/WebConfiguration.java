@@ -33,10 +33,10 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        //登录拦截的管理器
-//        InterceptorRegistration registration = registry.addInterceptor(loginInterceptor());
-//        registration.addPathPatterns("/**");                    //所有路径都被拦截
-//        registration.excludePathPatterns("/","/login","/login/**","/druid/**");       //添加不拦截路径
+        //登录拦截的管理器
+        InterceptorRegistration registration = registry.addInterceptor(loginInterceptor());
+        registration.addPathPatterns("/**");                    //所有路径都被拦截
+        registration.excludePathPatterns("/","/login/**","/druid/**");       //添加不拦截路径
     }
 
     //重写转换器

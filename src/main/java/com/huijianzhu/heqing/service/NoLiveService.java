@@ -21,7 +21,7 @@ public interface NoLiveService {
      * @param noLiveList
      * @return
      */
-    public SystemResult  batchAdd(List<HqNoLiveAccount> noLiveList);
+    public SystemResult  batchImport(List<HqNoLiveAccount> noLiveList);
 
 
     /**

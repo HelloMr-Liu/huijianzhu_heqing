@@ -193,10 +193,10 @@ public class PipeServiceImpl implements PipeService {
             //修改管道信息
             HqPlotPipe updateHqplotPipe=new HqPlotPipe();
             updateHqplotPipe.setUpdateTime(new Date());                            //最近的一次修改时间
-            updateHqplotPipe.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
-            updateHqplotPipe.setPipeId(definition.getContentId());                //修改指定的管道id
-            updateHqplotPipe.setPipeName(definition.getContentName());            //修改新的管道名称
-            updateHqplotPipe.setPipePlotMark(definition.getPlotMark());           //修改新的地标信息
+            updateHqplotPipe.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
+            updateHqplotPipe.setPipeId(definition.getContentId());                 //修改指定的管道id
+            updateHqplotPipe.setPipeName(definition.getContentName());             //修改新的管道名称
+            updateHqplotPipe.setPipePlotMark(definition.getPlotMark());            //修改新的地标信息
 
             //将管道信息持久化到数据库中
             hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
