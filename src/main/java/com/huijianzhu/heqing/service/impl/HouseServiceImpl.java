@@ -210,6 +210,12 @@ public class HouseServiceImpl implements HouseService {
             hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
 
             if(definition.getPropertyValueList()!=null) {
+                List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+                propertyValueList.forEach(
+                        e->{
+                            e.setPlotType(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY);
+                        }
+                );
                 //更新房屋对应的属性值信息
                 propertyValueService.updatePropertyValue(definition.getPropertyValueList());
             }

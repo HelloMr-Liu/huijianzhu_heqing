@@ -23,6 +23,7 @@ public class PlotOrHouseOrPipeAccpetDefinition {
     //内容类型为1
     private String color;       //颜色
     private String lucency;     //透明度
+    private String type;        //地块类型
 
 
 

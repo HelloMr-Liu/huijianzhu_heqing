@@ -25,16 +25,16 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     /**
      * 分页显示用户的数据
-     * @param startPage 起始页数
-     * @param row       每页显示的行数
+     * @param startPage             起始页数
+     * @param row                   每页显示的行数
+     * @param queryContent          筛选内容
      * @return
      */
     @PostMapping("/page/users")
-    public SystemResult pageUsers(Integer startPage, Integer row){
-        return userService.pageUsers(startPage,row);
+    public SystemResult pageUsers(Integer startPage,Integer row,String queryContent){
+        return userService.pageUsers(startPage,row,queryContent);
     }
 
     /**

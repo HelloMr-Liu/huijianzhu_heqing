@@ -11,9 +11,9 @@ public class HqHouseResettlement {
 
     private String surplusNumber;
 
-    private Integer plotId;
-
     private String plotName;
+
+    private Integer plotId;
 
     private Date updateTime;
 

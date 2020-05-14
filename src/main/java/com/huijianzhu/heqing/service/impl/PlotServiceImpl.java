@@ -98,6 +98,7 @@ public class PlotServiceImpl implements PlotService {
             newPlot.setUpdateTime(new Date());                              //修改时间
             newPlot.setExtend1(definition.getColor());                      //颜色信息
             newPlot.setExtend2(definition.getLucency());                    //透明度
+            newPlot.setExtend3(definition.getType());                       //地块类型
             newPlot.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newPlot.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
@@ -169,6 +170,12 @@ public class PlotServiceImpl implements PlotService {
             hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
 
             if(definition.getPropertyValueList()!=null){
+                List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+                propertyValueList.forEach(
+                    e->{
+                        e.setPlotType(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY);
+                    }
+                );
                 //更新地块对应的属性值信息
                 propertyValueService.updatePropertyValue(definition.getPropertyValueList());
 

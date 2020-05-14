@@ -15,11 +15,12 @@ public interface UserService {
 
     /**
      * 分页显示用户的数据
-     * @param startPage 起始页数
-     * @param row       每页显示的行数
+     * @param startPage             起始页数
+     * @param row                   每页显示的行数
+     * @param queryContent          筛选内容
      * @return
      */
-    public SystemResult pageUsers(Integer startPage,Integer row);
+    public SystemResult pageUsers(Integer startPage,Integer row,String queryContent);
 
     /**
      * 添加用户

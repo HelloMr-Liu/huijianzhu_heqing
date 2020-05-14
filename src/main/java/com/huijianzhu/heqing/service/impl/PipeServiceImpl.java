@@ -14,10 +14,7 @@ import com.huijianzhu.heqing.enums.*;
 import com.huijianzhu.heqing.lock.PipeLock;
 import com.huijianzhu.heqing.mapper.extend.HqPlotPipeExtendMapper;
 import com.huijianzhu.heqing.mapper.extend.HqPropertyValueExtendMapper;
-import com.huijianzhu.heqing.pojo.PlotOrHouseOrPipeDesc;
-import com.huijianzhu.heqing.pojo.PlotPipeDTO;
-import com.huijianzhu.heqing.pojo.PropertyTree;
-import com.huijianzhu.heqing.pojo.UserLoginContent;
+import com.huijianzhu.heqing.pojo.*;
 import com.huijianzhu.heqing.service.PipeService;
 import com.huijianzhu.heqing.service.PlotService;
 import com.huijianzhu.heqing.service.PropertyService;
@@ -202,6 +199,12 @@ public class PipeServiceImpl implements PipeService {
             //将管道信息持久化到数据库中
             hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
             if(definition.getPropertyValueList()!=null) {
+                List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+                propertyValueList.forEach(
+                    e->{
+                        e.setPlotType(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY);
+                    }
+                );
                 //更新管道对应的属性值信息
                 propertyValueService.updatePropertyValue(definition.getPropertyValueList());
             }

@@ -61,15 +61,16 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 分页显示用户的数据
-     * @param startPage 起始页数
-     * @param row       每页显示的行数
+     * @param startPage             起始页数
+     * @param row                   每页显示的行数
+     * @param queryContent          筛选内容
      * @return
      */
-    public SystemResult pageUsers(Integer startPage,Integer row){
+    public SystemResult pageUsers(Integer startPage,Integer row,String queryContent){
         //开启分页
         PageHelper.startPage(startPage, row);
         //查询所有用户信息
-        List<HqUser> userList = hqUserExtendMapper.getUser(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqUser> userList = hqUserExtendMapper.getUser(queryContent,GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         //将查询到用户信息封装到，分页对象中
         PageInfo<HqUser> userPage=new PageInfo<HqUser>(userList);
         return SystemResult.ok(userPage);
@@ -151,9 +152,9 @@ public class UserServiceImpl implements UserService {
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
         try{
             //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了
-            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
-                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
-            }
+//            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
+//                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
+//            }
 
             //判断新修改的账号是否存在
             if(accountCacheManager.checkAccountexist(definition.getUserAccount(),definition.getUserId().toString())){

@@ -19,11 +19,19 @@ public interface HqUserExtendMapper extends HqUserMapper {
 
     /**
      * 获取对应的所有有效用户信息
+     * @param queryContent  查询内容
      * @param delFlag       删除标志
      * @return
      */
-    @Select("SELECT * FROM `hq_user` where del_flag=#{delFlag} order by create_time desc ")
-    List<HqUser> getUser(String delFlag);
+    @Select({"<script>",
+            " select * from hq_user where del_flag=#{delFlag} " ,
+            " <if test='queryContent!=null'>",
+                " and  user_name like concat('%',#{queryContent},'%') or " ,
+                " user_account like concat('%',#{queryContent},'%') ",
+            " </if>",
+            " order by create_time desc ",
+            "</script>"})
+    List<HqUser> getUser(String queryContent,String delFlag);
 
     /**
      * 获取有效用户账号,用户名信息
