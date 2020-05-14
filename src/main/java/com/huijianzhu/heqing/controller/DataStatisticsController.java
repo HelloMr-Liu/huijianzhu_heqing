@@ -1,5 +1,6 @@
 package com.huijianzhu.heqing.controller;
 
+import ch.qos.logback.core.util.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.huijianzhu.heqing.entity.HqHouseResettlement;
@@ -20,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.*;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
@@ -129,10 +132,12 @@ public class DataStatisticsController {
         /**
          * -----------------------------------公共区域开始------------------------------------------
          */
-        //获取地块模板信息
-        File file = ResourceUtils.getFile("classpath:templates/"+templateEnglishNameArray[type]);
-        //以流的形式读取模板信息
-        InputStream templateStream=new FileInputStream(file);
+        //获取地块模板信息 前面两种放到jar包中 系统就会读取不到对应的文件信息会报 FileNotFoundException
+        //File file = ResourceUtils.getFile("classpath:templates/"+templateEnglishNameArray[type]);
+        //ClassPathResource resource = new ClassPathResource("templates/"+templateEnglishNameArray[type]);
+        //这种方式在jar包中也能读取
+        InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + templateEnglishNameArray[type]);
+
 
         //将当前文件字节流读取到Excel工作簿中
         XSSFWorkbook workbook = (XSSFWorkbook) ExcelUtils.getWorkbook(templateStream, templateEnglishNameArray[type]);
@@ -151,7 +156,6 @@ public class DataStatisticsController {
         /**
          * -----------------------------------公共区域结束-----------------------------------------
          */
-
 
         /**
          * ------------------------默认的显示方式开始-----------------------------

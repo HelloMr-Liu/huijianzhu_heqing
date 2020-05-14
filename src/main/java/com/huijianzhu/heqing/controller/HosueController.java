@@ -19,6 +19,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
@@ -113,10 +114,11 @@ public class HosueController {
         //创建一个房屋动迁类型数组
         String []houseType={"NOLIVE","LIVE"};
 
-        //获取地块模板信息
-        File file = ResourceUtils.getFile("classpath:templates/houseTemplate.xlsx");
-        //以流的形式读取模板信息
-        InputStream templateStream=new FileInputStream(file);
+        //获取地块模板信息 前面两种放到jar包中 系统就会读取不到对应的文件信息会报 FileNotFoundException
+        //File file = ResourceUtils.getFile("classpath:templates/"+templateEnglishNameArray[type]);
+        //ClassPathResource resource = new ClassPathResource("templates/"+templateEnglishNameArray[type]);
+        //这种方式在jar包中也能读取
+        InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream("templates/houseTemplate.xlsx");
 
         //将当前文件字节流读取到Excel工作簿中
         XSSFWorkbook workbook = (XSSFWorkbook) ExcelUtils.getWorkbook(templateStream, "houseTemplate.xlsx");

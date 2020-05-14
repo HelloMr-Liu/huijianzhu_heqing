@@ -12,16 +12,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,14 +84,22 @@ public class PlotController {
      */
     @GetMapping("/update/landsurvey/template")
     public void printBlockTemplate()throws Exception{
-        //获取地块模板信息
-        File file = ResourceUtils.getFile("classpath:templates/blockTemplate.xlsx");
-        //以流的形式读取模板信息
-        InputStream templateStream=new FileInputStream(file);
-        new DownloadUtil().prototypeDownload(file,"地块编号编辑.xlsx",response,false);
+        //获取地块模板信息 前面两种放到jar包中 系统就会读取不到对应的文件信息会报 FileNotFoundException
+        //File file = ResourceUtils.getFile("classpath:templates/"+templateEnglishNameArray[type]);
+        //ClassPathResource resource = new ClassPathResource("templates/"+templateEnglishNameArray[type]);
+        //这种方式在jar包中也能读取
+        InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream("templates/blockTemplate.xlsx");
+
+        //将当前文件字节流读取到Excel工作簿中
+        XSSFWorkbook workbook = (XSSFWorkbook) ExcelUtils.getWorkbook(templateStream, "blockTemplate.xlsx");
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();			//生成流对象
+        workbook.write(byteArrayOutputStream);
+        //将excel写入流
+        //工具类，封装弹出下载框：
+        DownloadUtil down = new DownloadUtil();
+        down.download(byteArrayOutputStream, response, "地块编号编辑.xlsx");
     }
-
-
 
 
     /**
