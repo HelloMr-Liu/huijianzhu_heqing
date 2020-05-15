@@ -25,11 +25,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //配置后台支持ajax 跨域请求
+        //支持跨域请求该系统接口
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
-                .maxAge(3600)
+                .allowedHeaders("*")
+                .allowedMethods("*")
                 .allowCredentials(true);
     }
 

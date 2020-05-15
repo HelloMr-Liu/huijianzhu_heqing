@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 刘梓江    2020/5/7  16:12            创建
  * =================================================================
  **/
-@CrossOrigin //开启跨域请求
 @RestController
 @RequestMapping("/property")
 public class PropertyController {

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 刘梓江	2020/5/5  22:15            创建
  * =================================================================
  **/
-@CrossOrigin //开启跨域请求
 @RestController
 @RequestMapping("/user")
 public class UserController {

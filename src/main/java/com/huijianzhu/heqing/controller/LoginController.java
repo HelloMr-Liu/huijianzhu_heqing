@@ -3,10 +3,7 @@ package com.huijianzhu.heqing.controller;
 import com.huijianzhu.heqing.service.LoginService;
 import com.huijianzhu.heqing.vo.SystemResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * ================================================================
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 刘梓江    2020/5/6  13:54            创建
  * =================================================================
  **/
-@CrossOrigin //支持跨域
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -31,7 +27,7 @@ public class LoginController {
      * @param password        用户密码
      * @return
      */
-    @PostMapping("/login")
+    @RequestMapping("/login")
     public SystemResult login(String userAccount, String password){
         return loginService.login(userAccount,password);
     }

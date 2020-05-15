@@ -48,7 +48,6 @@ import java.util.List;
 @Slf4j
 @Validated
 @Controller
-@CrossOrigin  //支持跨域
 @RequestMapping("/statistics")
 public class DataStatisticsController {
 
@@ -87,7 +86,7 @@ public class DataStatisticsController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/show/statistics")
+    @PostMapping("/show/statistics")
     public SystemResult findAll(@NotNull Integer type){
         switch (type) {
             //房屋动迁模板信息集
@@ -369,7 +368,7 @@ public class DataStatisticsController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/update/statistics")
+    @PostMapping("/update/statistics")
     public SystemResult batchAdd(@RequestParam("file") MultipartFile file,@NotNull  Integer type) throws Exception{
         log.info("获取到文件内容了。。。。"+file.getOriginalFilename());
 

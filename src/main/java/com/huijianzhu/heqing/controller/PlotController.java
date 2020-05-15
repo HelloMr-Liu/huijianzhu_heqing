@@ -39,7 +39,6 @@ import java.util.List;
  * =================================================================
  **/
 @Slf4j
-@CrossOrigin //支持跨域
 @Controller
 @RequestMapping("/landsurvey")
 public class PlotController {

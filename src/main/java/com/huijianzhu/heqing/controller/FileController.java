@@ -24,7 +24,6 @@ import java.util.UUID;
  * =================================================================
  **/
 @Controller
-@CrossOrigin //支持跨域
 @RequestMapping("/file")
 public class FileController {
 
