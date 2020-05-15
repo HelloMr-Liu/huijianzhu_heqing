@@ -44,6 +44,7 @@ public class UserController {
      */
     @PostMapping("/add/user")
     public SystemResult addUser(UserAccpetDefinition definition)throws  Exception{
+        System.out.println("dwadaw");
         return userService.addUser(definition);
     }
 
