@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 import com.huijianzhu.heqing.utils.DownloadUtil;
 import com.huijianzhu.heqing.vo.SystemResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,8 @@ import java.util.UUID;
  * 刘梓江    2020/5/9  13:50            创建
  * =================================================================
  **/
+@Slf4j      //日志使用
+@Validated  //数据校验
 @Controller
 @RequestMapping("/file")
 public class FileController {

@@ -57,9 +57,8 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         updateMap.put("ADD",new ArrayList<>());
         updateMap.put("UPDATE",new ArrayList<>());
 
-        //获取用户本地登录标识
-        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+        //获取用户本地登录标识信息
+        UserLoginContent userContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
         //将当前propertyValues中筛选出是否是添加的还是修改的数值信息
         propertyValues.forEach(

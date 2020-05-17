@@ -3,8 +3,10 @@ package com.huijianzhu.heqing.controller;
 import com.huijianzhu.heqing.definition.UserAccpetDefinition;
 import com.huijianzhu.heqing.service.UserService;
 import com.huijianzhu.heqing.vo.SystemResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 刘梓江	2020/5/5  22:15            创建
  * =================================================================
  **/
+@Slf4j      //日志使用
+@Validated  //数据校验
 @RestController
 @RequestMapping("/user")
 public class UserController {

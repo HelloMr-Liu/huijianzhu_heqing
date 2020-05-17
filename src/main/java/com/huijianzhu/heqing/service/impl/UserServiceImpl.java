@@ -97,9 +97,8 @@ public class UserServiceImpl implements UserService {
                     break;
                 };
             }
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建用户实体对象
             HqUser hqUser=new HqUser();
@@ -162,9 +161,8 @@ public class UserServiceImpl implements UserService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.KEY,SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.VALUE);
             }
 
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
 
             //创建一个修改用户信息封装对象
@@ -213,9 +211,8 @@ public class UserServiceImpl implements UserService {
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
         try{
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个封装删除用户对象
             HqUser hqUser=new HqUser();
@@ -292,9 +289,8 @@ public class UserServiceImpl implements UserService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
             }
 
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个封装删除用户对象
             HqUser hqUser=new HqUser();

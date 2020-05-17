@@ -40,13 +40,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {       //请求进入这个拦截器
-
         //设置缓存区编码为UTF-8编码格式
         response.setCharacterEncoding("UTF-8");
         //在响应中主动告诉浏览器使用UTF-8编码格式来接收数据
         response.setHeader("Content-Type", "text/html;charset=UTF-8");
         //可以使用封装类简写Content-Type，使用该方法则无需使用setCharacterEncoding
         response.setContentType("text/html;charset=UTF-8");
+
 
         //获取当前登录本地登录标识
         String loginToken = CookieUtils.getCookieValue(request,LOGIN_STATE.USER_LOGIN_TOKEN.toString());
@@ -58,6 +58,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             if(!isValid){
                 //获取当前登录标识对应用户登录信息
                 UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+
+                //将用户信息存储到本次请求中,以及对应的登录标识
+                request.setAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString(),userContent);
+                request.setAttribute("TOKEN",loginToken);
 
                 //判断当前用户是否是管理员
                 if(userContent.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_MANAGER.KEY)){
@@ -96,7 +100,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         //没有权限
         PrintWriter writer = response.getWriter();
-        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE)));
+        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE+"123123123")));
         writer.flush();
         writer.close();
         return false; //直接拦截

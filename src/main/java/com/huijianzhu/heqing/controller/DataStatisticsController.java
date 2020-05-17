@@ -45,8 +45,8 @@ import java.util.List;
  * 刘梓江    2020/5/12  17:22            创建
  * =================================================================
  **/
-@Slf4j
-@Validated
+@Slf4j      //日志使用
+@Validated  //数据校验
 @Controller
 @RequestMapping("/statistics")
 public class DataStatisticsController {

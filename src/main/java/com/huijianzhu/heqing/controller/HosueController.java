@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +39,8 @@ import java.util.List;
  * 刘梓江    2020/5/10  16:52            创建
  * =================================================================
  **/
-@Slf4j
+@Slf4j      //日志使用
+@Validated  //数据校验
 @Controller
 @RequestMapping("/resettlement")
 public class HosueController {

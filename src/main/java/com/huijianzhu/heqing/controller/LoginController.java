@@ -2,7 +2,9 @@ package com.huijianzhu.heqing.controller;
 
 import com.huijianzhu.heqing.service.LoginService;
 import com.huijianzhu.heqing.vo.SystemResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
  * 刘梓江    2020/5/6  13:54            创建
  * =================================================================
  **/
+@Slf4j      //日志使用
+@Validated  //数据校验
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -27,7 +31,7 @@ public class LoginController {
      * @param password        用户密码
      * @return
      */
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public SystemResult login(String userAccount, String password){
         return loginService.login(userAccount,password);
     }

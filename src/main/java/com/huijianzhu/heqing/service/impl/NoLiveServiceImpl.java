@@ -70,9 +70,8 @@ public class NoLiveServiceImpl implements NoLiveService {
         HouseAccountLock.UPDATE_LOCK.writeLock().lock();
         try{
 
-            //获取当前客户端信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent user = tokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前本地用户信息
+            UserLoginContent user = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
 
             //获取最新的地块信息集

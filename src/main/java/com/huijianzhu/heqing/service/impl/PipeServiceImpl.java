@@ -121,9 +121,8 @@ public class PipeServiceImpl implements PipeService {
             if(plot!=null){
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前管道名称已经存在,请添加其它管道名称");
             }
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前客户端信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个管道信息
             HqPlotPipe newPipe=new HqPlotPipe();
@@ -184,9 +183,8 @@ public class PipeServiceImpl implements PipeService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"本次修改失败,当前的管道名有相同");
             }
 
-            //获取当前用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent userContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //修改管道信息
             HqPlotPipe updateHqplotPipe=new HqPlotPipe();
@@ -232,9 +230,8 @@ public class PipeServiceImpl implements PipeService {
         //开启原子锁操作,防止修改管道信息时有可能是已经被删除的管道信息
         PipeLock.PIPE_UPDATE_LOCK.writeLock().lock();
         try{
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前客户端信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             HqPlotPipe deletePipe=new HqPlotPipe();
             deletePipe.setPipeId(pipeId);
@@ -276,9 +273,8 @@ public class PipeServiceImpl implements PipeService {
         HashMap<String,String> pipeNameMap=new HashMap<>();
 
 
-        //获取当前用户信息
-        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+        //获取当前客户端信息
+        UserLoginContent user = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
 
         //对pipes进行属性内容扩展添加

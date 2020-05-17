@@ -130,9 +130,8 @@ public class HouseServiceImpl implements HouseService {
             if(plot!=null){
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前房屋名称已经存在,请添加其它房屋名称");
             }
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取用户本地登录标识信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个房屋信息
             HqPlotHouse newHosue=new HqPlotHouse();
@@ -194,9 +193,8 @@ public class HouseServiceImpl implements HouseService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"本次修改失败,当前的房屋名有相同");
             }
 
-            //获取当前用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前本地用户信息
+            UserLoginContent userContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //修改房屋信息
             HqPlotHouse updateHqplotHouse=new HqPlotHouse();
@@ -244,9 +242,8 @@ public class HouseServiceImpl implements HouseService {
         //开启原子锁操作,防止修改房屋信息时有可能是已经被删除的房屋信息
         HouseLock.HOUSE_UPDATE_LOCK.writeLock().lock();
         try{
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前本地用户信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             HqPlotHouse deleteHosue=new HqPlotHouse();
             deleteHosue.setHouseId(houseId);
@@ -287,9 +284,8 @@ public class HouseServiceImpl implements HouseService {
         //创建一个map用于判断本次存储房屋动名称是否有相同的
         HashMap<String,String> houseNameMap=new HashMap<>();
 
-        //获取当前用户信息
-        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+        //获取当前本地用户信息
+        UserLoginContent user = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
         //对houses进行属性内容扩展添加
         for(int index=0;index<houses.size();index++){

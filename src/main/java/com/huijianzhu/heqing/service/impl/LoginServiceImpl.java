@@ -118,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
      */
     public SystemResult loginOut(){
         //获取本地对应的登录标识
-        String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        String loginToken = request.getAttribute("Token")==null?"":request.getAttribute("Token").toString();
 
         System.out.println(loginToken);
 

@@ -86,9 +86,8 @@ public class PlotServiceImpl implements PlotService {
             if(plot!=null){
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"当前地块名称已经存在,请添加其他地块名称");
             }
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前客户端信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个地块信息
             HqPlot newPlot=new HqPlot();
@@ -152,9 +151,8 @@ public class PlotServiceImpl implements PlotService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY,"本次修改失败,当前的地块名有相同");
             }
 
-            //获取当前用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent userContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //修改地块信息
             HqPlot updateHqplot=new HqPlot();
@@ -210,9 +208,8 @@ public class PlotServiceImpl implements PlotService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.DELETE_FAILURE.KEY,"当前删除的地块信息,有对应的管道或房屋信息,所以不能删除");
             }
 
-            //获取当前登录用户信息
-            String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent loginUserContent = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+            //获取当前客户端信息
+            UserLoginContent loginUserContent = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             HqPlot deletePlot=new HqPlot();
             deletePlot.setPlotId(plotId);
@@ -239,9 +236,8 @@ public class PlotServiceImpl implements PlotService {
      */
     @Transactional(rollbackFor = Exception.class)
     public SystemResult batchInsertPlots(List<HqPlot> plots){
-        //获取当前用户信息
-        String cookieValue = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        UserLoginContent user = loginTokenCacheManager.getCacheUserByLoginToken(cookieValue);
+        //获取当前客户端信息
+        UserLoginContent user = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
         //创建一个map用于判断本次存储地块编号名称是否有相同的
         HashMap<String,String> plotNameMap=new HashMap<>();

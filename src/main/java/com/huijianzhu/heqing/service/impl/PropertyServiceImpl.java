@@ -171,10 +171,8 @@ public class PropertyServiceImpl implements PropertyService {
                 //新添加的属性名已经存在请输入其他属性名
                 return SystemResult.build(SYSTEM_RESULT_STATE.PROPERTY_NAME_EXITE.KEY,SYSTEM_RESULT_STATE.PROPERTY_NAME_EXITE.VALUE);
             }
-            //获取当前登录的用户信息
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建封装新属性信息
             HqProperty newProperty=new HqProperty();
@@ -227,10 +225,8 @@ public class PropertyServiceImpl implements PropertyService {
                 //修改的属性名已经存在请输入其他属性名
                 return SystemResult.build(SYSTEM_RESULT_STATE.PROPERTY_NAME_EXITE.KEY,SYSTEM_RESULT_STATE.PROPERTY_NAME_EXITE.VALUE);
             }
-            //获取当前登录的用户信息
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建封装新属性信息
             HqProperty newProperty=new HqProperty();
@@ -288,10 +284,8 @@ public class PropertyServiceImpl implements PropertyService {
                 }
             }
 
-            //获取当前登录的用户信息
-            //获取出当前用户登录标识获取对应的用户信息
-            String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-            UserLoginContent currentLoginUser = tokenCacheManager.getCacheUserByLoginToken(loginToken);
+            //获取当前客户端信息
+            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
 
             //创建封装新属性信息

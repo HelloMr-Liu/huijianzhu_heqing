@@ -22,16 +22,16 @@ import java.util.List;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //支持跨域请求该系统接口
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedHeaders("*")
-                .allowedMethods("*")
-                .allowCredentials(true);
-    }
+    //这种方式不能对拦截器的response响应的跨域响应配置,所以使用了Filter配置
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//       // 支持跨域请求该系统接口
+//        registry.addMapping("/**")
+//                .allowedOrigins("*")
+//                .allowedHeaders("*")
+//                .allowedMethods("*")
+//                .allowCredentials(true);
+//    }
 
     /**
      * 手动创建spring bean实例,将这个拦截器给spring管理,不然拦截器中自动注入失效
