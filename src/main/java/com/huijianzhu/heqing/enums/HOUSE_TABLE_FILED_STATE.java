@@ -20,7 +20,7 @@ public enum  HOUSE_TABLE_FILED_STATE {
     /**
      * 居住
      */
-     public String LIVE="LIVE";
+    public String LIVE="LIVE";
 
     /**
      * 非居住

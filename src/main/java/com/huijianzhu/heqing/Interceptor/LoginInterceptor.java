@@ -100,7 +100,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         //没有权限
         PrintWriter writer = response.getWriter();
-        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE+"123123123")));
+        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE)));
         writer.flush();
         writer.close();
         return false; //直接拦截
