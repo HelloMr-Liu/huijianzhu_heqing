@@ -1,5 +1,6 @@
 package com.huijianzhu.heqing.vo;
 
+
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 
 import java.io.Serializable;
