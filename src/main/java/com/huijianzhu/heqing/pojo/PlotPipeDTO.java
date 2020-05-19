@@ -15,11 +15,11 @@ import java.util.List;
  * =================================================================
  **/
 @Data
-public class PlotPipeDTO extends HqPlotPipe  {
-    private Integer plotId;         //地块id
-    private String  plotName;       //地块名称
-    private Date plotCreateTime;    //地块创建时间(用作与排序用)
+public class PlotPipeDTO extends HqPlotPipe {
     List<HqPlotPipe> pipeList;      //存储管道搬迁信息集
+    private Integer plotId;         //地块id
+    private String plotName;       //地块名称
+    private Date plotCreateTime;    //地块创建时间(用作与排序用)
 }
     
     

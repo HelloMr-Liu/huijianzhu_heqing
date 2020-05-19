@@ -10,7 +10,7 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter;
  * 刘梓江	2020/5/10  21:24            创建
  * =================================================================
  **/
-public enum  HOUSE_TABLE_FILED_STATE {
+public enum HOUSE_TABLE_FILED_STATE {
 
     /**
      * 字段状态
@@ -20,12 +20,12 @@ public enum  HOUSE_TABLE_FILED_STATE {
     /**
      * 居住
      */
-    public String LIVE="LIVE";
+    public String LIVE = "LIVE";
 
     /**
      * 非居住
      */
-    public String NOLIVE="NOLIVE";
+    public String NOLIVE = "NOLIVE";
 
 }
     

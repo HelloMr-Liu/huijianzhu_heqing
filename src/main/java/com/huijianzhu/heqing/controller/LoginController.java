@@ -27,21 +27,23 @@ public class LoginController {
 
     /**
      * 用户登录
-     * @param userAccount     用户账号
-     * @param password        用户密码
+     *
+     * @param userAccount 用户账号
+     * @param password    用户密码
      * @return
      */
     @PostMapping("/login")
-    public SystemResult login(String userAccount, String password){
-        return loginService.login(userAccount,password);
+    public SystemResult login(String userAccount, String password) {
+        return loginService.login(userAccount, password);
     }
 
     /**
      * 用户退出登录
+     *
      * @return
      */
     @PostMapping("/loginOut")
-    public SystemResult loginOut(){
+    public SystemResult loginOut() {
         return loginService.loginOut();
     }
 

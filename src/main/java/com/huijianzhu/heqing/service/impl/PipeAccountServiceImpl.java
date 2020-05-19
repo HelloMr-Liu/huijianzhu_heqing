@@ -60,92 +60,94 @@ public class PipeAccountServiceImpl implements PipeAccountService {
 
     /**
      * 查询所有有效地块对应的管道搬迁费用信息集
+     *
      * @return
      */
-    public SystemResult findAll(){
+    public SystemResult findAll() {
         List<HqPipeAccount> accounts = hqPipeAccountExtendMapper.findAll(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
-        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,accounts);
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, accounts);
     }
 
     /**
      * 批量管道管道搬迁信息集
+     *
      * @param pipeAccounts
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult batchImport(List<HqPipeAccount> pipeAccounts){
+    public SystemResult batchImport(List<HqPipeAccount> pipeAccounts) {
 
         //开启原子锁操作,放在信息重复添加
         PipeAccountLock.UPDATE_LOCK.writeLock().lock();
-        try{
+        try {
 
             //获取当前客户端信息
-            UserLoginContent user = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent user = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //获取最新的地块信息集,并转换成map
             SystemResult plotContentListByName = plotService.getPlotContentListByName(null);
-            List<HqPlot> plots=(List<HqPlot>)plotContentListByName.getResult();
+            List<HqPlot> plots = (List<HqPlot>) plotContentListByName.getResult();
             Map<String, Integer> collect = plots.stream().collect(Collectors.toMap(HqPlot::getPlotName, HqPlot::getPlotId, (test1, test2) -> test1));
 
 
             //获取元管道搬迁费用信息集,并转换成map
-            List<HqPipeAccount> accounts =(List<HqPipeAccount>)findAll().getResult();
+            List<HqPipeAccount> accounts = (List<HqPipeAccount>) findAll().getResult();
             Map<String, Integer> collect2 = accounts.stream().collect(Collectors.toMap(HqPipeAccount::getPlotName, HqPipeAccount::getPipeAccountId, (test1, test2) -> test1));
 
 
             //创建2个集合一个存储批量插入的一个存储批量修改的
-            List<HqPipeAccount> batchAddList=new ArrayList<>();
-            List<HqPipeAccount> batchUdpateList=new ArrayList<>();
+            List<HqPipeAccount> batchAddList = new ArrayList<>();
+            List<HqPipeAccount> batchUdpateList = new ArrayList<>();
 
 
             //创建一个map用于判断本次存储名称是否有相同的
-            HashMap<String,Integer> nameMap=new HashMap<>();
+            HashMap<String, Integer> nameMap = new HashMap<>();
 
-            for(int index=0;index<pipeAccounts.size();index++){
+            for (int index = 0; index < pipeAccounts.size(); index++) {
 
                 //获取当前地块管道搬迁信息
                 HqPipeAccount account = pipeAccounts.get(index);
 
                 //判断当前的房屋动迁对有的地块信息是否存在
-                if(!collect.containsKey(account.getPlotName())){
-                    return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的地块信息:"+account.getPlotName()+"不存在");
+                if (!collect.containsKey(account.getPlotName())) {
+                    return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "在第" + (index + 3) + "行当前对应的地块信息:" + account.getPlotName() + "不存在");
 
                 }
 
                 //判断本次操作信息对应的地块信息是否有重复
-                if(nameMap.containsKey(account.getPlotName())){
-                    return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY,"在第"+(index+3)+"行当前对应的地块编号名称:"+account.getPlotName()+"==与第"+nameMap.get(account.getPlotName())+"行重复");
+                if (nameMap.containsKey(account.getPlotName())) {
+                    return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "在第" + (index + 3) + "行当前对应的地块编号名称:" + account.getPlotName() + "==与第" + nameMap.get(account.getPlotName()) + "行重复");
                 }
 
-                nameMap.put(account.getPlotName(),index+3); //存储当前地块对应的,行数
+                nameMap.put(account.getPlotName(), index + 3); //存储当前地块对应的,行数
 
 
                 account.setUpdateTime(new Date());                              //修改时间
                 account.setUpdateUserName(user.getUserName());                  //谁操作了本次记录
                 account.setPlotId(collect.get(account.getPlotName()));          //地块编号
-                if(collect2!=null&&collect2.size()>0&&collect2.containsKey(account.getPlotName())){
+                if (collect2 != null && collect2.size() > 0 && collect2.containsKey(account.getPlotName())) {
 
                     account.setPipeAccountId(collect2.get(account.getPlotName()));  //搬迁费用id
                     //并添加到批量修改集合中
                     batchUdpateList.add(account);
 
-                }else{
+                } else {
 
                     //并添加到批量添加集合中
                     batchAddList.add(account);
                 }
             }
 
-            if(batchAddList.size()>0){
+            if (batchAddList.size() > 0) {
                 //持久化到数据库中
                 hqPipeAccountExtendMapper.batchAdd(batchAddList);
             }
 
-            if(batchUdpateList.size()>0){
+            if (batchUdpateList.size() > 0) {
                 //持久化到数据库中
                 hqPipeAccountExtendMapper.batchUpdate(batchUdpateList);
             }
-            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,"本次管道搬迁费用信息导入成功...");
-        }finally {
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, "本次管道搬迁费用信息导入成功...");
+        } finally {
             //进行锁释放,一定要放在finally中不然出现异常后锁没有释放造成阻塞
             PipeAccountLock.UPDATE_LOCK.writeLock().unlock();
         }

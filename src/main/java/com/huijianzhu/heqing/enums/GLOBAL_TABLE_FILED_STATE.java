@@ -10,12 +10,13 @@ package com.huijianzhu.heqing.enums;
  **/
 public enum GLOBAL_TABLE_FILED_STATE {
 
-    DEL_FLAG_YES("1","代表当前记录被删除"),
-    DEL_FLAG_NO("0","代表当前记录没有被删除");
+    DEL_FLAG_YES("1", "代表当前记录被删除"),
+    DEL_FLAG_NO("0", "代表当前记录没有被删除");
     public String KEY;       //反馈的值
     public String VALUE;     //反馈的描述信息
-    GLOBAL_TABLE_FILED_STATE(String state,String mess){
-        this.KEY=state;
-        this.VALUE=mess;
+
+    GLOBAL_TABLE_FILED_STATE(String state, String mess) {
+        this.KEY = state;
+        this.VALUE = mess;
     }
 }

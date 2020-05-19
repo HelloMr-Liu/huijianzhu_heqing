@@ -18,6 +18,7 @@ public interface HouseResettlementService {
 
     /**
      * 获取所有房屋动迁量信息集
+     *
      * @return
      */
     public SystemResult findAll();
@@ -25,6 +26,7 @@ public interface HouseResettlementService {
 
     /**
      * 批量导入房屋动迁信息集
+     *
      * @param resettlements
      * @return
      */

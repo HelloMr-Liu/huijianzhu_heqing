@@ -46,65 +46,68 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    
+
     @Autowired
     private HttpServletRequest request;
-    
+
     @Autowired
     private HqUserExtendMapper hqUserExtendMapper;          //注入操作用户信息表mapper接口
     @Autowired
     private LoginTokenCacheManager tokenCacheManager;       //注入登录标识管理缓存
     @Autowired
-    private UserAccountCacheManager  accountCacheManager;   //注入用户账号管理缓存
+    private UserAccountCacheManager accountCacheManager;   //注入用户账号管理缓存
     @Autowired
     private PermissionCacheManager permissionCacheManager;  //注入权限信息管理缓存
 
     /**
      * 分页显示用户的数据
-     * @param startPage             起始页数
-     * @param row                   每页显示的行数
-     * @param queryContent          筛选内容
+     *
+     * @param startPage    起始页数
+     * @param row          每页显示的行数
+     * @param queryContent 筛选内容
      * @return
      */
-    public SystemResult pageUsers(Integer startPage,Integer row,String queryContent){
+    public SystemResult pageUsers(Integer startPage, Integer row, String queryContent) {
         //开启分页
         PageHelper.startPage(startPage, row);
         //查询所有用户信息
-        List<HqUser> userList = hqUserExtendMapper.getUser(queryContent,GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqUser> userList = hqUserExtendMapper.getUser(queryContent, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         //将查询到用户信息封装到，分页对象中
-        PageInfo<HqUser> userPage=new PageInfo<HqUser>(userList);
+        PageInfo<HqUser> userPage = new PageInfo<HqUser>(userList);
         return SystemResult.ok(userPage);
     }
 
     /**
      * 添加用户
+     *
      * @param definition 接收添加用户属性信息实体
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult addUser(UserAccpetDefinition definition)throws  Exception{
+    public SystemResult addUser(UserAccpetDefinition definition) throws Exception {
 
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
-        try{
+        try {
             //获取一个新的账号
-            String newUserAccount="";
-            while(true){
+            String newUserAccount = "";
+            while (true) {
                 String newAccount = ShareCodeUtil.getStringRandom(6);
-                if(!accountCacheManager.checkAccountexist(newAccount,null)){
+                if (!accountCacheManager.checkAccountexist(newAccount, null)) {
                     //将当前新的有效账号赋值给newUserAccount便于用户添加使用
-                    newUserAccount=newAccount;
+                    newUserAccount = newAccount;
                     break;
-                };
+                }
+                ;
             }
             //获取当前客户端信息
-            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent currentLoginUser = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建用户实体对象
-            HqUser hqUser=new HqUser();
+            HqUser hqUser = new HqUser();
             hqUser.setUserName(definition.getUserName()); //添加对应的用户名
-            hqUser.setUserAccount(newUserAccount);        //随机一个账号
-            hqUser.setPassWord(MD5Utils.md5(definition.getPassword()+"heqing")); //对用户密码进行加密操作
+            hqUser.setUserAccount(newUserAccount.toUpperCase());        //随机一个账号
+            hqUser.setPassWord(MD5Utils.md5(definition.getPassword() + "heqing")); //对用户密码进行加密操作
             hqUser.setPhoneNumber(definition.getPhoneNumber()); //电话号码
             hqUser.setEmail(definition.getEmail());//邮箱
             hqUser.setUserType(definition.getUserType()); //用户类型
@@ -119,12 +122,12 @@ public class UserServiceImpl implements UserService {
             //同步账号缓存管理容器
             accountCacheManager.refresh();
             //日志记录
-            log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条添加用户数据库");
-            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
-        }catch (Exception e){
+            log.info("用户id:" + currentLoginUser.getUserId() + "==操作了一条添加用户数据库");
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        }finally {
+        } finally {
             //解锁操作
             UserLock.USER_UPDATE_LOCK.writeLock().unlock();
         }
@@ -132,49 +135,51 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取指定用户id对应的用户信息
+     *
      * @param userId
      * @return
      */
-    public SystemResult getUserById(Integer userId){
-        return SystemResult.ok( hqUserExtendMapper.selectByPrimaryKey(userId));
+    public SystemResult getUserById(Integer userId) {
+        return SystemResult.ok(hqUserExtendMapper.selectByPrimaryKey(userId));
     }
 
 
     /**
      * 添加用户
+     *
      * @param definition 接收修改用户属性信息实体
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult updateUser(UserAccpetDefinition definition)throws  Exception{
+    public SystemResult updateUser(UserAccpetDefinition definition) throws Exception {
         //开启用户修改锁操作,防止修改成同账号信息用户
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
-        try{
+        try {
             //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了
 //            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
 //                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
 //            }
 
             //判断新修改的账号是否存在
-            if(accountCacheManager.checkAccountexist(definition.getUserAccount(),definition.getUserId().toString())){
+            if (accountCacheManager.checkAccountexist(definition.getUserAccount(), definition.getUserId().toString())) {
                 //账号存在不能进行修改
-                return SystemResult.build(SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.KEY,SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.VALUE);
+                return SystemResult.build(SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.KEY, SYSTEM_RESULT_STATE.USER_ACCOUNT_EXITE.VALUE);
             }
 
             //获取当前客户端信息
-            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent currentLoginUser = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
 
             //创建一个修改用户信息封装对象
-            HqUser  currrentUser=new HqUser();
+            HqUser currrentUser = new HqUser();
             currrentUser.setUserId(definition.getUserId());             //修改用户id
             currrentUser.setUserName(definition.getUserName());         //修改用户名
-            currrentUser.setPassWord(MD5Utils.md5(definition.getPassword()+"heqing")); //对用户密码进行加密操作
+            currrentUser.setPassWord(MD5Utils.md5(definition.getPassword() + "heqing")); //对用户密码进行加密操作
             currrentUser.setUserAccount(definition.getUserAccount());   //修改用户账号
             currrentUser.setEmail(definition.getEmail());               //修改邮件
             currrentUser.setPhoneNumber(definition.getPhoneNumber());   //修改电话号码
             currrentUser.setUserType(definition.getUserType());         //修改用户类型
-            if(!StrUtil.hasBlank(definition.getPermissionsId())){
+            if (!StrUtil.hasBlank(definition.getPermissionsId())) {
                 currrentUser.setPermissionsId(definition.getPermissionsId()); //修改用户权限
             }
             currrentUser.setUpdateTime(new Date());                             //修改操作时间
@@ -189,13 +194,13 @@ public class UserServiceImpl implements UserService {
 
 
             //日志记录
-            log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条修改用户数据");
+            log.info("用户id:" + currentLoginUser.getUserId() + "==操作了一条修改用户数据");
             //修改用户成功
-            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
-        }catch (Exception e){
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        }finally {
+        } finally {
             //解锁操作
             UserLock.USER_UPDATE_LOCK.writeLock().unlock();
         }
@@ -203,40 +208,50 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 删除用户
-     * @param userId  对应要删除的用户信息id
+     *
+     * @param userIds 对应要删除的用户信息id集
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult deleteUser(Integer userId)throws  Exception{
+    public SystemResult deleteUser(String userIds) throws Exception {
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
-        try{
+        try {
             //获取当前客户端信息
-            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent currentLoginUser = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-            //创建一个封装删除用户对象
-            HqUser hqUser=new HqUser();
-            hqUser.setUserId(userId);
-            hqUser.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);//标志当前用户已经失效
-            hqUser.setUpdateTime(new Date()); //修改时间
-            hqUser.setUpdateUserName(currentLoginUser.getUserName());//谁操作了该账号
-            hqUser.setUserType(Integer.parseInt(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY));//将用户类型降级为普通用户
-            hqUser.setPermissionsId("");//对权限清除
+            //创建一个集合存储要删除用户的用户信息
+            List<HqUser> deleteUserList = new ArrayList<>();
+
+            //将userIds 分割成一个id数组
+            String[] deleteIds = userIds.trim().split(",");
+
+            for (String userId : deleteIds) {
+                //创建一个封装删除用户对象
+                HqUser hqUser = new HqUser();
+                hqUser.setUserId(Integer.parseInt(userId));
+                hqUser.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);//标志当前用户已经失效
+                hqUser.setUpdateTime(new Date()); //修改时间
+                hqUser.setUpdateUserName(currentLoginUser.getUserName());//谁操作了该账号
+                hqUser.setUserType(Integer.parseInt(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY));//将用户类型降级为普通用户
+                hqUser.setPermissionsId("");//对权限清除
+                deleteUserList.add(hqUser);
+            }
 
             //并持久化到数据库中
-            hqUserExtendMapper.updateByPrimaryKeySelective(hqUser);
+            hqUserExtendMapper.batchDelByUserIds(deleteUserList);
             //同步账号缓存管理容器
             accountCacheManager.refresh();
-            //同步修改用户id对应在登录容器对应的用户信息
-            tokenCacheManager.refreshloginUserInfo(userId);
+            //将这些用户信息在之前登录后的标识信息也删除掉
+            tokenCacheManager.deleteUserOnLoginContent(deleteIds);
             //日志记录
-            log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条删除用户数据");
+            log.info("用户id:" + currentLoginUser.getUserId() + "==操作了" + deleteUserList.size() + "条删除用户数据");
             //删除用户成功
-            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
-        }catch (Exception e){
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        }finally {
+        } finally {
             //解锁操作
             UserLock.USER_UPDATE_LOCK.writeLock().unlock();
         }
@@ -244,56 +259,60 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取用户权限信息
-     * @param userId  对应获取该id用户对应的权限信息
+     *
+     * @param userId 对应获取该id用户对应的权限信息
      * @return
      */
-    public SystemResult userJurisdiction(Integer userId){
+    public SystemResult userJurisdiction(Integer userId) {
         //获取当前用户信息
         HqUser userBy = hqUserExtendMapper.getUserById(userId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
-        if(userBy==null){
+        if (userBy == null) {
             //不是一个有效用户信息,所以获取不了对应的用户权限信息
-            return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
+            return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY, SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
         }
 
         //创建集合存储用户对应拥有的modelid信息
-        List<String> modelIdList=new ArrayList<>();
-        Arrays.stream(userBy.getPermissionsId().trim().split(",")).forEach(
-            e->{
-                if(!StrUtil.hasBlank(e)){
-                    modelIdList.add(e);
-                }
-            }
-        );
+        List<String> modelIdList = new ArrayList<>();
+        if (!StrUtil.hasBlank(userBy.getPermissionsId())) {
+            Arrays.stream(userBy.getPermissionsId().trim().split(",")).forEach(
+                    e -> {
+                        if (!StrUtil.hasBlank(e)) {
+                            modelIdList.add(e);
+                        }
+                    }
+            );
+        }
         //获取所有模块并转换成树信息集合
         List<ModelTree> modelTree = permissionCacheManager.getModelTree();
 
         //创建一个用户权限信息实体
-        UserPermissions permissions=new UserPermissions();
+        UserPermissions permissions = new UserPermissions();
         permissions.setTreeList(modelTree);
         permissions.setUserModelIds(modelIdList);
-        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,permissions);
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, permissions);
     }
 
     /**
      * 修改对应用户的权限信息
+     *
      * @param definition 接收修改用户属性信息实体
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult updateJurisdiction(UserAccpetDefinition definition){
+    public SystemResult updateJurisdiction(UserAccpetDefinition definition) {
         //开启用户修改锁操作,防止用户账号冲突
         UserLock.USER_UPDATE_LOCK.writeLock().lock();
-        try{
+        try {
             //判断当前修改用户信息对应的用户id在账号缓存中是否存在,一般不存在说明对应的用户已经被删除了
-            if(!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())){
-                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY,SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
+            if (!accountCacheManager.checkAccountByUserId(definition.getUserId().toString())) {
+                return SystemResult.build(SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.KEY, SYSTEM_RESULT_STATE.USER_PERMISSION_ERROR.VALUE);
             }
 
             //获取当前客户端信息
-            UserLoginContent currentLoginUser = (UserLoginContent)request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            UserLoginContent currentLoginUser = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
             //创建一个封装删除用户对象
-            HqUser hqUser=new HqUser();
+            HqUser hqUser = new HqUser();
             hqUser.setUserId(definition.getUserId());
             hqUser.setPermissionsId(definition.getPermissionsId());
             hqUser.setUpdateTime(new Date());                             //修改操作时间
@@ -305,20 +324,22 @@ public class UserServiceImpl implements UserService {
             //同步修改用户id对应在登录容器对应的用户信息
             tokenCacheManager.refreshloginUserInfo(definition.getUserId());
             //日志记录
-            log.info("用户id:"+currentLoginUser.getUserId()+"==操作了一条修改用户数据");
+            log.info("用户id:" + currentLoginUser.getUserId() + "==操作了一条修改用户数据");
             //修改用户权限成功
-            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+            return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, SYSTEM_RESULT_STATE.SUCCESS.VALUE);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        }finally {
+        } finally {
             //解锁操作
             UserLock.USER_UPDATE_LOCK.writeLock().unlock();
         }
 
     }
+
+
 }
     
     

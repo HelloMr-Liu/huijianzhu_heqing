@@ -35,10 +35,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     /**
      * 手动创建spring bean实例,将这个拦截器给spring管理,不然拦截器中自动注入失效
+     *
      * @return
      */
     @Bean
-    public LoginInterceptor loginInterceptor(){
+    public LoginInterceptor loginInterceptor() {
         return new LoginInterceptor();
     }
 
@@ -47,7 +48,7 @@ public class WebConfiguration implements WebMvcConfigurer {
         //登录拦截的管理器
         InterceptorRegistration registration = registry.addInterceptor(loginInterceptor());
         registration.addPathPatterns("/**");                    //所有路径都被拦截
-        registration.excludePathPatterns("/","/login/**","/druid/**","/file/**");       //添加不拦截路径
+        registration.excludePathPatterns("/", "/login/**", "/druid/**", "/file/**");       //添加不拦截路径
     }
 
     //重写转换器

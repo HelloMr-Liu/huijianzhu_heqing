@@ -19,13 +19,13 @@ public class UserAccpetDefinition {
 
     private Integer userId;         //用户id
     private Integer userType;       //用户类型
-    private String  phoneNumber;    //用户电话
+    private String phoneNumber;    //用户电话
 
-    private String  email;          //用户邮件
-    private String  userName;       //用户名称
-    private String  userAccount;    //用户账号
-    private String  permissionsId;  //权限id
-    private String  password;       //用户密码
+    private String email;          //用户邮件
+    private String userName;       //用户名称
+    private String userAccount;    //用户账号
+    private String permissionsId;  //权限id
+    private String password;       //用户密码
 }
     
     

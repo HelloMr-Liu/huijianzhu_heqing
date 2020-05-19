@@ -19,6 +19,7 @@ public interface HqWriteWayExtendMapper extends HqWriteWayMapper {
 
     /**
      * 获取所有对应的填写方式信息
+     *
      * @return
      */
     @Select(" SELECT * FROM `hq_write_way` order by write_id ")

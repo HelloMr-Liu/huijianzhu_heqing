@@ -18,6 +18,7 @@ public interface HqPermissionsExtendMapper extends HqPermissionsMapper {
 
     /**
      * 获取所有权限信息
+     *
      * @return
      */
     @Select(" select * from hq_permissions ")

@@ -18,14 +18,16 @@ public interface NoLiveService {
 
     /**
      * 批量导入非居住付款台账信息
+     *
      * @param noLiveList
      * @return
      */
-    public SystemResult  batchImport(List<HqNoLiveAccount> noLiveList);
+    public SystemResult batchImport(List<HqNoLiveAccount> noLiveList);
 
 
     /**
      * 获取所有非居住付款台账信息集合
+     *
      * @return
      */
     public SystemResult findAll();

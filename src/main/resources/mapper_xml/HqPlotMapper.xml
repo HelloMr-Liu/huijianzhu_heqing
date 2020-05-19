@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huijianzhu.heqing.mapper.HqPlotMapper">
-  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPlot">
-    <id column="plot_id" jdbcType="INTEGER" property="plotId" />
-    <result column="plot_name" jdbcType="VARCHAR" property="plotName" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
-    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
-    <result column="extend1" jdbcType="VARCHAR" property="extend1" />
-    <result column="extend2" jdbcType="VARCHAR" property="extend2" />
-    <result column="extend3" jdbcType="VARCHAR" property="extend3" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.huijianzhu.heqing.entity.HqPlot">
-    <result column="plot_mark" jdbcType="LONGVARCHAR" property="plotMark" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqPlot">
+        <id column="plot_id" jdbcType="INTEGER" property="plotId"/>
+        <result column="plot_name" jdbcType="VARCHAR" property="plotName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+        <result column="extend1" jdbcType="VARCHAR" property="extend1"/>
+        <result column="extend2" jdbcType="VARCHAR" property="extend2"/>
+        <result column="extend3" jdbcType="VARCHAR" property="extend3"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.huijianzhu.heqing.entity.HqPlot">
+        <result column="plot_mark" jdbcType="LONGVARCHAR" property="plotMark"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     plot_id, plot_name, create_time, update_time, update_user_name, del_flag, extend1, 
     extend2, extend3
   </sql>
-  <sql id="Blob_Column_List">
+    <sql id="Blob_Column_List">
     plot_mark
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from hq_plot
-    where plot_id = #{plotId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from hq_plot
+        where plot_id = #{plotId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from hq_plot
     where plot_id = #{plotId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPlot">
+    <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqPlot">
     insert into hq_plot (plot_id, plot_name, create_time, 
       update_time, update_user_name, del_flag, 
       extend1, extend2, extend3, 
@@ -44,107 +44,111 @@
       #{extend1,jdbcType=VARCHAR}, #{extend2,jdbcType=VARCHAR}, #{extend3,jdbcType=VARCHAR}, 
       #{plotMark,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPlot">
-    insert into hq_plot
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="plotId != null">
-        plot_id,
-      </if>
-      <if test="plotName != null">
-        plot_name,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="updateUserName != null">
-        update_user_name,
-      </if>
-      <if test="delFlag != null">
-        del_flag,
-      </if>
-      <if test="extend1 != null">
-        extend1,
-      </if>
-      <if test="extend2 != null">
-        extend2,
-      </if>
-      <if test="extend3 != null">
-        extend3,
-      </if>
-      <if test="plotMark != null">
-        plot_mark,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="plotId != null">
-        #{plotId,jdbcType=INTEGER},
-      </if>
-      <if test="plotName != null">
-        #{plotName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        #{updateUserName,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="extend1 != null">
-        #{extend1,jdbcType=VARCHAR},
-      </if>
-      <if test="extend2 != null">
-        #{extend2,jdbcType=VARCHAR},
-      </if>
-      <if test="extend3 != null">
-        #{extend3,jdbcType=VARCHAR},
-      </if>
-      <if test="plotMark != null">
-        #{plotMark,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPlot">
-    update hq_plot
-    <set>
-      <if test="plotName != null">
-        plot_name = #{plotName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        update_user_name = #{updateUserName,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="extend1 != null">
-        extend1 = #{extend1,jdbcType=VARCHAR},
-      </if>
-      <if test="extend2 != null">
-        extend2 = #{extend2,jdbcType=VARCHAR},
-      </if>
-      <if test="extend3 != null">
-        extend3 = #{extend3,jdbcType=VARCHAR},
-      </if>
-      <if test="plotMark != null">
-        plot_mark = #{plotMark,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where plot_id = #{plotId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.huijianzhu.heqing.entity.HqPlot">
+    <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqPlot">
+        <selectKey keyProperty="plotId" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        insert into hq_plot
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="plotId != null">
+                plot_id,
+            </if>
+            <if test="plotName != null">
+                plot_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="extend1 != null">
+                extend1,
+            </if>
+            <if test="extend2 != null">
+                extend2,
+            </if>
+            <if test="extend3 != null">
+                extend3,
+            </if>
+            <if test="plotMark != null">
+                plot_mark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="plotId != null">
+                #{plotId,jdbcType=INTEGER},
+            </if>
+            <if test="plotName != null">
+                #{plotName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="extend1 != null">
+                #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                #{extend2,jdbcType=VARCHAR},
+            </if>
+            <if test="extend3 != null">
+                #{extend3,jdbcType=VARCHAR},
+            </if>
+            <if test="plotMark != null">
+                #{plotMark,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqPlot">
+        update hq_plot
+        <set>
+            <if test="plotName != null">
+                plot_name = #{plotName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="extend1 != null">
+                extend1 = #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                extend2 = #{extend2,jdbcType=VARCHAR},
+            </if>
+            <if test="extend3 != null">
+                extend3 = #{extend3,jdbcType=VARCHAR},
+            </if>
+            <if test="plotMark != null">
+                plot_mark = #{plotMark,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where plot_id = #{plotId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.huijianzhu.heqing.entity.HqPlot">
     update hq_plot
     set plot_name = #{plotName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -157,7 +161,7 @@
       plot_mark = #{plotMark,jdbcType=LONGVARCHAR}
     where plot_id = #{plotId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPlot">
+    <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqPlot">
     update hq_plot
     set plot_name = #{plotName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

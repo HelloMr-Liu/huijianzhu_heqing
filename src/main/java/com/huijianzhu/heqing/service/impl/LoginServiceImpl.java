@@ -55,83 +55,85 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 用户登录
-     * @param userAccount     用户账号
-     * @param password        用户密码
+     *
+     * @param userAccount 用户账号
+     * @param password    用户密码
      * @return
      */
-    public SystemResult login(String userAccount, String password){
+    public SystemResult login(String userAccount, String password) {
         //校验当前账号是否在账号缓存管理存在
-        if(!accountCacheManager.checkAccountexist(userAccount,null)){
+        if (!accountCacheManager.checkAccountexist(userAccount, null)) {
             //当前登录的账号在缓存中不存在
-            return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.VALUE);
+            return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.KEY, SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.VALUE);
         }
         //对用输入的密码加密与数据库中的内容比较
-        String encryption= MD5Utils.md5(password+"heqing");
+        String encryption = MD5Utils.md5(password + "heqing");
         //判断用户名或密码是否在数据库中存在
         HqUser currentUser = hqUserExtendMapper.getUserByAccountAndPassword(userAccount, encryption, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
-        if(currentUser==null){
+        if (currentUser == null) {
             //当前用户信息在数据库中不存在所以无法登录
-            return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.VALUE);
+            return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.KEY, SYSTEM_RESULT_STATE.USER_LOGIN_ERROR.VALUE);
         }
 
         //判断当前用户权限信息
-        if(currentUser.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY)){
+        if (currentUser.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_USER.KEY)) {
             //判断普通用户是否有对应的模块权限id信息
-            if(StrUtil.hasBlank(currentUser.getPermissionsId())){
+            if (StrUtil.hasBlank(currentUser.getPermissionsId())) {
                 //标识当前用户密码都正确但是没有任何权限所以不能访问该该系统
-                return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE);
+                return SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY, SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE);
             }
         }
 
         //创建一个登录标识
-        String login_Token= ShareCodeUtil.getUserToken();
+        String login_Token = ShareCodeUtil.getUserToken();
 
         //将当前登录标识存储一份在客户端Cookie中默认浏览器关闭的时候Cookie就失效
-        CookieUtils.setCookie(request,response, LOGIN_STATE.USER_LOGIN_TOKEN.toString(),login_Token);
+        CookieUtils.setCookie(request, response, LOGIN_STATE.USER_LOGIN_TOKEN.toString(), login_Token);
 
         //创建一个用户登录封装信息
-        UserLoginContent content=new UserLoginContent();
+        UserLoginContent content = new UserLoginContent();
         content.setUserId(currentUser.getUserId());
         content.setUserName(currentUser.getUserName());
         content.setUserType(currentUser.getUserType());
         content.setLoginTime(new Date().getTime());
 
         //创建一个模块id集合存储当前登录用户对应的模块id信息
-        List<String> modelIst=new ArrayList<>();
-        if(!StrUtil.hasBlank(currentUser.getPermissionsId())){
+        List<String> modelIst = new ArrayList<>();
+        if (!StrUtil.hasBlank(currentUser.getPermissionsId())) {
             //将用户模块id信息分割成一个数组存储到modelIst中
-            modelIst= new ArrayList<>(Arrays.asList(currentUser.getPermissionsId().split(",")));
+            modelIst = new ArrayList<>(Arrays.asList(currentUser.getPermissionsId().split(",")));
         }
         content.setJurModelLis(modelIst);
         content.setModelTree(permissionCacheManager.getModelTree());
 
         //将当前登录信息存储到登录标识缓存中
-        loginCacheManager.getLoginTokenCahce().put(login_Token,content);
+        loginCacheManager.getLoginTokenCahce().put(login_Token, content);
 
         //登录成功
-        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,content);
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, content);
     }
 
     /**
      * 用户退出登录
+     *
      * @return
      */
-    public SystemResult loginOut(){
+    public SystemResult loginOut() {
         //获取本地对应的登录标识
-        String loginToken = request.getAttribute("Token")==null?"":request.getAttribute("Token").toString();
+        String loginToken = request.getAttribute("Token") == null ? "" : request.getAttribute("Token").toString();
 
         System.out.println(loginToken);
 
         //删除本地登录标识
-        CookieUtils.deleteCookie(request,response,LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        CookieUtils.deleteCookie(request, response, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-        if(loginToken!=null){
+        if (loginToken != null) {
             //删除登录缓存标识中对应的信息
             loginCacheManager.removeCacheContentByUserToken(loginToken);
         }
 
         //删除成功
-        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY,SYSTEM_RESULT_STATE.SUCCESS.VALUE);
+        return SystemResult.build(SYSTEM_RESULT_STATE.SUCCESS.KEY, SYSTEM_RESULT_STATE.SUCCESS.VALUE);
     }
 }
     

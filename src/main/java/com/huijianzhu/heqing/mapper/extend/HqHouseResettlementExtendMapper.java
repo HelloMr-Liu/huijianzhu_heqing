@@ -17,12 +17,13 @@ import java.util.List;
  * 刘梓江    2020/5/13  11:22            创建
  * =================================================================
  **/
-public interface HqHouseResettlementExtendMapper  extends HqHouseResettlementMapper {
+public interface HqHouseResettlementExtendMapper extends HqHouseResettlementMapper {
 
 
     /**
      * 查询出有效房屋动迁量信息集
-     * @param delFlag   删除标志
+     *
+     * @param delFlag 删除标志
      * @return
      */
     @Select("select hhr.* from hq_plot hp  " +
@@ -37,82 +38,83 @@ public interface HqHouseResettlementExtendMapper  extends HqHouseResettlementMap
      */
     @Insert
             ({
-                "<script>",
-                    "insert into hq_house_resettlement ( no_live_number, live_number, " ,
-                    "surplus_number,plot_id,plot_name,update_time,update_user_name)" ,
+                    "<script>",
+                    "insert into hq_house_resettlement ( no_live_number, live_number, ",
+                    "surplus_number,plot_id,plot_name,update_time,update_user_name)",
 
                     " values ",
                     "<foreach collection='houses' item='item' index='index' separator=','>",
-                    "(" ,
-                    " #{item.noLiveNumber}, #{item.liveNumber},#{item.surplusNumber},#{item.plotId},#{item.plotName},#{item.updateTime},#{item.updateUserName}" ,
+                    "(",
+                    " #{item.noLiveNumber}, #{item.liveNumber},#{item.surplusNumber},#{item.plotId},#{item.plotName},#{item.updateTime},#{item.updateUserName}",
                     ")",
                     "</foreach>",
-                "</script>"
+                    "</script>"
             })
     void batchAdd(@Param("houses") List<HqHouseResettlement> houses);
 
 
     /**
      * 批量修改操作
+     *
      * @param houses
      */
     @Update
-        ({
-            "<script> " ,
-            " UPDATE  hq_house_resettlement",
-            " <trim prefix ='set' prefixOverrides=',' > " ,
+            ({
+                    "<script> ",
+                    " UPDATE  hq_house_resettlement",
+                    " <trim prefix ='set' prefixOverrides=',' > ",
 
-                "<trim prefix ='no_live_number = case' suffix='end,'>",
+                    "<trim prefix ='no_live_number = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.noLiveNumber} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.noLiveNumber} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='live_number = case' suffix='end,'>",
+                    "<trim prefix ='live_number = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.liveNumber} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.liveNumber} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='surplus_number = case' suffix='end,'>",
+                    "<trim prefix ='surplus_number = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.surplusNumber} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.surplusNumber} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='plot_id = case' suffix='end,'>",
+                    "<trim prefix ='plot_id = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.plotId} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.plotId} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='plot_name = case' suffix='end,'>",
+                    "<trim prefix ='plot_name = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.plotName} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.plotName} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='update_time = case' suffix='end,'>",
+                    "<trim prefix ='update_time = case' suffix='end,'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.updateTime} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.updateTime} ",
+                    "</foreach>",
+                    "</trim> ",
 
-                "<trim prefix ='update_user_name = case' suffix='end'>",
+                    "<trim prefix ='update_user_name = case' suffix='end'>",
                     "<foreach collection ='houses' item ='item' index = 'index'> ",
-                    "when resettlement_id = #{item.resettlementId} then #{item.updateUserName} "  ,
-                    "</foreach>" ,
-                "</trim> " ,
+                    "when resettlement_id = #{item.resettlementId} then #{item.updateUserName} ",
+                    "</foreach>",
+                    "</trim> ",
 
-            " </trim> ",
-            " WHERE resettlement_id in " ,
-            " (" ,
-                "<foreach collection='houses' item='item' index='index' separator=','>",
-                " #{item.resettlementId}",
-                "</foreach>",
-            " )" ,
-            "</script>"
-        })
+                    " </trim> ",
+                    " WHERE resettlement_id in ",
+                    " (",
+                    "<foreach collection='houses' item='item' index='index' separator=','>",
+                    " #{item.resettlementId}",
+                    "</foreach>",
+                    " )",
+                    "</script>"
+            })
     void batchUpdate(@Param("houses") List<HqHouseResettlement> houses);
 
 

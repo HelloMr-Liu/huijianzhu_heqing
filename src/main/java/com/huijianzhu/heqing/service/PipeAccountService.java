@@ -18,6 +18,7 @@ public interface PipeAccountService {
 
     /**
      * 查询所有有效地块对应的管道搬迁费用信息集
+     *
      * @return
      */
     public SystemResult findAll();
@@ -25,6 +26,7 @@ public interface PipeAccountService {
 
     /**
      * 批量管道管道搬迁信息集
+     *
      * @param pipeAccounts
      */
     public SystemResult batchImport(List<HqPipeAccount> pipeAccounts);

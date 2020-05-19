@@ -33,22 +33,23 @@ public class FileController {
 
     /**
      * 文件上传
-     * @param file  文件对象
+     *
+     * @param file 文件对象
      * @return
      */
     @PostMapping("/upload")
     @ResponseBody
-    public SystemResult fileUpload(@RequestParam("file") MultipartFile file) throws  Exception{
+    public SystemResult fileUpload(@RequestParam("file") MultipartFile file) throws Exception {
         //获取对应的当前项目target目录下对应的files
-        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(),"files/");
-        if(!upload.exists()){
+        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/");
+        if (!upload.exists()) {
             upload.mkdirs();
         }
-        if(file!=null){
+        if (file != null) {
             //存放上传文件的文件夹
             String oldName = file.getOriginalFilename();
             //获取新的名字
-            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."),oldName.length());
+            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
 
             //构建真实的文件路径
             File newFile = new File(upload + File.separator + newName);
@@ -58,19 +59,20 @@ public class FileController {
 
             return SystemResult.ok(newName);
         }
-        return SystemResult.build(500,"上传失败重新上传");
+        return SystemResult.build(500, "上传失败重新上传");
     }
 
     /**
      * 查看文件
-     * @param fileName  文件名称
+     *
+     * @param fileName 文件名称
      * @return
      */
     @GetMapping("/show")
-    public void fileShow(String fileName, HttpServletResponse response)  throws  Exception{
+    public void fileShow(String fileName, HttpServletResponse response) throws Exception {
         //获取对应的当前项目target目录下对应的files
-        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(),"files/"+fileName);
-        if(!upload.exists()) {
+        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/" + fileName);
+        if (!upload.exists()) {
             //设置缓存区编码为UTF-8编码格式
             response.setCharacterEncoding("UTF-8");
             //在响应中主动告诉浏览器使用UTF-8编码格式来接收数据
@@ -79,9 +81,9 @@ public class FileController {
             response.setContentType("text/html;charset=UTF-8");
             // 文件不存在
             PrintWriter writer = response.getWriter();
-            writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.FILE_NOT_EXITE.KEY,"当前指定的文件不存在")));
+            writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.FILE_NOT_EXITE.KEY, "当前指定的文件不存在")));
             writer.flush();
         }
-        new DownloadUtil().prototypeDownload(upload,fileName,response,false);
+        new DownloadUtil().prototypeDownload(upload, fileName, response, false);
     }
 }

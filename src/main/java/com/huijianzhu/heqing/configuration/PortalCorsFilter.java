@@ -13,11 +13,13 @@ import org.springframework.web.filter.CorsFilter;
  * 配置跨域请求并可以处理Cookie
  */
 @Configuration
-public class PortalCorsFilter extends CorsFilter{
+public class PortalCorsFilter extends CorsFilter {
     private static Logger logger = LoggerFactory.getLogger(PortalCorsFilter.class);
+
     public PortalCorsFilter() {
         super(configurationSource());
     }
+
     private static UrlBasedCorsConfigurationSource configurationSource() {
         logger.info("init CorsFilter...");
         CorsConfiguration config = new CorsConfiguration();

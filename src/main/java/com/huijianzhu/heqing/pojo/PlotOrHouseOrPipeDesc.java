@@ -16,6 +16,12 @@ import java.util.List;
 @Data
 public class PlotOrHouseOrPipeDesc {
 
+    private Integer plotId;
+
+    private String plotName;
+
+    private String plotMark;
+
     private List<PropertyTree> propertyTrees; //封装对应该地块或房屋或管道的一组属性信息树
 
     private List<HqPropertyValueWithBLOBs> propertyValues;  //对应属性信息树下对应的值内容

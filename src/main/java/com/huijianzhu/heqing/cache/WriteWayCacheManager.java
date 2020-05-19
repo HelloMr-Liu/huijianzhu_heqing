@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class WriteWayCacheManager {
 
     //创建存储填写方式信息缓存
-    private ConcurrentHashMap<String, HqWriteWay> cache=new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, HqWriteWay> cache = new ConcurrentHashMap<>();
 
     @Autowired
     private HqWriteWayExtendMapper hqWriteWayExtendMapper;  //注入操作填写信息表mapper接口
@@ -35,7 +35,7 @@ public class WriteWayCacheManager {
      * 初始化缓存管理容器
      */
     @PostConstruct
-    public void init(){
+    public void init() {
         refresh();
     }
 
@@ -43,7 +43,7 @@ public class WriteWayCacheManager {
     /**
      * 刷新当前缓存信息
      */
-    public void refresh(){
+    public void refresh() {
         getWriteWays();
     }
 
@@ -51,18 +51,21 @@ public class WriteWayCacheManager {
     /**
      * 获取所有填写方向信息内容
      */
-    private void getWriteWays(){
+    private void getWriteWays() {
         List<HqWriteWay> writeWays = hqWriteWayExtendMapper.getWriteWays();
         writeWays.forEach(
-            e->{cache.put(e.getWriteId(),e);}
+                e -> {
+                    cache.put(e.getWriteId(), e);
+                }
         );
     }
 
     /**
      * 获取缓存中对应的填写方式信息集
+     *
      * @return
      */
-    public List<HqWriteWay> getWriteWayList(){
-        return cache.entrySet().stream().map(e->e.getValue()).collect(Collectors.toList());
+    public List<HqWriteWay> getWriteWayList() {
+        return cache.entrySet().stream().map(e -> e.getValue()).collect(Collectors.toList());
     }
 }

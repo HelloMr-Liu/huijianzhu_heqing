@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huijianzhu.heqing.mapper.HqNoLiveAccountMapper">
-  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqNoLiveAccount">
-    <id column="no_live_id" jdbcType="INTEGER" property="noLiveId" />
-    <result column="plot_id" jdbcType="INTEGER" property="plotId" />
-    <result column="plot_name" jdbcType="VARCHAR" property="plotName" />
-    <result column="total_deal_money" jdbcType="VARCHAR" property="totalDealMoney" />
-    <result column="ok_money" jdbcType="VARCHAR" property="okMoney" />
-    <result column="pay_scale" jdbcType="VARCHAR" property="payScale" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqNoLiveAccount">
+        <id column="no_live_id" jdbcType="INTEGER" property="noLiveId"/>
+        <result column="plot_id" jdbcType="INTEGER" property="plotId"/>
+        <result column="plot_name" jdbcType="VARCHAR" property="plotName"/>
+        <result column="total_deal_money" jdbcType="VARCHAR" property="totalDealMoney"/>
+        <result column="ok_money" jdbcType="VARCHAR" property="okMoney"/>
+        <result column="pay_scale" jdbcType="VARCHAR" property="payScale"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     no_live_id, plot_id, plot_name, total_deal_money, ok_money, pay_scale, update_time, 
     update_user_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from hq_no_live_account
-    where no_live_id = #{noLiveId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hq_no_live_account
+        where no_live_id = #{noLiveId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from hq_no_live_account
     where no_live_id = #{noLiveId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
+    <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
     insert into hq_no_live_account (no_live_id, plot_id, plot_name, 
       total_deal_money, ok_money, pay_scale, 
       update_time, update_user_name)
@@ -33,89 +33,89 @@
       #{totalDealMoney,jdbcType=VARCHAR}, #{okMoney,jdbcType=VARCHAR}, #{payScale,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateUserName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
-    insert into hq_no_live_account
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="noLiveId != null">
-        no_live_id,
-      </if>
-      <if test="plotId != null">
-        plot_id,
-      </if>
-      <if test="plotName != null">
-        plot_name,
-      </if>
-      <if test="totalDealMoney != null">
-        total_deal_money,
-      </if>
-      <if test="okMoney != null">
-        ok_money,
-      </if>
-      <if test="payScale != null">
-        pay_scale,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="updateUserName != null">
-        update_user_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="noLiveId != null">
-        #{noLiveId,jdbcType=INTEGER},
-      </if>
-      <if test="plotId != null">
-        #{plotId,jdbcType=INTEGER},
-      </if>
-      <if test="plotName != null">
-        #{plotName,jdbcType=VARCHAR},
-      </if>
-      <if test="totalDealMoney != null">
-        #{totalDealMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="okMoney != null">
-        #{okMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="payScale != null">
-        #{payScale,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        #{updateUserName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
-    update hq_no_live_account
-    <set>
-      <if test="plotId != null">
-        plot_id = #{plotId,jdbcType=INTEGER},
-      </if>
-      <if test="plotName != null">
-        plot_name = #{plotName,jdbcType=VARCHAR},
-      </if>
-      <if test="totalDealMoney != null">
-        total_deal_money = #{totalDealMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="okMoney != null">
-        ok_money = #{okMoney,jdbcType=VARCHAR},
-      </if>
-      <if test="payScale != null">
-        pay_scale = #{payScale,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        update_user_name = #{updateUserName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where no_live_id = #{noLiveId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
+    <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
+        insert into hq_no_live_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="noLiveId != null">
+                no_live_id,
+            </if>
+            <if test="plotId != null">
+                plot_id,
+            </if>
+            <if test="plotName != null">
+                plot_name,
+            </if>
+            <if test="totalDealMoney != null">
+                total_deal_money,
+            </if>
+            <if test="okMoney != null">
+                ok_money,
+            </if>
+            <if test="payScale != null">
+                pay_scale,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="noLiveId != null">
+                #{noLiveId,jdbcType=INTEGER},
+            </if>
+            <if test="plotId != null">
+                #{plotId,jdbcType=INTEGER},
+            </if>
+            <if test="plotName != null">
+                #{plotName,jdbcType=VARCHAR},
+            </if>
+            <if test="totalDealMoney != null">
+                #{totalDealMoney,jdbcType=VARCHAR},
+            </if>
+            <if test="okMoney != null">
+                #{okMoney,jdbcType=VARCHAR},
+            </if>
+            <if test="payScale != null">
+                #{payScale,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
+        update hq_no_live_account
+        <set>
+            <if test="plotId != null">
+                plot_id = #{plotId,jdbcType=INTEGER},
+            </if>
+            <if test="plotName != null">
+                plot_name = #{plotName,jdbcType=VARCHAR},
+            </if>
+            <if test="totalDealMoney != null">
+                total_deal_money = #{totalDealMoney,jdbcType=VARCHAR},
+            </if>
+            <if test="okMoney != null">
+                ok_money = #{okMoney,jdbcType=VARCHAR},
+            </if>
+            <if test="payScale != null">
+                pay_scale = #{payScale,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where no_live_id = #{noLiveId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqNoLiveAccount">
     update hq_no_live_account
     set plot_id = #{plotId,jdbcType=INTEGER},
       plot_name = #{plotName,jdbcType=VARCHAR},

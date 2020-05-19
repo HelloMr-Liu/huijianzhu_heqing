@@ -16,11 +16,12 @@ import java.util.List;
  * 刘梓江    2020/5/7  11:40            创建
  * =================================================================
  **/
-public interface HqPropertyExtendMapper  extends HqPropertyMapper {
+public interface HqPropertyExtendMapper extends HqPropertyMapper {
 
 
     /**
      * 查询指定属性名信息下所有有效属性列表信息
+     *
      * @param delFlag
      * @return
      */
@@ -32,14 +33,15 @@ public interface HqPropertyExtendMapper  extends HqPropertyMapper {
             " and  property_name like concat('%',#{searchName},'%') ",
             "</if>",
             "</script>"})
-    List<PropertyTree> getValidPropertys(String searchName, String delFlag,String propertyType);
+    List<PropertyTree> getValidPropertys(String searchName, String delFlag, String propertyType);
 
 
     /**
      * 获取指定属性名对应的属性信息
-     * @param propertyName  属性名称
-     * @param delFlag       删除标志
-     * @param propertyId    属性id
+     *
+     * @param propertyName 属性名称
+     * @param delFlag      删除标志
+     * @param propertyId   属性id
      * @return
      */
     @Select({"<script> ",
@@ -48,13 +50,14 @@ public interface HqPropertyExtendMapper  extends HqPropertyMapper {
             " and  property_id!=#{propertyId} ",
             " </if> ",
             " </script>"
-    }       )
-    HqProperty getPropertyContent(String propertyName,String delFlag,Integer propertyId);
+    })
+    HqProperty getPropertyContent(String propertyName, String delFlag, Integer propertyId);
 
     /**
      * 获取有效属性id对应的属性信息
-     * @param delFlag       删除标志
-     * @param propertyId    属性id
+     *
+     * @param delFlag    删除标志
+     * @param propertyId 属性id
      * @return
      */
     @Select(" select * from hq_property where  del_flag=#{delFlag} and property_id=#{propertyId}  ")
@@ -63,8 +66,9 @@ public interface HqPropertyExtendMapper  extends HqPropertyMapper {
 
     /**
      * 判断当前父节点下是否有子节点信息
-     * @param delFlag       删除标志
-     * @param parentId      属性内容
+     *
+     * @param delFlag  删除标志
+     * @param parentId 属性内容
      * @return
      */
     @Select(" select * from hq_property where parent_id=#{parentId} and del_flag=#{delFlag} ")

@@ -49,25 +49,25 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 
         //获取当前登录本地登录标识
-        String loginToken = CookieUtils.getCookieValue(request,LOGIN_STATE.USER_LOGIN_TOKEN.toString());
-        log.info("当前的登录标志是："+loginToken);
+        String loginToken = CookieUtils.getCookieValue(request, LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+        log.info("当前的登录标志是：" + loginToken);
 
-        if(!StrUtil.hasBlank(loginToken)/*&&request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")*/){
+        if (!StrUtil.hasBlank(loginToken)/*&&request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")*/) {
             //判断当前登录标识在缓存中是否已经过期
             boolean isValid = loginTokenCacheManager.checkValidLoginToken(loginToken);
-            if(!isValid){
+            if (!isValid) {
                 //获取当前登录标识对应用户登录信息
                 UserLoginContent userContent = loginTokenCacheManager.getCacheUserByLoginToken(loginToken);
 
                 //将用户信息存储到本次请求中,以及对应的登录标识
-                request.setAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString(),userContent);
-                request.setAttribute("TOKEN",loginToken);
+                request.setAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString(), userContent);
+                request.setAttribute("TOKEN", loginToken);
 
                 //判断当前用户是否是管理员
-                if(userContent.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_MANAGER.KEY)){
+                if (userContent.getUserType().toString().equals(USER_TABLE_FIELD_STATE.USER_TYPE_MANAGER.KEY)) {
                     //由于当前登录的用户是管理员所以当前系统请求都可以访问
                     return true;  //放行
-                }else{
+                } else {
                     /**
                      * http://localhost:8080/heqing/login/login
                      *
@@ -79,18 +79,18 @@ public class LoginInterceptor implements HandlerInterceptor {
                     //分割当前请求路径
                     String[] pathArray = servletPath.trim().split("/");
                     //pathArray长度要大于3不然访问的接口无权访问
-                    if(pathArray.length>3){
+                    if (pathArray.length > 3) {
 
                         //进行请求路径拼接,获取对应缓存中的模块id
                         // String requestPath=servletPath.lastIndexOf("?")==-1?servletPath:servletPath.trim().substring(0,servletPath.lastIndexOf("?"));
-                        String requestPath="/"+pathArray[1]+"/"+pathArray[2]+"/"+pathArray[3];
+                        String requestPath = "/" + pathArray[1] + "/" + pathArray[2] + "/" + pathArray[3];
 
                         //获取当前请求的模块id
                         String modelId = permissionCacheManager.getPermissionRequestCache().get(requestPath);
 
                         //判断该用户登录对应的登录用户信息中是否有包含该modelId
                         List<String> userLoginModel = userContent.getJurModelLis();
-                        if(userLoginModel.contains(modelId)){
+                        if (userLoginModel.contains(modelId)) {
                             //用户包含该模块id信息所以有权访问
                             return true;
                         }
@@ -100,7 +100,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         //没有权限
         PrintWriter writer = response.getWriter();
-        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY,SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE)));
+        writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.KEY, SYSTEM_RESULT_STATE.USER_LOGIN_PERMISSION.VALUE)));
         writer.flush();
         writer.close();
         return false; //直接拦截

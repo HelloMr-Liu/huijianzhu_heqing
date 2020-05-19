@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huijianzhu.heqing.mapper.HqPropertyMapper">
-  <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqProperty">
-    <id column="property_id" jdbcType="INTEGER" property="propertyId" />
-    <result column="property_name" jdbcType="VARCHAR" property="propertyName" />
-    <result column="write_id" jdbcType="VARCHAR" property="writeId" />
-    <result column="write_name" jdbcType="VARCHAR" property="writeName" />
-    <result column="unit_content" jdbcType="VARCHAR" property="unitContent" />
-    <result column="show_way" jdbcType="VARCHAR" property="showWay" />
-    <result column="show_condition" jdbcType="VARCHAR" property="showCondition" />
-    <result column="pro_sort" jdbcType="VARCHAR" property="proSort" />
-    <result column="is_parent" jdbcType="VARCHAR" property="isParent" />
-    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
-    <result column="property_type" jdbcType="VARCHAR" property="propertyType" />
-    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
-    <result column="expand1" jdbcType="VARCHAR" property="expand1" />
-    <result column="expand2" jdbcType="VARCHAR" property="expand2" />
-    <result column="expand3" jdbcType="VARCHAR" property="expand3" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.huijianzhu.heqing.entity.HqProperty">
+        <id column="property_id" jdbcType="INTEGER" property="propertyId"/>
+        <result column="property_name" jdbcType="VARCHAR" property="propertyName"/>
+        <result column="write_id" jdbcType="VARCHAR" property="writeId"/>
+        <result column="write_name" jdbcType="VARCHAR" property="writeName"/>
+        <result column="unit_content" jdbcType="VARCHAR" property="unitContent"/>
+        <result column="show_way" jdbcType="VARCHAR" property="showWay"/>
+        <result column="show_condition" jdbcType="VARCHAR" property="showCondition"/>
+        <result column="pro_sort" jdbcType="VARCHAR" property="proSort"/>
+        <result column="is_parent" jdbcType="VARCHAR" property="isParent"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName"/>
+        <result column="property_type" jdbcType="VARCHAR" property="propertyType"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+        <result column="expand1" jdbcType="VARCHAR" property="expand1"/>
+        <result column="expand2" jdbcType="VARCHAR" property="expand2"/>
+        <result column="expand3" jdbcType="VARCHAR" property="expand3"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     property_id, property_name, write_id, write_name, unit_content, show_way, show_condition, 
     pro_sort, is_parent, parent_id, create_time, update_time, update_user_name, property_type, 
     del_flag, expand1, expand2, expand3
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from hq_property
-    where property_id = #{propertyId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hq_property
+        where property_id = #{propertyId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from hq_property
     where property_id = #{propertyId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqProperty">
+    <insert id="insert" parameterType="com.huijianzhu.heqing.entity.HqProperty">
     insert into hq_property (property_id, property_name, write_id, 
       write_name, unit_content, show_way, 
       show_condition, pro_sort, is_parent, 
@@ -52,179 +52,179 @@
       #{expand1,jdbcType=VARCHAR}, #{expand2,jdbcType=VARCHAR}, #{expand3,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqProperty">
-    insert into hq_property
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="propertyId != null">
-        property_id,
-      </if>
-      <if test="propertyName != null">
-        property_name,
-      </if>
-      <if test="writeId != null">
-        write_id,
-      </if>
-      <if test="writeName != null">
-        write_name,
-      </if>
-      <if test="unitContent != null">
-        unit_content,
-      </if>
-      <if test="showWay != null">
-        show_way,
-      </if>
-      <if test="showCondition != null">
-        show_condition,
-      </if>
-      <if test="proSort != null">
-        pro_sort,
-      </if>
-      <if test="isParent != null">
-        is_parent,
-      </if>
-      <if test="parentId != null">
-        parent_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="updateUserName != null">
-        update_user_name,
-      </if>
-      <if test="propertyType != null">
-        property_type,
-      </if>
-      <if test="delFlag != null">
-        del_flag,
-      </if>
-      <if test="expand1 != null">
-        expand1,
-      </if>
-      <if test="expand2 != null">
-        expand2,
-      </if>
-      <if test="expand3 != null">
-        expand3,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="propertyId != null">
-        #{propertyId,jdbcType=INTEGER},
-      </if>
-      <if test="propertyName != null">
-        #{propertyName,jdbcType=VARCHAR},
-      </if>
-      <if test="writeId != null">
-        #{writeId,jdbcType=VARCHAR},
-      </if>
-      <if test="writeName != null">
-        #{writeName,jdbcType=VARCHAR},
-      </if>
-      <if test="unitContent != null">
-        #{unitContent,jdbcType=VARCHAR},
-      </if>
-      <if test="showWay != null">
-        #{showWay,jdbcType=VARCHAR},
-      </if>
-      <if test="showCondition != null">
-        #{showCondition,jdbcType=VARCHAR},
-      </if>
-      <if test="proSort != null">
-        #{proSort,jdbcType=VARCHAR},
-      </if>
-      <if test="isParent != null">
-        #{isParent,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        #{updateUserName,jdbcType=VARCHAR},
-      </if>
-      <if test="propertyType != null">
-        #{propertyType,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="expand1 != null">
-        #{expand1,jdbcType=VARCHAR},
-      </if>
-      <if test="expand2 != null">
-        #{expand2,jdbcType=VARCHAR},
-      </if>
-      <if test="expand3 != null">
-        #{expand3,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqProperty">
-    update hq_property
-    <set>
-      <if test="propertyName != null">
-        property_name = #{propertyName,jdbcType=VARCHAR},
-      </if>
-      <if test="writeId != null">
-        write_id = #{writeId,jdbcType=VARCHAR},
-      </if>
-      <if test="writeName != null">
-        write_name = #{writeName,jdbcType=VARCHAR},
-      </if>
-      <if test="unitContent != null">
-        unit_content = #{unitContent,jdbcType=VARCHAR},
-      </if>
-      <if test="showWay != null">
-        show_way = #{showWay,jdbcType=VARCHAR},
-      </if>
-      <if test="showCondition != null">
-        show_condition = #{showCondition,jdbcType=VARCHAR},
-      </if>
-      <if test="proSort != null">
-        pro_sort = #{proSort,jdbcType=VARCHAR},
-      </if>
-      <if test="isParent != null">
-        is_parent = #{isParent,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUserName != null">
-        update_user_name = #{updateUserName,jdbcType=VARCHAR},
-      </if>
-      <if test="propertyType != null">
-        property_type = #{propertyType,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="expand1 != null">
-        expand1 = #{expand1,jdbcType=VARCHAR},
-      </if>
-      <if test="expand2 != null">
-        expand2 = #{expand2,jdbcType=VARCHAR},
-      </if>
-      <if test="expand3 != null">
-        expand3 = #{expand3,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where property_id = #{propertyId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqProperty">
+    <insert id="insertSelective" parameterType="com.huijianzhu.heqing.entity.HqProperty">
+        insert into hq_property
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="propertyId != null">
+                property_id,
+            </if>
+            <if test="propertyName != null">
+                property_name,
+            </if>
+            <if test="writeId != null">
+                write_id,
+            </if>
+            <if test="writeName != null">
+                write_name,
+            </if>
+            <if test="unitContent != null">
+                unit_content,
+            </if>
+            <if test="showWay != null">
+                show_way,
+            </if>
+            <if test="showCondition != null">
+                show_condition,
+            </if>
+            <if test="proSort != null">
+                pro_sort,
+            </if>
+            <if test="isParent != null">
+                is_parent,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+            <if test="propertyType != null">
+                property_type,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="expand1 != null">
+                expand1,
+            </if>
+            <if test="expand2 != null">
+                expand2,
+            </if>
+            <if test="expand3 != null">
+                expand3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="propertyId != null">
+                #{propertyId,jdbcType=INTEGER},
+            </if>
+            <if test="propertyName != null">
+                #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="writeId != null">
+                #{writeId,jdbcType=VARCHAR},
+            </if>
+            <if test="writeName != null">
+                #{writeName,jdbcType=VARCHAR},
+            </if>
+            <if test="unitContent != null">
+                #{unitContent,jdbcType=VARCHAR},
+            </if>
+            <if test="showWay != null">
+                #{showWay,jdbcType=VARCHAR},
+            </if>
+            <if test="showCondition != null">
+                #{showCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="proSort != null">
+                #{proSort,jdbcType=VARCHAR},
+            </if>
+            <if test="isParent != null">
+                #{isParent,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyType != null">
+                #{propertyType,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="expand1 != null">
+                #{expand1,jdbcType=VARCHAR},
+            </if>
+            <if test="expand2 != null">
+                #{expand2,jdbcType=VARCHAR},
+            </if>
+            <if test="expand3 != null">
+                #{expand3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.huijianzhu.heqing.entity.HqProperty">
+        update hq_property
+        <set>
+            <if test="propertyName != null">
+                property_name = #{propertyName,jdbcType=VARCHAR},
+            </if>
+            <if test="writeId != null">
+                write_id = #{writeId,jdbcType=VARCHAR},
+            </if>
+            <if test="writeName != null">
+                write_name = #{writeName,jdbcType=VARCHAR},
+            </if>
+            <if test="unitContent != null">
+                unit_content = #{unitContent,jdbcType=VARCHAR},
+            </if>
+            <if test="showWay != null">
+                show_way = #{showWay,jdbcType=VARCHAR},
+            </if>
+            <if test="showCondition != null">
+                show_condition = #{showCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="proSort != null">
+                pro_sort = #{proSort,jdbcType=VARCHAR},
+            </if>
+            <if test="isParent != null">
+                is_parent = #{isParent,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyType != null">
+                property_type = #{propertyType,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="expand1 != null">
+                expand1 = #{expand1,jdbcType=VARCHAR},
+            </if>
+            <if test="expand2 != null">
+                expand2 = #{expand2,jdbcType=VARCHAR},
+            </if>
+            <if test="expand3 != null">
+                expand3 = #{expand3,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where property_id = #{propertyId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.huijianzhu.heqing.entity.HqProperty">
     update hq_property
     set property_name = #{propertyName,jdbcType=VARCHAR},
       write_id = #{writeId,jdbcType=VARCHAR},

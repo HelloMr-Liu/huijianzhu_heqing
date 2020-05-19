@@ -10,28 +10,29 @@ package com.huijianzhu.heqing.enums;
  **/
 public enum SYSTEM_RESULT_STATE {
 
-    SUCCESS(200,"本次操作成功"),
-    ERROR(500,"系统内部出现异常"),
-    VALIED_ERROR(100,"数据校验异常"),
-    USER_ACCOUNT_EXITE(601,"该账号已经存在,不能重复"),
-    USER_LOGIN_ERROR(602,"请输入正确的用户名或密码"),
-    USER_PERMISSION_ERROR(603,"获取用户权限错误,请刷新用户列表信息"),
-    USER_LOGIN_PERMISSION(604,"用户没有权限访问该系统..."),
-    PROPERTY_NAME_EXITE(605,"属性名称已经存在..."),
-    PROPERTY_NOT_EXITE(606,"属性信息已经不存在..."),
-    CHILDREN_PROPERTY_EXITE(606,"子属性信息存在,当前根节点信息不能删除..."),
+    SUCCESS(200, "本次操作成功"),
+    ERROR(500, "系统内部出现异常"),
+    VALIED_ERROR(100, "数据校验异常"),
+    USER_ACCOUNT_EXITE(601, "该账号已经存在,不能重复"),
+    USER_LOGIN_ERROR(602, "请输入正确的用户名或密码"),
+    USER_PERMISSION_ERROR(603, "获取用户权限错误,请刷新用户列表信息"),
+    USER_LOGIN_PERMISSION(604, "用户没有权限访问该系统..."),
+    PROPERTY_NAME_EXITE(605, "属性名称已经存在..."),
+    PROPERTY_NOT_EXITE(606, "属性信息已经不存在..."),
+    CHILDREN_PROPERTY_EXITE(606, "子属性信息存在,当前根节点信息不能删除..."),
 
-    UPDATE_FAILURE(607,"修改失败..."),
-    DELETE_FAILURE(608,"删除失败..."),
-    ADD_FAILURE(609,"添加失败..."),
-    PRINT_FAILURE(611,"打印失败..."),
-    FILE_NOT_EXITE(612,"文件不存在...");
+    UPDATE_FAILURE(607, "修改失败..."),
+    DELETE_FAILURE(608, "删除失败..."),
+    ADD_FAILURE(609, "添加失败..."),
+    PRINT_FAILURE(611, "打印失败..."),
+    FILE_NOT_EXITE(612, "文件不存在...");
 
     public Integer KEY;         //反馈的状态码
     public String VALUE;        //反馈的描述信息
-    SYSTEM_RESULT_STATE(Integer state,String mess){
-        this.KEY=state;
-        this.VALUE=mess;
+
+    SYSTEM_RESULT_STATE(Integer state, String mess) {
+        this.KEY = state;
+        this.VALUE = mess;
     }
 }
     

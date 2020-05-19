@@ -26,8 +26,6 @@ public class PlotOrHouseOrPipeAccpetDefinition {
     private String type;        //地块类型
 
 
-
-
     //内容类型为2,3的时候接收的值属性
     private Integer plotId;     //用于指定那个地块的信息内容
 

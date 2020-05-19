@@ -24,6 +24,7 @@ public class ExcelUtils {
 
     /**
      * 课程excel
+     *
      * @param in
      * @param fileName
      * @return
@@ -46,7 +47,7 @@ public class ExcelUtils {
         for (int i = 0; i < work.getNumberOfSheets(); i++) {
 
             sheet = work.getSheetAt(i);
-            if(sheet == null) {
+            if (sheet == null) {
                 continue;
             }
 
@@ -62,7 +63,7 @@ public class ExcelUtils {
                 for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
                     cell = row.getCell(y);
                     // 日期类型转换
-                    if(y == 3) {
+                    if (y == 3) {
                         //cell.setCellType(CellType.STRING);
                         double s1 = cell.getNumericCellValue();
                         Date date = HSSFDateUtil.getJavaDate(s1);
@@ -81,6 +82,7 @@ public class ExcelUtils {
 
     /**
      * 判断文件格式
+     *
      * @param in
      * @param fileName
      * @return
@@ -90,7 +92,7 @@ public class ExcelUtils {
         Workbook book = null;
         String filetype = fileName.substring(fileName.lastIndexOf("."));
 
-        if(".xls".equals(filetype)) {
+        if (".xls".equals(filetype)) {
             book = new HSSFWorkbook(in);
         } else if (".xlsx".equals(filetype)) {
             book = new XSSFWorkbook(in);

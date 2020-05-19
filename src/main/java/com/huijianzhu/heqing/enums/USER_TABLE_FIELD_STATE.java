@@ -9,13 +9,14 @@ package com.huijianzhu.heqing.enums;
  * =================================================================
  **/
 public enum USER_TABLE_FIELD_STATE {
-    USER_TYPE_USER("0","代表当前账号是用户类型"),
-    USER_TYPE_MANAGER("1","代表当前账号是管理员");
+    USER_TYPE_USER("0", "代表当前账号是用户类型"),
+    USER_TYPE_MANAGER("1", "代表当前账号是管理员");
     public String KEY;
     public String VALUE;
-    USER_TABLE_FIELD_STATE(String key, String value){
-        this.KEY=key;
-        this.VALUE=value;
+
+    USER_TABLE_FIELD_STATE(String key, String value) {
+        this.KEY = key;
+        this.VALUE = value;
     }
 }
     

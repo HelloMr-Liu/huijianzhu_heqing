@@ -17,13 +17,13 @@ import java.util.List;
 public interface PropertyValueService {
 
 
-
     /**
      * 添加属性值
-     * @param propertyValues    某一个地块类型对应的一组属性对应的属性值信息集
+     *
+     * @param propertyValues 某一个地块类型对应的一组属性对应的属性值信息集
      * @return
      */
-    public SystemResult updatePropertyValue(List<AccpetPlotTypePropertyValue> propertyValues)throws  Exception;
+    public SystemResult updatePropertyValue(List<AccpetPlotTypePropertyValue> propertyValues) throws Exception;
 
 
 }

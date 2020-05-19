@@ -22,11 +22,13 @@ public class DruidConfiguration {
 
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource druid(){
-        return  new DruidDataSource();
+    public DataSource druid() {
+        return new DruidDataSource();
     }
+
     /**
      * 配置监控服务器
+     *
      * @return 返回监控注册的servlet对象
      * @author SimpleWu
      */
@@ -43,11 +45,12 @@ public class DruidConfiguration {
         servletRegistrationBean.addInitParameter("loginPassword", "liuzijiang1314");
         // 是否能够重置数据  禁用HTML页面上的“Reset All”功能
         servletRegistrationBean.addInitParameter("resetEnable", "false");
-        return servletRegistrationBean; 
+        return servletRegistrationBean;
     }
 
     /**
      * 配置服务过滤器
+     *
      * @return 返回过滤器配置对象
      */
     @Bean

@@ -16,5 +16,5 @@ import java.util.List;
  * =================================================================
  **/
 @Data
-public class AccpetPlotTypePropertyValue  extends HqPropertyValueWithBLOBs {
+public class AccpetPlotTypePropertyValue extends HqPropertyValueWithBLOBs {
 }
