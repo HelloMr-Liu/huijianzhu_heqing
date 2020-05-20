@@ -17,6 +17,7 @@ public class PropertyAccpetDefinition {
     private String proSort;             //排序条件
     private String writeId;             //填写类型id
     private String writeName;           //填写类型的名称
+    private String writeContent;        //填写的内容(如下拉框内容,复/单选框内容,多个以逗号隔开）
     private String unitContent;         //填写单位对应的内容 多个以逗号隔开
     private String showCondition;       //显示条件： 0：什么都不保障 1：保障不显示 2：非保障显示 3：根据居住/非居住变更名称
     private String showWay;             //显示方式： 0：不是竖向 1：是竖向

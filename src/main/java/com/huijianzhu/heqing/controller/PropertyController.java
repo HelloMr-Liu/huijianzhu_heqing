@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * ================================================================
  * 说明：属性请求接口控制器
@@ -91,11 +93,11 @@ public class PropertyController {
     /**
      * 删除属性信息
      *
-     * @param propertyId 属性id
+     * @param propertyIds 属性id
      * @return
      */
     @PostMapping("/delete/property/id")
-    public SystemResult deleteProperty(Integer propertyId) throws Exception {
-        return propertyService.deleteProperty(propertyId);
+    public SystemResult deleteProperty(@NotBlank String propertyIds) throws Exception {
+        return propertyService.deleteProperty(propertyIds);
     }
 }

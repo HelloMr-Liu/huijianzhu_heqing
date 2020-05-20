@@ -62,8 +62,8 @@ public interface PropertyService {
     /**
      * 删除属性信息
      *
-     * @param propertyId 属性id
+     * @param propertyIds 属性id
      * @return
      */
-    public SystemResult deleteProperty(Integer propertyId) throws Exception;
+    public SystemResult deleteProperty(String propertyIds) throws Exception;
 }

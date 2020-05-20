@@ -6,6 +6,7 @@ import com.huijianzhu.heqing.cache.WriteWayCacheManager;
 import com.huijianzhu.heqing.definition.PropertyAccpetDefinition;
 import com.huijianzhu.heqing.entity.HqProperty;
 import com.huijianzhu.heqing.entity.HqWriteWay;
+import com.huijianzhu.heqing.enums.GLOBAL_TABLE_FILED_STATE;
 import com.huijianzhu.heqing.enums.LOGIN_STATE;
 import com.huijianzhu.heqing.enums.PROPERTY_TABLE_FIELD_STATE;
 import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
@@ -66,7 +67,7 @@ public class PropertyServiceImpl implements PropertyService {
         //创建一个map存储各个父属性下对应的子属性信息
         TreeMap<Integer, PropertyTree> treeMap = new TreeMap<>();
 
-        List<PropertyTree> propertysList = hqPropertyExtendMapper.getValidPropertys(propertyName, PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY, propertyType);
+        List<PropertyTree> propertysList = hqPropertyExtendMapper.getValidpropertyS(propertyName, PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY, propertyType);
         //遍历当前propertysList将各个子属性分组在父属性下
         propertysList.forEach(
                 e -> {
@@ -196,14 +197,13 @@ public class PropertyServiceImpl implements PropertyService {
                 newProperty.setUnitContent(definition.getUnitContent());//单位内容信息
                 newProperty.setIsParent(PROPERTY_TABLE_FIELD_STATE.NO_PARENT.KEY);//代表的是子属性信息
                 newProperty.setParentId(definition.getParentId());      //父id信息
+                newProperty.setExpand1(definition.getWriteContent());   //填写的内容(如下拉框内容,复/单选框内容,多个以逗号隔开）
             }
             newProperty.setCreateTime(new Date()); //创建时间
             newProperty.setUpdateTime(new Date()); //修改时间
             newProperty.setDelFlag(PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY); //默认是一个有效数据
             newProperty.setUpdateUserName(currentLoginUser.getUserName()); //谁操作了该属性添加
             newProperty.setPropertyType(definition.getPropertyType()); //属性类型
-
-            //获取地块属性信息
 
 
             //持久化到数据库中
@@ -253,6 +253,7 @@ public class PropertyServiceImpl implements PropertyService {
                 newProperty.setWriteId(definition.getWriteId());        //填写id
                 newProperty.setWriteName(definition.getWriteName());    //填写名称
                 newProperty.setUnitContent(definition.getUnitContent());//单位内容信息
+                newProperty.setExpand1(definition.getWriteContent());   //填写的内容(如下拉框内容,复/单选框内容,多个以逗号隔开）
                 newProperty.setIsParent(PROPERTY_TABLE_FIELD_STATE.NO_PARENT.KEY);//代表的是子属性信息
             }
             newProperty.setUpdateTime(new Date()); //修改时间
@@ -274,40 +275,55 @@ public class PropertyServiceImpl implements PropertyService {
     /**
      * 删除属性信息
      *
-     * @param propertyId 属性id
+     * @param propertyIds 属性ids
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public SystemResult deleteProperty(Integer propertyId) throws Exception {
+    public SystemResult deleteProperty(String propertyIds) throws Exception {
 
         //开启属性操作信息原子锁,这样删除该标志的时候其他任务不能修改被删除的属性信息
         PropertyLock.PROPERTY_UPDATE_LOCK.writeLock().lock();
         try {
 
-            //获取该节点信息
-            HqProperty hqProperty = hqPropertyExtendMapper.selectByPrimaryKey(propertyId);
-            if (hqProperty.getIsParent().equals(PROPERTY_TABLE_FIELD_STATE.IS_PARENT.KEY)) {
-                //代表当前节点是父节点信息
-                List<HqProperty> hqProperties = hqPropertyExtendMapper.childrenPropertiesExist(PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY, propertyId);
-                if (hqProperties.size() > 0) {
-                    //由于当前父节点下还有子节点信息所以不能直接删除父节点信息
-                    return SystemResult.build(SYSTEM_RESULT_STATE.CHILDREN_PROPERTY_EXITE.KEY, SYSTEM_RESULT_STATE.CHILDREN_PROPERTY_EXITE.VALUE);
-                }
-            }
-
             //获取当前客户端信息
             UserLoginContent currentLoginUser = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
+            //存储批量删除属性信息
+            List<HqProperty> deleteList = new ArrayList<>();
 
-            //创建封装新属性信息
-            HqProperty newProperty = new HqProperty();
-            newProperty.setPropertyId(propertyId);     //属性id
-            newProperty.setUpdateTime(new Date());     //修改时间
-            newProperty.setUpdateUserName(currentLoginUser.getUserName()); //谁修改了该用户信息
-            newProperty.setDelFlag(PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_YES.KEY); //代表已经删除了
+            //分割页面传递的批量删除属性id信息
+            String[] propertyIdsArray = propertyIds.trim().split(",");
 
+            for (String proId : propertyIdsArray) {
+                Integer currentProId = Integer.parseInt(proId);
+
+                //获取该节点信息
+                HqProperty hqProperty = hqPropertyExtendMapper.selectByPrimaryKey(currentProId);
+                if (hqProperty == null) {
+                    //没有该属性信息
+                    return SystemResult.build(SYSTEM_RESULT_STATE.DELETE_FAILURE.KEY, "没有该属性信息无法删除。。。");
+                }
+                if (hqProperty.getIsParent().equals(PROPERTY_TABLE_FIELD_STATE.IS_PARENT.KEY)) {
+                    //代表当前节点是父节点信息
+                    List<HqProperty> hqProperties = hqPropertyExtendMapper.childrenPropertiesExist(PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_NO.KEY, currentProId);
+                    if (hqProperties.size() > 0) {
+                        //由于当前父节点下还有子节点信息所以不能直接删除父节点信息
+                        return SystemResult.build(SYSTEM_RESULT_STATE.CHILDREN_PROPERTY_EXITE.KEY, SYSTEM_RESULT_STATE.CHILDREN_PROPERTY_EXITE.VALUE);
+                    }
+                }
+
+                //创建封装新属性信息
+                HqProperty newProperty = new HqProperty();
+                newProperty.setPropertyId(currentProId);     //属性id
+                newProperty.setUpdateTime(new Date());     //修改时间
+                newProperty.setUpdateUserName(currentLoginUser.getUserName()); //谁修改了该用户信息
+                newProperty.setDelFlag(PROPERTY_TABLE_FIELD_STATE.DEL_FLAG_YES.KEY); //代表已经删除了
+
+                deleteList.add(newProperty);
+            }
             //持久化到数据库中
-            hqPropertyExtendMapper.updateByPrimaryKeySelective(newProperty);
+            hqPropertyExtendMapper.batchDelete(deleteList, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY);
+
             return SystemResult.ok("属性删除成功");
         } catch (Exception e) {
             throw e;

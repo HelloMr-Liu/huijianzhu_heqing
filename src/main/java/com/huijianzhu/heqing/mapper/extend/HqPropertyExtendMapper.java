@@ -4,7 +4,9 @@ import com.huijianzhu.heqing.entity.HqProperty;
 import com.huijianzhu.heqing.mapper.HqPropertyMapper;
 import com.huijianzhu.heqing.pojo.PropertyTree;
 import com.huijianzhu.heqing.pojo.PropertyUpdateContent;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ public interface HqPropertyExtendMapper extends HqPropertyMapper {
             " and  property_name like concat('%',#{searchName},'%') ",
             "</if>",
             "</script>"})
-    List<PropertyTree> getValidPropertys(String searchName, String delFlag, String propertyType);
+    List<PropertyTree> getValidpropertyS(String searchName, String delFlag, String propertyType);
 
 
     /**
@@ -73,4 +75,51 @@ public interface HqPropertyExtendMapper extends HqPropertyMapper {
      */
     @Select(" select * from hq_property where parent_id=#{parentId} and del_flag=#{delFlag} ")
     List<HqProperty> childrenPropertiesExist(String delFlag, Integer parentId);
+
+
+    /**
+     * 批量修改删除操作
+     *
+     * @param propertyS 属性id集合
+     * @param delFlag   删除标志
+     */
+
+    @Update({
+
+            "<script> ",
+            " UPDATE  hq_property",
+            " <trim prefix ='set' prefixOverrides=',' > ",
+
+            "<trim prefix ='del_flag = case' suffix='end,'>",
+            "<foreach collection ='propertyS' item ='item' index = 'index'> ",
+            "when property_id = #{item.propertyId} then #{delFlag} ",
+            "</foreach>",
+            "</trim> ",
+
+            "<trim prefix ='update_time = case' suffix='end,'>",
+            "<foreach collection ='propertyS' item ='item' index = 'index'> ",
+            "when property_id = #{item.propertyId} then #{item.updateTime} ",
+            "</foreach>",
+            "</trim> ",
+
+
+            "<trim prefix ='update_user_name = case' suffix='end'>",
+            "<foreach collection ='propertyS' item ='item' index = 'index'> ",
+            "when property_id = #{item.propertyId} then #{item.updateUserName} ",
+            "</foreach>",
+            "</trim> ",
+
+            " </trim> ",
+
+            " WHERE property_id in ",
+            " (",
+            "<foreach collection='propertyS' item='item' index='index' separator=','>",
+            " #{item.propertyId}",
+            "</foreach>",
+            " )",
+            "</script>"
+    })
+    void batchDelete(@Param("propertyS") List<HqProperty> propertyS, String delFlag);
+
+
 }
