@@ -179,7 +179,7 @@ public class PlotServiceImpl implements PlotService {
         pipeDesc.setPropertyTrees(treeList); //封装属性信息
 
         //获取当前指定地块对应的属性值信息
-        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, plotId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, Integer.parseInt(plotId), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         pipeDesc.setPropertyValues(propertyValues); //封装本次地块属性值信息
         return SystemResult.ok(pipeDesc);
     }
@@ -201,24 +201,39 @@ public class PlotServiceImpl implements PlotService {
             if (plot != null) {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY, "本次修改失败,当前的地块名有相同");
             }
+            if (definition.getPropertyValueList() == null) {
+                //获取当前客户端信息
+                UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-            //获取当前客户端信息
-            UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+                //修改地块信息
+                HqPlot updateHqplot = new HqPlot();
+                updateHqplot.setUpdateTime(new Date());                     //最近的一次修改时间
+                updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
+                updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
+                updateHqplot.setPlotName(definition.getContentName());      //修改新的地块名称
+                updateHqplot.setPlotMark(definition.getPlotMark());         //修改新的地标信息
+                updateHqplot.setExtend1(definition.getColor());                      //颜色信息
+                updateHqplot.setExtend2(definition.getLucency());                    //透明度
 
-            //修改地块信息
-            HqPlot updateHqplot = new HqPlot();
-            updateHqplot.setUpdateTime(new Date());                     //最近的一次修改时间
-            updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
-            updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
-            updateHqplot.setPlotName(definition.getContentName());      //修改新的地块名称
-            updateHqplot.setPlotMark(definition.getPlotMark());         //修改新的地标信息
-            updateHqplot.setExtend1(definition.getColor());                      //颜色信息
-            updateHqplot.setExtend2(definition.getLucency());                    //透明度
+                //将地块信息持久化到数据库中
+                hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
 
-            //将地块信息持久化到数据库中
-            hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
-
-            if (definition.getPropertyValueList() != null) {
+                //当前地块对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的地块名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(plot.getPlotName())) {
+                        //判断名称是否和原来一样
+                        if (!glb.getPropertyValue().equals(definition.getContentName())) {
+                            //名称不一样修改对应的属性值信息
+                            glb.setPropertyValue(definition.getContentName());
+                            hqPropertyValueExtendMapper.updateByPrimaryKeyWithBLOBs(glb);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                //更新属性下的属性值信息
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
                 propertyValueList.forEach(
                         e -> {
@@ -227,7 +242,6 @@ public class PlotServiceImpl implements PlotService {
                 );
                 //更新地块对应的属性值信息
                 propertyValueService.updatePropertyValue(definition.getPropertyValueList());
-
             }
             return SystemResult.ok("地块信息修改成功");
         } catch (Exception e) {
@@ -238,7 +252,6 @@ public class PlotServiceImpl implements PlotService {
             PlotLock.PLOT_UPDATE_LOCK.writeLock().unlock();
         }
     }
-
 
     /**
      * 删除地块信息

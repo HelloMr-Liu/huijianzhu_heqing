@@ -134,6 +134,8 @@ public class PipeServiceImpl implements PipeService {
             newPipe.setCreateTime(new Date());                              //创建时间
             newPipe.setUpdateTime(new Date());                              //修改时间
             newPipe.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
+            newPipe.setExtend1(definition.getColor());                      //颜色信息
+            newPipe.setExtend2(definition.getLucency());                    //透明度
             newPipe.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
             //持久化到数据库中
@@ -205,7 +207,7 @@ public class PipeServiceImpl implements PipeService {
         pipeDesc.setPropertyTrees(treeList); //封装属性信息
 
         //获取当前指定管道对应的属性值信息
-        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, pipeId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, Integer.parseInt(pipeId), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         pipeDesc.setPropertyValues(propertyValues); //封装本次管道属性值信息
         return SystemResult.ok(pipeDesc);
     }
@@ -228,20 +230,41 @@ public class PipeServiceImpl implements PipeService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY, "本次修改失败,当前的管道名有相同");
             }
 
-            //获取当前客户端信息
-            UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            if (definition.getPropertyValueList() == null) {
+                //获取当前客户端信息
+                UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-            //修改管道信息
-            HqPlotPipe updateHqplotPipe = new HqPlotPipe();
-            updateHqplotPipe.setUpdateTime(new Date());                            //最近的一次修改时间
-            updateHqplotPipe.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
-            updateHqplotPipe.setPipeId(definition.getContentId());                 //修改指定的管道id
-            updateHqplotPipe.setPipeName(definition.getContentName());             //修改新的管道名称
-            updateHqplotPipe.setPipePlotMark(definition.getPlotMark());            //修改新的地标信息
+                //修改管道信息
+                HqPlotPipe updateHqplotPipe = new HqPlotPipe();
+                updateHqplotPipe.setUpdateTime(new Date());                            //最近的一次修改时间
+                updateHqplotPipe.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
+                updateHqplotPipe.setPipeId(definition.getContentId());                 //修改指定的管道id
+                updateHqplotPipe.setPipeName(definition.getContentName());             //修改新的管道名称
+                updateHqplotPipe.setPipePlotMark(definition.getPlotMark());            //修改新的地标信息
+                updateHqplotPipe.setExtend1(definition.getColor());                      //颜色信息
+                updateHqplotPipe.setExtend2(definition.getLucency());                    //透明度
 
-            //将管道信息持久化到数据库中
-            hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
-            if (definition.getPropertyValueList() != null) {
+                //将管道信息持久化到数据库中
+                hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
+
+
+                //当前地块对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的地块管道名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(plot.getPipeName())) {
+                        //判断名称是否和原来一样
+                        if (!glb.getPropertyValue().equals(definition.getContentName())) {
+                            //名称不一样修改对应的属性值信息
+                            glb.setPropertyValue(definition.getContentName());
+                            hqPropertyValueExtendMapper.updateByPrimaryKeyWithBLOBs(glb);
+                            break;
+                        }
+                    }
+                }
+
+
+            } else {
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
                 propertyValueList.forEach(
                         e -> {

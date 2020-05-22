@@ -31,7 +31,7 @@ public interface HqPropertyValueExtendMapper extends HqPropertyValueMapper {
      * @return
      */
     @Select(" select * from hq_property_value where plot_type=#{plotType} and plot_type_id=#{plotTypeId} and del_flag=#{delFlag} ")
-    List<HqPropertyValueWithBLOBs> getPropertyValues(String plotType, String plotTypeId, String delFlag);
+    List<HqPropertyValueWithBLOBs> getPropertyValues(String plotType, Integer plotTypeId, String delFlag);
 
 
     /**

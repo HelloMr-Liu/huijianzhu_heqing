@@ -143,6 +143,8 @@ public class HouseServiceImpl implements HouseService {
             newHosue.setHouseType(definition.getHouseType());               //指定房屋类型 LIVE(居住) NOLIVE(非居住)
             newHosue.setCreateTime(new Date());                             //创建时间
             newHosue.setUpdateTime(new Date());                             //修改时间
+            newHosue.setExtend1(definition.getColor());                      //颜色信息
+            newHosue.setExtend2(definition.getLucency());                    //透明度
             newHosue.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newHosue.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);  //默认是有效信息
 
@@ -216,7 +218,7 @@ public class HouseServiceImpl implements HouseService {
         pipeDesc.setPropertyTrees(treeList); //封装属性信息
 
         //获取当前指定房屋对应的属性值信息
-        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, houseId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, Integer.parseInt(houseId), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         pipeDesc.setPropertyValues(propertyValues); //封装本次房屋属性值信息
         return SystemResult.ok(pipeDesc);
     }
@@ -239,21 +241,39 @@ public class HouseServiceImpl implements HouseService {
                 return SystemResult.build(SYSTEM_RESULT_STATE.UPDATE_FAILURE.KEY, "本次修改失败,当前的房屋名有相同");
             }
 
-            //获取当前本地用户信息
-            UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
+            if (definition.getPropertyValueList() == null) {
 
-            //修改房屋信息
-            HqPlotHouse updateHqplotHouse = new HqPlotHouse();
-            updateHqplotHouse.setUpdateTime(new Date());                            //最近的一次修改时间
-            updateHqplotHouse.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
-            updateHqplotHouse.setHouseId(definition.getContentId());                //修改指定的房屋id
-            updateHqplotHouse.setHouseName(definition.getContentName());            //修改新的房屋名称
-            updateHqplotHouse.setHousePlotMark(definition.getPlotMark());           //修改新的地标信息
+                //获取当前本地用户信息
+                UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
-            //将房屋信息持久化到数据库中
-            hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
+                //修改房屋信息
+                HqPlotHouse updateHqplotHouse = new HqPlotHouse();
+                updateHqplotHouse.setUpdateTime(new Date());                            //最近的一次修改时间
+                updateHqplotHouse.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
+                updateHqplotHouse.setHouseId(definition.getContentId());                //修改指定的房屋id
+                updateHqplotHouse.setHouseName(definition.getContentName());            //修改新的房屋名称
+                updateHqplotHouse.setHousePlotMark(definition.getPlotMark());           //修改新的地标信息
+                updateHqplotHouse.setExtend1(definition.getColor());                      //颜色信息
+                updateHqplotHouse.setExtend2(definition.getLucency());                    //透明度
 
-            if (definition.getPropertyValueList() != null) {
+                //将房屋信息持久化到数据库中
+                hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
+
+                //当前地块对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的地块房屋名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(plot.getHouseName())) {
+                        //判断名称是否和原来一样
+                        if (!glb.getPropertyValue().equals(definition.getContentName())) {
+                            //名称不一样修改对应的属性值信息
+                            glb.setPropertyValue(definition.getContentName());
+                            hqPropertyValueExtendMapper.updateByPrimaryKeyWithBLOBs(glb);
+                            break;
+                        }
+                    }
+                }
+            } else {
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
                 propertyValueList.forEach(
                         e -> {
