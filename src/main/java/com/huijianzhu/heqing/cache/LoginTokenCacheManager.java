@@ -145,16 +145,18 @@ public class LoginTokenCacheManager {
             //表示有对应的登录缓存标识信息，获取最新用户信息
             HqUser hqUser = hqUserExtendMapper.selectByPrimaryKey(userId);
 
-            //将用户信息权限id分割获取
-            String[] split = hqUser.getPermissionsId().trim().split(",");
-            Arrays.asList(split).stream().forEach(
-                    e -> {
-                        if (!StrUtil.hasBlank(e)) {
-                            //将最新用户模块id存储到newModelIdList集合中
-                            newModelIdList.add(e);
+            if (hqUser.getPermissionsId() != null) {
+                //将用户信息权限id分割获取
+                String[] split = hqUser.getPermissionsId().trim().split(",");
+                Arrays.asList(split).stream().forEach(
+                        e -> {
+                            if (!StrUtil.hasBlank(e)) {
+                                //将最新用户模块id存储到newModelIdList集合中
+                                newModelIdList.add(e);
+                            }
                         }
-                    }
-            );
+                );
+            }
 
             //遍历loginTokenByUserId中对应的当前用户id标识
             loginTokenByUserIdList.forEach(

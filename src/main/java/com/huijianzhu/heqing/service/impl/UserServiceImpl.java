@@ -108,10 +108,14 @@ public class UserServiceImpl implements UserService {
             hqUser.setUserName(definition.getUserName()); //添加对应的用户名
             hqUser.setUserAccount(newUserAccount.toUpperCase());        //随机一个账号
             hqUser.setPassWord(MD5Utils.md5(definition.getPassword() + "heqing")); //对用户密码进行加密操作
+            hqUser.setE1(definition.getPassword()); //存储明文密码
             hqUser.setPhoneNumber(definition.getPhoneNumber()); //电话号码
             hqUser.setEmail(definition.getEmail());//邮箱
             hqUser.setUserType(definition.getUserType()); //用户类型
-            hqUser.setPermissionsId(definition.getPermissionsId()); //模块id
+            if (StrUtil.hasBlank(definition.getPermissionsId())) {
+                definition.setPermissionsId("");
+            }
+            hqUser.setPermissionsId(definition.getPermissionsId()); //修改用户权限
             hqUser.setUpdateTime(new Date());   //修改时间
             hqUser.setUpdateUserName(currentLoginUser.getUserName()); //记录那个用户操作了该用户信息
             hqUser.setCreateTime(new Date());
@@ -175,13 +179,15 @@ public class UserServiceImpl implements UserService {
             currrentUser.setUserId(definition.getUserId());             //修改用户id
             currrentUser.setUserName(definition.getUserName());         //修改用户名
             currrentUser.setPassWord(MD5Utils.md5(definition.getPassword() + "heqing")); //对用户密码进行加密操作
+            currrentUser.setE1(definition.getPassword()); //存储明文密码
             currrentUser.setUserAccount(definition.getUserAccount());   //修改用户账号
             currrentUser.setEmail(definition.getEmail());               //修改邮件
             currrentUser.setPhoneNumber(definition.getPhoneNumber());   //修改电话号码
             currrentUser.setUserType(definition.getUserType());         //修改用户类型
-            if (!StrUtil.hasBlank(definition.getPermissionsId())) {
-                currrentUser.setPermissionsId(definition.getPermissionsId()); //修改用户权限
+            if (StrUtil.hasBlank(definition.getPermissionsId())) {
+                definition.setPermissionsId("");
             }
+            currrentUser.setPermissionsId(definition.getPermissionsId()); //修改用户权限
             currrentUser.setUpdateTime(new Date());                             //修改操作时间
             currrentUser.setUpdateUserName(currentLoginUser.getUserName());     //记录那个用户修改了该用户信息
 
