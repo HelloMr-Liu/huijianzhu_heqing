@@ -2,7 +2,9 @@ package com.huijianzhu.heqing.pojo;
 
 
 import com.huijianzhu.heqing.entity.HqPropertyValueWithBLOBs;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
  * 刘梓江    2020/5/8  17:23            创建
  * =================================================================
  **/
+
 @Data
 public class AccpetPlotTypePropertyValue extends HqPropertyValueWithBLOBs {
 }

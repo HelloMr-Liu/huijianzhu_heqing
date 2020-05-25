@@ -65,8 +65,10 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         propertyValues.forEach(
                 e -> {
                     e.setUpdateTime(new Date());
+                    e.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                     e.setUpdateUserName(userContent == null ? "" : userContent.getUserName());
                     if (e.getPropertyValueId() == null || e.getPropertyValueId() < 1) {
+                        e.setPropertyValueId(null);
                         e.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                         e.setCreateTime(new Date());
                         //当前添加属性值信息

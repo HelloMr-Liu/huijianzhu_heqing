@@ -1,9 +1,11 @@
 package com.huijianzhu.heqing.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeAccpetDefinition;
 import com.huijianzhu.heqing.definition.PlotOrHouseOrPipeUpdateAccpetDefinition;
 import com.huijianzhu.heqing.entity.HqPlot;
+import com.huijianzhu.heqing.pojo.AccpetPlotTypePropertyValue;
 import com.huijianzhu.heqing.service.PlotService;
 import com.huijianzhu.heqing.utils.DownloadUtil;
 import com.huijianzhu.heqing.utils.ExcelUtils;
@@ -190,6 +192,12 @@ public class PlotController {
     @ResponseBody
     @PostMapping("/update/landsurvey/update")
     public SystemResult updateContent(PlotOrHouseOrPipeUpdateAccpetDefinition definition) throws Exception {
+        //判断属性值内容是否为空
+        if (!StrUtil.hasBlank(definition.getListContent())) {
+            //将listContent转换成一个集合
+            List<AccpetPlotTypePropertyValue> accpetPlotTypePropertyValues = JSON.parseArray(definition.getListContent(), AccpetPlotTypePropertyValue.class);
+            definition.setPropertyValueList(accpetPlotTypePropertyValues);
+        }
         return plotService.updateContent(definition);
     }
 

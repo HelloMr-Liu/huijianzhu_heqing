@@ -1,7 +1,9 @@
 package com.huijianzhu.heqing.definition;
 
 import com.huijianzhu.heqing.pojo.AccpetPlotTypePropertyValue;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -25,5 +27,10 @@ public class PlotOrHouseOrPipeUpdateAccpetDefinition {
     //内容类型为1
     private String color;       //颜色
     private String lucency;     //透明度
+
+    /**
+     * 属性值内容字符串
+     */
+    public String listContent;
 
 }
