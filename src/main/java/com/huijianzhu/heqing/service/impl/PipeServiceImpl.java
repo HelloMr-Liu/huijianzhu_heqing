@@ -136,6 +136,7 @@ public class PipeServiceImpl implements PipeService {
             newPipe.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newPipe.setExtend1(definition.getColor());                      //颜色信息
             newPipe.setExtend2(definition.getLucency());                    //透明度
+            newPipe.setExtend3(definition.getEntityId());                   //实体id
             newPipe.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);   //默认是有效信息
 
             //持久化到数据库中
@@ -234,6 +235,10 @@ public class PipeServiceImpl implements PipeService {
                 //获取当前客户端信息
                 UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
+
+                //获取原管道搬迁信息
+                HqPlotPipe hqPlotPipe = hqPlotPipeExtendMapper.selectByPrimaryKey(definition.getContentId());
+
                 //修改管道信息
                 HqPlotPipe updateHqplotPipe = new HqPlotPipe();
                 updateHqplotPipe.setUpdateTime(new Date());                            //最近的一次修改时间
@@ -243,7 +248,7 @@ public class PipeServiceImpl implements PipeService {
                 updateHqplotPipe.setPipePlotMark(definition.getPlotMark());            //修改新的地标信息
                 updateHqplotPipe.setExtend1(definition.getColor());                      //颜色信息
                 updateHqplotPipe.setExtend2(definition.getLucency());                    //透明度
-
+                updateHqplotPipe.setExtend3(definition.getEntityId());                  //实体id
                 //将管道信息持久化到数据库中
                 hqPlotPipeExtendMapper.updateByPrimaryKeySelective(updateHqplotPipe);
 
@@ -252,7 +257,7 @@ public class PipeServiceImpl implements PipeService {
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的地块管道名称
                 for (HqPropertyValueWithBLOBs glb : propertyValues) {
-                    if (glb.getPropertyValue().equals(plot.getPipeName())) {
+                    if (glb.getPropertyValue().equals(hqPlotPipe.getPipeName())) {
                         //判断名称是否和原来一样
                         if (!glb.getPropertyValue().equals(definition.getContentName())) {
                             //名称不一样修改对应的属性值信息

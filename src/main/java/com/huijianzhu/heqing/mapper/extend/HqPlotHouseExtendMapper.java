@@ -32,9 +32,9 @@ public interface HqPlotHouseExtendMapper extends HqPlotHouseMapper {
     @Select({
             "<script>",
             " SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hph.* ",
-            " FROM hq_plot hp left join  hq_plot_house hph  ",
+            " FROM hq_plot hp left join   (select * from hq_plot_house where del_flag=#{delFalg}) hph  ",
             " on hph.plot_id=hp.plot_id  ",
-            " where hp.del_flag=#{delFalg} ",
+            " where hp.del_flag=#{delFalg}  ",
             " <if test='houseName!=null ' >",
             " and  house_name like concat('%',#{houseName},'%') ",
             " </if>",

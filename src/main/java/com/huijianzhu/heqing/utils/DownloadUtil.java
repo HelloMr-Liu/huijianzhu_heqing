@@ -52,6 +52,8 @@ public class DownloadUtil {
 
             //attachment作为附件下载；inline客户端机器有安装匹配程序，则直接打开；注意改变配置，清除缓存，否则可能不能看到效果
             response.addHeader("Content-Disposition", "attachment;filename=" + returnName);
+            response.addHeader("Access-Control-Allow-Origin", "*");             //文件跨域处理
+            response.addHeader("Access-Control-Allow-Credentials", "true");     //文件跨域处理
 
             //将文件读入响应流
             inputStream = new FileInputStream(file);

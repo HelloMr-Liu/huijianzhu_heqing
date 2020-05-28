@@ -33,4 +33,7 @@ public class PlotOrHouseOrPipeAccpetDefinition {
     private String houseType;   //房屋类型 LIVE居住   NOLIVE非居住
 
 
+    //存储对应的实体id
+    private String entityId;
+
 }

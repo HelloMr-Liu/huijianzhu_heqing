@@ -28,6 +28,14 @@ public class PlotOrHouseOrPipeUpdateAccpetDefinition {
     private String color;       //颜色
     private String lucency;     //透明度
 
+    //存储对应的实体id
+    private String entityId;
+
+
+    //内容类型为2的时候接收的值属性
+    private String houseType;   //房屋类型 LIVE居住   NOLIVE非居住
+
+
     /**
      * 属性值内容字符串
      */

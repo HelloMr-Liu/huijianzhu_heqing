@@ -145,6 +145,7 @@ public class HouseServiceImpl implements HouseService {
             newHosue.setUpdateTime(new Date());                             //修改时间
             newHosue.setExtend1(definition.getColor());                      //颜色信息
             newHosue.setExtend2(definition.getLucency());                    //透明度
+            newHosue.setExtend3(definition.getEntityId());                  //实体id
             newHosue.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
             newHosue.setDelFlag(GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);  //默认是有效信息
 
@@ -246,24 +247,32 @@ public class HouseServiceImpl implements HouseService {
                 //获取当前本地用户信息
                 UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
+
+                //获取当前源房屋名称
+                HqPlotHouse hqPlotHouse = hqPlotHouseExtendMapper.selectByPrimaryKey(definition.getContentId());
+
+
                 //修改房屋信息
                 HqPlotHouse updateHqplotHouse = new HqPlotHouse();
                 updateHqplotHouse.setUpdateTime(new Date());                            //最近的一次修改时间
                 updateHqplotHouse.setUpdateUserName(userContent.getUserName());         //记录谁操作了本次记录
                 updateHqplotHouse.setHouseId(definition.getContentId());                //修改指定的房屋id
+                updateHqplotHouse.setHouseType(definition.getHouseType());              //房屋类型
                 updateHqplotHouse.setHouseName(definition.getContentName());            //修改新的房屋名称
                 updateHqplotHouse.setHousePlotMark(definition.getPlotMark());           //修改新的地标信息
                 updateHqplotHouse.setExtend1(definition.getColor());                      //颜色信息
                 updateHqplotHouse.setExtend2(definition.getLucency());                    //透明度
+                updateHqplotHouse.setExtend3(definition.getEntityId());                  //实体id
 
                 //将房屋信息持久化到数据库中
                 hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
+
 
                 //当前地块对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的地块房屋名称
                 for (HqPropertyValueWithBLOBs glb : propertyValues) {
-                    if (glb.getPropertyValue().equals(plot.getHouseName())) {
+                    if (glb.getPropertyValue().equals(hqPlotHouse.getHouseName())) {
                         //判断名称是否和原来一样
                         if (!glb.getPropertyValue().equals(definition.getContentName())) {
                             //名称不一样修改对应的属性值信息

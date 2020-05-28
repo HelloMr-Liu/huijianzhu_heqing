@@ -83,6 +83,7 @@ public class FileController {
             PrintWriter writer = response.getWriter();
             writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.FILE_NOT_EXITE.KEY, "当前指定的文件不存在")));
             writer.flush();
+            return;
         }
         new DownloadUtil().prototypeDownload(upload, fileName, response, false);
     }

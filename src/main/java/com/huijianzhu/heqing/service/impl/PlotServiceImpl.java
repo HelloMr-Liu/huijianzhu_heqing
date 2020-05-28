@@ -205,6 +205,10 @@ public class PlotServiceImpl implements PlotService {
                 //获取当前客户端信息
                 UserLoginContent userContent = (UserLoginContent) request.getAttribute(LOGIN_STATE.USER_LOGIN_TOKEN.toString());
 
+
+                //获取当前原地块信息
+                HqPlot plot1 = hqPlotExtendMapper.selectByPrimaryKey(definition.getContentId());
+
                 //修改地块信息
                 HqPlot updateHqplot = new HqPlot();
                 updateHqplot.setUpdateTime(new Date());                     //最近的一次修改时间
@@ -218,11 +222,12 @@ public class PlotServiceImpl implements PlotService {
                 //将地块信息持久化到数据库中
                 hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
 
+
                 //当前地块对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的地块名称
                 for (HqPropertyValueWithBLOBs glb : propertyValues) {
-                    if (glb.getPropertyValue().equals(plot.getPlotName())) {
+                    if (glb.getPropertyValue().equals(plot1.getPlotName())) {
                         //判断名称是否和原来一样
                         if (!glb.getPropertyValue().equals(definition.getContentName())) {
                             //名称不一样修改对应的属性值信息
