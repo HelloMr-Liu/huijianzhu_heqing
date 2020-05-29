@@ -81,7 +81,7 @@ public class FileController {
             response.setContentType("text/html;charset=UTF-8");
             // 文件不存在
             PrintWriter writer = response.getWriter();
-            writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.FILE_NOT_EXITE.KEY, "当前指定的文件不存在")));
+            writer.write(JSONUtil.toJsonStr(SystemResult.build(SYSTEM_RESULT_STATE.FILE_NOT_EXITE.KEY, "当前指定的文件已丢失")));
             writer.flush();
             return;
         }
