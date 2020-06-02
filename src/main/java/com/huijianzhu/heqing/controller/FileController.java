@@ -6,6 +6,7 @@ import com.huijianzhu.heqing.enums.SYSTEM_RESULT_STATE;
 import com.huijianzhu.heqing.utils.DownloadUtil;
 import com.huijianzhu.heqing.vo.SystemResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.UUID;
 
@@ -40,8 +42,22 @@ public class FileController {
     @PostMapping("/upload")
     @ResponseBody
     public SystemResult fileUpload(@RequestParam("file") MultipartFile file) throws Exception {
-        //获取对应的当前项目target目录下对应的files
-        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/");
+        //获取对应的当前项目target目录下对应的files    InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream("files");
+        //File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/");
+        String currentFilePath = "";
+
+        //判断当前操作系统
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            //Linux指定路径方式
+            currentFilePath = this.getClass().getResource("/").getPath();
+        } else {
+            //windows指定路径方式
+            currentFilePath = "C:\\heqing2.0\\";
+        }
+        log.info("=============文件上传目录：" + "==========" + currentFilePath);
+
+
+        File upload = new File(new File(currentFilePath).getAbsolutePath(), "files/");
         if (!upload.exists()) {
             upload.mkdirs();
         }
@@ -71,7 +87,21 @@ public class FileController {
     @GetMapping("/show")
     public void fileShow(String fileName, HttpServletResponse response) throws Exception {
         //获取对应的当前项目target目录下对应的files
-        File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/" + fileName);
+        //File upload = new File(new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath(), "files/" + fileName);
+        String currentFilePath = "";
+
+        //判断当前操作系统
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            //Linux指定路径方式
+            currentFilePath = this.getClass().getResource("/").getPath();
+        } else {
+            //windows指定路径方式
+            currentFilePath = "C:\\heqing2.0\\";
+        }
+        log.info("=============文件下载目录：" + "==========" + currentFilePath);
+
+
+        File upload = new File(new File(currentFilePath).getAbsolutePath(), "files/" + fileName);
         if (!upload.exists()) {
             //设置缓存区编码为UTF-8编码格式
             response.setCharacterEncoding("UTF-8");

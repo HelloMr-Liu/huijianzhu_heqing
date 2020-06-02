@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- 项目名称 -->
-    <property name="tiangou" value="xk_server"/>
+    <property name="heqing" value="xk_server"/>
 
     <!-- 文件输出格式 -->
     <property name="PATTERN"
@@ -27,7 +27,7 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名 -->
-            <FileNamePattern>${OPEN_FILE_PATH}/all/tiangou-all.%d{yyyy-MM-dd}-%i.log
+            <FileNamePattern>${OPEN_FILE_PATH}/all/heqing-all.%d{yyyy-MM-dd}-%i.log
             </FileNamePattern>
             <!--日志文件保留天数 -->
             <MaxHistory>30</MaxHistory>
@@ -48,7 +48,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${OPEN_FILE_PATH}/debug/tiangou-debug.%d{yyyy-MM-dd}-%i.log
+            <FileNamePattern>${OPEN_FILE_PATH}/debug/heqing-debug.%d{yyyy-MM-dd}-%i.log
             </FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy
@@ -75,7 +75,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${OPEN_FILE_PATH}/info/tiangou-info.%d{yyyy-MM-dd}-%i.log
+            <FileNamePattern>${OPEN_FILE_PATH}/info/heqing-info.%d{yyyy-MM-dd}-%i.log
             </FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy
@@ -102,7 +102,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${OPEN_FILE_PATH}/error/tiangou-error.%d{yyyy-MM-dd}-%i.log
+            <FileNamePattern>${OPEN_FILE_PATH}/error/heqing-error.%d{yyyy-MM-dd}-%i.log
             </FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy
@@ -129,7 +129,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${OPEN_FILE_PATH}/warn/tiangou-warn.%d{yyyy-MM-dd}-%i.log
+            <FileNamePattern>${OPEN_FILE_PATH}/warn/heqing-warn.%d{yyyy-MM-dd}-%i.log
             </FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy

@@ -2,11 +2,19 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.97.195.103:3306/heqing?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+    #    url: jdbc:mysql://47.97.195.103:3306/heqing?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    #    username: root
+    #    password: 1348609141
+    #    ##这样就不会使用Springboot默认的连接池Hikari。
+    #    type: com.alibaba.druid.pool.DruidDataSource
+
+    url: jdbc:mysql://192.168.0.8:3307/heqing?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root
-    password: 1348609141
+    password: root
     ##这样就不会使用Springboot默认的连接池Hikari。
     type: com.alibaba.druid.pool.DruidDataSource
+
+
 
     # 虽然我们配置了druid连接池的其它属性，但是不会生效。因为默认是使用的java.sql.Datasource的类来获取属性的，有些属性datasource没有。如果我们想让配置生效，需要手动创建Druid的配置文件。
     # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时（缺省值：0）
