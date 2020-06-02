@@ -55,7 +55,7 @@ public class HouseServiceImpl implements HouseService {
     private HqPropertyValueExtendMapper hqPropertyValueExtendMapper;    //操作属性值信息表mapper接口
 
     @Autowired
-    private PlotService plotService;                                    //注入地块信息业务接口
+    private PlotService plotService;                                    //注入房屋信息业务接口
 
     @Autowired
     private PropertyService propertyService;                            //注入属性业务接口
@@ -83,15 +83,15 @@ public class HouseServiceImpl implements HouseService {
                     //获取当前对应的房屋信息
                     PlotHouseDTO plotHouseDTO = plotHouseMap.get(e.getPlotName());
                     if (plotHouseDTO == null) {
-                        //由于没有房屋信息所以创建一个新的地块房屋信息
+                        //由于没有房屋信息所以创建一个新的房屋房屋信息
                         plotHouseDTO = new PlotHouseDTO();
                         plotHouseDTO.setPlotId(e.getPlotId());                  //房屋id
                         plotHouseDTO.setPlotName(e.getPlotName());              //房屋名称
-                        plotHouseDTO.setPlotCreateTime(e.getPlotCreateTime());  //地块创建时间
+                        plotHouseDTO.setPlotCreateTime(e.getPlotCreateTime());  //房屋创建时间
                         plotHouseDTO.setLiveList(new ArrayList<>());            //居住
                         plotHouseDTO.setNotLiveList(new ArrayList<>());         //非居住
 
-                        plotHouseMap.put(e.getPlotName(), plotHouseDTO);     //将当前地块房屋搬迁信息存储到plotHouseMap中
+                        plotHouseMap.put(e.getPlotName(), plotHouseDTO);     //将当前房屋房屋搬迁信息存储到plotHouseMap中
                     }
                     //判断当前房屋时什么类型的
                     if (HOUSE_TABLE_FILED_STATE.STATE.LIVE.equals(e.getHouseType())) {
@@ -139,7 +139,7 @@ public class HouseServiceImpl implements HouseService {
             HqPlotHouse newHosue = new HqPlotHouse();
             newHosue.setHouseName(definition.getContentName());             //房屋名称
             newHosue.setHousePlotMark(definition.getPlotMark());            //地标信息
-            newHosue.setPlotId(definition.getPlotId());                     //指定某一个地块
+            newHosue.setPlotId(definition.getPlotId());                     //指定某一个房屋
             newHosue.setHouseType(definition.getHouseType());               //指定房屋类型 LIVE(居住) NOLIVE(非居住)
             newHosue.setCreateTime(new Date());                             //创建时间
             newHosue.setUpdateTime(new Date());                             //修改时间
@@ -153,7 +153,7 @@ public class HouseServiceImpl implements HouseService {
             hqPlotHouseExtendMapper.insertSelective(newHosue);
 
 
-            //默认获取所有地块相关的属性信息(树结构)
+            //默认获取所有房屋相关的属性信息(树结构)
             SystemResult propertiesByName = propertyService.getPropertiesByName(null, PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY);
             List<PropertyTree> treeList = (List) propertiesByName.getResult();
             //用于默认创建一个子属性信息
@@ -268,9 +268,9 @@ public class HouseServiceImpl implements HouseService {
                 hqPlotHouseExtendMapper.updateByPrimaryKeySelective(updateHqplotHouse);
 
 
-                //当前地块对应的子属性
+                //当前房屋对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, definition.getContentId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
-                //遍历子属性值信息获取对应的地块房屋名称
+                //遍历子属性值信息获取对应的房屋房屋名称
                 for (HqPropertyValueWithBLOBs glb : propertyValues) {
                     if (glb.getPropertyValue().equals(hqPlotHouse.getHouseName())) {
                         //判断名称是否和原来一样
@@ -284,6 +284,31 @@ public class HouseServiceImpl implements HouseService {
                 }
             } else {
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+
+                //获取当前房屋信息
+                HqPlotHouse hqPlotHouse = hqPlotHouseExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
+
+                //当前房屋对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, hqPlotHouse.getHouseId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的房屋名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(hqPlotHouse.getHouseName())) {
+
+                        //判断本次修改的属性值对应的房屋名称是否有改变
+                        for (AccpetPlotTypePropertyValue value : propertyValueList) {
+                            if (value.getPropertyValueId() != null && value.getPropertyValueId().toString().equals(glb.getPropertyValueId().toString())) {
+                                if (!value.getPropertyValue().equals(glb.getPropertyValue())) {
+
+                                    //房屋名称已经改变重新修改房屋名称
+                                    hqPlotHouse.setHouseName(value.getPropertyValue());
+                                    hqPlotHouseExtendMapper.updateByPrimaryKeySelective(hqPlotHouse);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 propertyValueList.forEach(
                         e -> {
                             e.setPlotType(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY);
@@ -348,13 +373,13 @@ public class HouseServiceImpl implements HouseService {
     @Transactional(rollbackFor = Exception.class)
     public SystemResult batchInsertHouses(List<HqPlotHouseDefinition> houses) {
 
-        //获取最新的地块信息集
+        //获取最新的房屋信息集
         SystemResult plotContentListByName = plotService.getPlotContentListByName(null);
         List<HqPlot> plots = (List<HqPlot>) plotContentListByName.getResult();
         //转换成map
         Map<String, Integer> collect = plots.stream().collect(Collectors.toMap(HqPlot::getPlotName, HqPlot::getPlotId, (test1, test2) -> test1));
         if (collect == null || collect.size() < 1) {
-            return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "当前对应的地块信息没有,所有仔细查看你选择的地块信息");
+            return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "当前对应的房屋信息没有,所有仔细查看你选择的房屋信息");
         }
 
         //创建一个map用于判断本次存储房屋动名称是否有相同的
@@ -367,9 +392,9 @@ public class HouseServiceImpl implements HouseService {
         for (int index = 0; index < houses.size(); index++) {
             HqPlotHouseDefinition house = houses.get(index);
 
-            //判断当前的房屋动迁对有的地块信息是否存在
+            //判断当前的房屋动迁对有的房屋信息是否存在
             if (!collect.containsKey(house.getPlotName())) {
-                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "在第" + (index + 3) + "行当前对应的地块信息:" + house.getPlotName() + "不存在");
+                return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "在第" + (index + 3) + "行当前对应的房屋信息:" + house.getPlotName() + "不存在");
             }
 
             HqPlotHouse currentHouse = hqPlotHouseExtendMapper.getHouseByName(house.getHouseName(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY, null);

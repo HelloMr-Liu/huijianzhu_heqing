@@ -211,13 +211,13 @@ public class PlotServiceImpl implements PlotService {
 
                 //修改地块信息
                 HqPlot updateHqplot = new HqPlot();
+                updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
                 updateHqplot.setUpdateTime(new Date());                     //最近的一次修改时间
                 updateHqplot.setUpdateUserName(userContent.getUserName());  //记录谁操作了本次记录
-                updateHqplot.setPlotId(definition.getContentId());          //修改指定的地块id
                 updateHqplot.setPlotName(definition.getContentName());      //修改新的地块名称
                 updateHqplot.setPlotMark(definition.getPlotMark());         //修改新的地标信息
-                updateHqplot.setExtend1(definition.getColor());                      //颜色信息
-                updateHqplot.setExtend2(definition.getLucency());                    //透明度
+                updateHqplot.setExtend1(definition.getColor());             //颜色信息
+                updateHqplot.setExtend2(definition.getLucency());           //透明度
 
                 //将地块信息持久化到数据库中
                 hqPlotExtendMapper.updateByPrimaryKeySelective(updateHqplot);
@@ -240,6 +240,29 @@ public class PlotServiceImpl implements PlotService {
             } else {
                 //更新属性下的属性值信息
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+
+                //获取当前地块信息
+                HqPlot plot1 = hqPlotExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
+
+                //当前地块对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, plot1.getPlotId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的地块名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(plot1.getPlotName())) {
+
+                        //判断本次修改的属性值对应的地块名称是否有改变
+                        for (AccpetPlotTypePropertyValue value : propertyValueList) {
+                            if (value.getPropertyValueId() != null && value.getPropertyValueId().toString().equals(glb.getPropertyValueId().toString())) {
+                                if (!value.getPropertyValue().equals(glb.getPropertyValue())) {
+
+                                    //地块名称已经改变重新修改地块名称
+                                    plot1.setPlotName(value.getPropertyValue());
+                                    hqPlotExtendMapper.updateByPrimaryKeySelective(plot1);
+                                }
+                            }
+                        }
+                    }
+                }
                 propertyValueList.forEach(
                         e -> {
                             e.setPlotType(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY);

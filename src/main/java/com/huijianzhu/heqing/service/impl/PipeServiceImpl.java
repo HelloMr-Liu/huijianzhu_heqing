@@ -271,6 +271,31 @@ public class PipeServiceImpl implements PipeService {
 
             } else {
                 List<AccpetPlotTypePropertyValue> propertyValueList = definition.getPropertyValueList();
+
+                //获取当前管道信息
+                HqPlotPipe hqPlotPipe = hqPlotPipeExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
+
+                //当前管道对应的子属性
+                List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, hqPlotPipe.getPipeId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+                //遍历子属性值信息获取对应的管道名称
+                for (HqPropertyValueWithBLOBs glb : propertyValues) {
+                    if (glb.getPropertyValue().equals(hqPlotPipe.getPipeName())) {
+
+                        //判断本次修改的属性值对应的管道名称是否有改变
+                        for (AccpetPlotTypePropertyValue value : propertyValueList) {
+                            if (value.getPropertyValueId() != null && value.getPropertyValueId().toString().equals(glb.getPropertyValueId().toString())) {
+                                if (!value.getPropertyValue().equals(glb.getPropertyValue())) {
+
+                                    //管道名称已经改变重新修改管道名称
+                                    hqPlotPipe.setPipeName(value.getPropertyValue());
+                                    hqPlotPipeExtendMapper.updateByPrimaryKeySelective(hqPlotPipe);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 propertyValueList.forEach(
                         e -> {
                             e.setPlotType(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY);
@@ -355,7 +380,7 @@ public class PipeServiceImpl implements PipeService {
         for (int index = 0; index < pipes.size(); index++) {
             HqPlotPipeDefinition pipe = pipes.get(index);
 
-            //判断当前的房屋动迁对有的地块信息是否存在
+            //判断当前的管道动迁对有的地块信息是否存在
             if (!collect.containsKey(pipe.getPlotName())) {
                 return SystemResult.build(SYSTEM_RESULT_STATE.ADD_FAILURE.KEY, "在第" + (index + 3) + "行当前对应的地块信息:" + pipe.getPlotName() + "不存在");
             }
