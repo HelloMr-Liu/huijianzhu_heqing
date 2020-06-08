@@ -40,6 +40,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {       //请求进入这个拦截器
+        //return true;
+
         //设置缓存区编码为UTF-8编码格式
         response.setCharacterEncoding("UTF-8");
         //在响应中主动告诉浏览器使用UTF-8编码格式来接收数据

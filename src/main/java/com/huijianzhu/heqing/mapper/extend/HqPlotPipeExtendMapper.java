@@ -32,14 +32,12 @@ public interface HqPlotPipeExtendMapper extends HqPlotPipeMapper {
      */
     @Select({
             "<script>",
-            "SELECT hp.plot_id plotId,hp.plot_name plotName,hp.create_time plotCreateTime, hpp.* ",
-            "FROM hq_plot hp left join hq_plot_pipe hpp   ",
-            "on hpp.plot_id=hp.plot_id ",
-            "where hp.del_flag=#{delFalg} ",
+            "SELECT * FROM  hq_plot_pipe    ",
+            "where del_flag=#{delFalg} ",
             " <if test='pipeName!=null'>",
             " and  pipe_name like concat('%',#{pipeName},'%') ",
             " </if>",
-            "order by hp.create_time,hpp.pipe_name desc",
+            "order by create_time desc",
             "</script>"})
     List<PlotPipeDTO> getPlotPipeByName(String pipeName, String delFalg);
 

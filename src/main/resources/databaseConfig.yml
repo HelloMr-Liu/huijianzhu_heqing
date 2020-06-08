@@ -15,7 +15,6 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
 
 
-
     # 虽然我们配置了druid连接池的其它属性，但是不会生效。因为默认是使用的java.sql.Datasource的类来获取属性的，有些属性datasource没有。如果我们想让配置生效，需要手动创建Druid的配置文件。
     # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时（缺省值：0）
     initialSize: 5

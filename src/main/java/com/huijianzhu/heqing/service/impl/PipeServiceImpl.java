@@ -85,11 +85,10 @@ public class PipeServiceImpl implements PipeService {
                     if (plotPipeDTO == null) {
                         //由于没有管道信息所以创建一个新的管道信息
                         plotPipeDTO = new PlotPipeDTO();
-                        plotPipeDTO.setPlotId(e.getPlotId());                   //管道id
-                        plotPipeDTO.setPlotName(e.getPlotName());               //管道名称
+                        plotPipeDTO.setPlotId(e.getPlotId());                   //管道类型id
+                        //plotPipeDTO.setPlotName(e.getPlotName());             //管道类型名称
                         plotPipeDTO.setPlotCreateTime(e.getPlotCreateTime());   //地块创建时间
-                        plotPipeDTO.setPipeList(new ArrayList<>());             //管道搬迁信息集
-
+                        plotPipeDTO.setPipeList(new ArrayList<>());             //管道类型对的管道搬迁信息集
 
                         plotPipeMap.put(e.getPlotName(), plotPipeDTO);
                     }
@@ -130,7 +129,7 @@ public class PipeServiceImpl implements PipeService {
             HqPlotPipe newPipe = new HqPlotPipe();
             newPipe.setPipeName(definition.getContentName());               //管道名称
             newPipe.setPipePlotMark(definition.getPlotMark());              //地标信息
-            newPipe.setPlotId(definition.getPlotId());                     //指定某一个地块
+            newPipe.setPlotId(definition.getPlotId());                      //指定管道类型id
             newPipe.setCreateTime(new Date());                              //创建时间
             newPipe.setUpdateTime(new Date());                              //修改时间
             newPipe.setUpdateUserName(loginUserContent.getUserName());      //最近一次谁操作了该记录
@@ -151,15 +150,15 @@ public class PipeServiceImpl implements PipeService {
                 //遍历查询出对应的属性中是否有对应的名称细腻些
                 for (PropertyTree pro : treeList) {
                     //遍历子的属性
-
                     List<PropertyTree> childrens = pro.getChildren();
+
                     if (childrens != null && childrens.size() > 0) {
                         for (PropertyTree child : childrens) {
                             if (child.getPropertyName().indexOf("名称") > -1) {
                                 //创建本次本次属性id信息
                                 HqPropertyValueWithBLOBs value = new HqPropertyValueWithBLOBs();
                                 value.setPlotType(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY);
-                                value.setPlotTypeId(newPipe.getPipeId());
+                                value.setPlotTypeId(newPipe.getPipeId());           //当前管道id对应的属性信息
                                 value.setPropertyId(child.getPropertyId());
                                 value.setPropertyValue(definition.getContentName());
                                 value.setPropertyValueDesc("");
@@ -275,6 +274,8 @@ public class PipeServiceImpl implements PipeService {
                 //获取当前管道信息
                 HqPlotPipe hqPlotPipe = hqPlotPipeExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
 
+
+                boolean flag = false;
                 //当前管道对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, hqPlotPipe.getPipeId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的管道名称
@@ -289,8 +290,15 @@ public class PipeServiceImpl implements PipeService {
                                     //管道名称已经改变重新修改管道名称
                                     hqPlotPipe.setPipeName(value.getPropertyValue());
                                     hqPlotPipeExtendMapper.updateByPrimaryKeySelective(hqPlotPipe);
+
+                                    flag = true;
+                                    break;
                                 }
                             }
+                        }
+
+                        if (flag) {
+                            break;
                         }
                     }
                 }
@@ -339,6 +347,13 @@ public class PipeServiceImpl implements PipeService {
 
             //持久化到数据库中
             hqPlotPipeExtendMapper.updateByPrimaryKeySelective(deletePipe);
+
+            //异步删除对应的该内容对应的属性值内容信息
+            try {
+                hqPropertyValueExtendMapper.batchDeleteProperties(PLOT_HOUSE_PIPE_TYPE.PIPE_TYPE.KEY, pipeId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY, loginUserContent.getUserName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             return SystemResult.ok("管道信息删除成功");
         } catch (Exception e) {

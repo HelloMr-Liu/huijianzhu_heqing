@@ -91,7 +91,7 @@ public class PipeController {
     /**
      * 打印管道搬迁模板
      */
-    @GetMapping("/update/removal/template")
+    //@GetMapping("/update/removal/template")
     public void printPipeTemplate() throws Exception {
         //设置缓存区编码为UTF-8编码格式
         response.setCharacterEncoding("UTF-8");
@@ -179,7 +179,7 @@ public class PipeController {
      * @throws Exception
      */
     @ResponseBody
-    @PostMapping("/update/removal/template/import")
+    //@PostMapping("/update/removal/template/import")
     public SystemResult readPipeTemplate(@RequestParam("file") MultipartFile file) throws Exception {
         log.info("获取到文件内容了。。。。" + file.getOriginalFilename());
 

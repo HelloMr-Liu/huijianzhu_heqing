@@ -108,4 +108,32 @@ public interface HqPropertyValueExtendMapper extends HqPropertyValueMapper {
                     "</script>"
             })
     void batchUpdateProperties(@Param("propertyValues") List<AccpetPlotTypePropertyValue> propertyValues);
+
+
+    /**
+     * 批量删除属性值信息
+     *
+     * @param type    地块类型(地块、房屋、管道
+     * @param typeId  地块类型表信息id
+     * @param delFalg 删除标志
+     */
+    @Update({
+            "<script> ",
+            "UPDATE hq_property_value SET ",
+
+            "del_flag = CASE plot_type_id ",
+            "WHEN #{typeId} THEN #{delFalg} ",
+            "END,",
+
+            "update_time = CASE plot_type_id ",
+            "WHEN #{typeId} THEN sysdate() ",
+            "END,",
+
+            "update_user_name = CASE plot_type_id ",
+            "WHEN #{typeId} THEN #{userName} ",
+            "END ",
+            "WHERE plot_type=#{type}  AND plot_type_id=#{typeId}",
+            "</script>"
+    })
+    void batchDeleteProperties(String type, Integer typeId, String delFalg, String userName);
 }

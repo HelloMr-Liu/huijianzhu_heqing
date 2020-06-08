@@ -288,6 +288,7 @@ public class HouseServiceImpl implements HouseService {
                 //获取当前房屋信息
                 HqPlotHouse hqPlotHouse = hqPlotHouseExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
 
+                boolean flag = false;
                 //当前房屋对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, hqPlotHouse.getHouseId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的房屋名称
@@ -302,8 +303,16 @@ public class HouseServiceImpl implements HouseService {
                                     //房屋名称已经改变重新修改房屋名称
                                     hqPlotHouse.setHouseName(value.getPropertyValue());
                                     hqPlotHouseExtendMapper.updateByPrimaryKeySelective(hqPlotHouse);
+
+
+                                    flag = true;
+                                    break;
                                 }
                             }
+                        }
+
+                        if (flag) {
+                            break;
                         }
                     }
                 }
@@ -353,6 +362,15 @@ public class HouseServiceImpl implements HouseService {
 
             //持久化到数据库中
             hqPlotHouseExtendMapper.updateByPrimaryKeySelective(deleteHosue);
+
+
+            //异步删除对应的该内容对应的属性值内容信息
+            try {
+                hqPropertyValueExtendMapper.batchDeleteProperties(PLOT_HOUSE_PIPE_TYPE.HOUSE_TYPE.KEY, houseId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY, loginUserContent.getUserName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
             return SystemResult.ok("房屋信息删除成功");
         } catch (Exception e) {

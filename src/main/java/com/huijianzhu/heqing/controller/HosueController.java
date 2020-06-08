@@ -280,7 +280,6 @@ public class HosueController {
             List<AccpetPlotTypePropertyValue> accpetPlotTypePropertyValues = JSON.parseArray(definition.getListContent(), AccpetPlotTypePropertyValue.class);
             definition.setPropertyValueList(accpetPlotTypePropertyValues);
         }
-
         return houseService.updateContent(definition);
     }
 

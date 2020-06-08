@@ -244,6 +244,7 @@ public class PlotServiceImpl implements PlotService {
                 //获取当前地块信息
                 HqPlot plot1 = hqPlotExtendMapper.selectByPrimaryKey(propertyValueList.get(0).getPlotTypeId());
 
+                boolean flag = false;
                 //当前地块对应的子属性
                 List<HqPropertyValueWithBLOBs> propertyValues = hqPropertyValueExtendMapper.getPropertyValues(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, plot1.getPlotId(), GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
                 //遍历子属性值信息获取对应的地块名称
@@ -258,8 +259,15 @@ public class PlotServiceImpl implements PlotService {
                                     //地块名称已经改变重新修改地块名称
                                     plot1.setPlotName(value.getPropertyValue());
                                     hqPlotExtendMapper.updateByPrimaryKeySelective(plot1);
+
+
+                                    flag = true;
+                                    break;
                                 }
                             }
+                        }
+                        if (flag) {
+                            break;
                         }
                     }
                 }
@@ -312,6 +320,13 @@ public class PlotServiceImpl implements PlotService {
 
             //持久化到数据库中
             hqPlotExtendMapper.updateByPrimaryKeySelective(deletePlot);
+
+            //异步删除对应的该内容对应的属性值内容信息
+            try {
+                hqPropertyValueExtendMapper.batchDeleteProperties(PLOT_HOUSE_PIPE_TYPE.PLOT_TYPE.KEY, plotId, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_YES.KEY, loginUserContent.getUserName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             return SystemResult.ok("地块信息删除成功");
         } catch (Exception e) {

@@ -163,15 +163,13 @@ public class NoLiveServiceImpl implements NoLiveService {
                         }
                 )
                 .collect(Collectors.toList());
-
-
         //创建 存储已支付金额和支付总金额信息变量
         Long okPay = 0L;
         Long totalPay = 0L;
 
         for (HqNoLiveAccount account : collect) {
-            okPay += Long.valueOf(account.getOkMoney()).longValue();              //存储每一个地块对应的已支付金额
-            totalPay += Long.valueOf(account.getTotalDealMoney()).longValue();    //储每一个地块对应的支付总金额
+            okPay += new Double(Double.parseDouble(account.getOkMoney())).longValue();              //存储每一个地块对应的已支付金额
+            totalPay += new Double(Double.parseDouble(account.getTotalDealMoney())).longValue();    //储每一个地块对应的支付总金额
         }
         NoLiveMoneyData data = new NoLiveMoneyData();
         data.setNoPay(totalPay - okPay);
