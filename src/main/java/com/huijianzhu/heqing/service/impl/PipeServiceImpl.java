@@ -77,20 +77,20 @@ public class PipeServiceImpl implements PipeService {
         HashMap<String, PlotPipeDTO> plotPipeMap = new HashMap<>();
 
         //获取将管道动迁信息集以管道的方式分组
-        List<PlotPipeDTO> plotPipeByName = hqPlotPipeExtendMapper.getPlotPipeByName(PipeName, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
+        List<HqPlotPipe> plotPipeByName = hqPlotPipeExtendMapper.getPlotPipeByName(PipeName, GLOBAL_TABLE_FILED_STATE.DEL_FLAG_NO.KEY);
         plotPipeByName.forEach(
                 e -> {
                     //获取当前对应的管道信息
-                    PlotPipeDTO plotPipeDTO = plotPipeMap.get(e.getPlotName());
+                    PlotPipeDTO plotPipeDTO = plotPipeMap.get(e.getPlotId().toString());
                     if (plotPipeDTO == null) {
                         //由于没有管道信息所以创建一个新的管道信息
                         plotPipeDTO = new PlotPipeDTO();
                         plotPipeDTO.setPlotId(e.getPlotId());                   //管道类型id
                         //plotPipeDTO.setPlotName(e.getPlotName());             //管道类型名称
-                        plotPipeDTO.setPlotCreateTime(e.getPlotCreateTime());   //地块创建时间
+                        plotPipeDTO.setPlotCreateTime(e.getCreateTime());       //地块创建时间
                         plotPipeDTO.setPipeList(new ArrayList<>());             //管道类型对的管道搬迁信息集
 
-                        plotPipeMap.put(e.getPlotName(), plotPipeDTO);
+                        plotPipeMap.put(e.getPlotId().toString(), plotPipeDTO);
                     }
                     //将动迁管道搬迁信息存储到每个地块对应的信息集中
                     plotPipeDTO.getPipeList().add(e);

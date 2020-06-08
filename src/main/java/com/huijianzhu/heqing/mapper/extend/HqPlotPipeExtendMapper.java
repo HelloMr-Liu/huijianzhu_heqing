@@ -39,7 +39,7 @@ public interface HqPlotPipeExtendMapper extends HqPlotPipeMapper {
             " </if>",
             "order by create_time desc",
             "</script>"})
-    List<PlotPipeDTO> getPlotPipeByName(String pipeName, String delFalg);
+    List<HqPlotPipe> getPlotPipeByName(String pipeName, String delFalg);
 
 
     /**
