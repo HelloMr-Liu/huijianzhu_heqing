@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.56</version>
+            <version>1.2.83</version>
         </dependency>
 
         <!-- 用到里面一个功能使用@Data包含（@Getter/@Setter注解），此注解在对应的属性上，可以为相应的属性自动生成Getter/Setter方法 -->
